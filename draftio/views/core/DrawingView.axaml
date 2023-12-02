@@ -3,9 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:views="using:draftio"
-			 x:Class="draftio.ContentView">
-	<Grid ColumnDefinitions="*">
-		<views:DrawingView Grid.Column="0"/>
-	</Grid>
+             x:Class="draftio.DrawingView">
+	<Canvas x:Name="Display" Background="White">
+		
+	</Canvas>
 </UserControl>
