@@ -12,6 +12,7 @@ namespace draftio.models.objects
         public ColorS BackgroundColor { get; set; }
         public ColorS BorderColor { get; set; }
         public float BorderSize { get; set; }
+        public IObject? Parent { get; set; }
         public ObjectType ObjectType { get; set; }
     }
 }

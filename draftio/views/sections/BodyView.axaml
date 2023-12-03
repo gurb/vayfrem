@@ -5,7 +5,7 @@
 			 xmlns:views="using:draftio"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="draftio.BodyView">
-	<Grid ColumnDefinitions="*, 4, *">
+	<Grid ColumnDefinitions="3*, 4, *">
 		<views:ContentView Grid.Column="0" />
 		<GridSplitter Grid.Column="1" Background="Black" ResizeDirection="Columns"/>
 		<views:SidebarView Grid.Column="2" />

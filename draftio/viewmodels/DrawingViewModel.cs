@@ -15,17 +15,13 @@ namespace draftio.viewmodels
         [ObservableProperty]
         IObject? selectedObject;
 
-       
-
         public DrawingViewModel() { }
 
         [RelayCommand]
         public void AddObject(PassData passData)
         {
-            // if object type is Canvas
             AddCanvas(passData);
         }
-
 
         private void AddCanvas(PassData passData)
         {
@@ -35,31 +31,69 @@ namespace draftio.viewmodels
             canvasObj.Width = passData.Width;
             canvasObj.Height = passData.Height;
 
-            Objects.Add(canvasObj);
+            if(SelectedObject != null)
+            {
+                if(SelectedObject.ObjectType == models.enums.ObjectType.Canvas)
+                {
+                    CanvasObj selectedCanvas = (CanvasObj)SelectedObject;
+                    canvasObj.Parent = selectedCanvas;
+                    canvasObj.X = canvasObj.X - selectedCanvas.X;
+                    canvasObj.Y = canvasObj.Y - selectedCanvas.Y;
+
+                    selectedCanvas.Add(canvasObj);
+                }
+            } else
+            {
+                Objects.Add(canvasObj);
+            }
         }
 
-        public void CollisionDetect(Vector2 mousePosition)
+        public void CollisionDetectPoint(Vector2 mousePosition, CanvasObj? canvas = null)
         {
             bool isCollide = false;
 
-            foreach (var obj in Objects)
+            var tempObjects = canvas != null ? canvas.Children : Objects;
+
+            foreach (var obj in tempObjects)
             {
                 if (mousePosition.X >= obj.X &&
                     mousePosition.X <= obj.X + obj.Width &&
                     mousePosition.Y >= obj.Y &&
                     mousePosition.Y <= obj.Y + obj.Height)
                 {
+                    if(obj.ObjectType == models.enums.ObjectType.Canvas)
+                    {
+                        CanvasObj canvasObj = (CanvasObj)obj; 
+                        if(canvasObj.Children.Count > 0)
+                        {
+                            var mouseOffset = new Vector2(mousePosition.X - canvasObj.X, mousePosition.Y - canvasObj.Y);
 
-                    
+                            CollisionDetectPoint(mouseOffset, canvasObj);
+                        } 
+                        else
+                        {
+                            SelectedObject = obj;
+                        }
+                    } 
+                    else
+                    {
+                        SelectedObject = obj;
+                    }
 
-                    SelectedObject = obj;
                     isCollide = true;
                 }
             }
 
             if(!isCollide)
             {
-                SelectedObject = null;
+                if(canvas != null)
+                {
+                    SelectedObject = canvas;
+                }
+                else
+                {
+                    SelectedObject = null;
+                }
             }
         }
     }

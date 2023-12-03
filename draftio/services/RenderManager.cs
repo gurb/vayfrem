@@ -16,20 +16,35 @@ namespace draftio.services
 
         public RenderManager() { }
 
-        public void Render(Canvas Display, List<IObject> objects)
+        public void Render(Panel Display, List<IObject> objects)
         {
             foreach (var obj in objects)
             {
                 if(obj.ObjectType == models.enums.ObjectType.Canvas)
                 {
-                    DrawCanvas(Display, obj);
+                    CanvasObj canvasObj = (CanvasObj)obj;
+
+                    Panel canvas = DrawCanvas(Display, obj);
+                    
+                    if (canvasObj != null && canvasObj.Children.Count() > 0)
+                    {
+                        Render(canvas, canvasObj.Children);
+                    }
+       
                 }
             }
         }
 
 
-        private void DrawCanvas (Canvas Display, IObject obj)
+        private Panel DrawCanvas (Panel Display, IObject obj)
         {
+            RelativePanel panel = new RelativePanel();
+            Canvas.SetLeft(panel, obj.X);
+            Canvas.SetTop(panel, obj.Y);
+            panel.Width = obj.Width;
+            panel.Height = obj.Height;
+            
+
             Canvas canvas = new Canvas();
             Canvas.SetLeft(canvas, obj.X);
             Canvas.SetTop(canvas, obj.Y);
@@ -42,10 +57,21 @@ namespace draftio.services
             canvasBackground.Height = canvas.Height;
             canvasBackground.Fill = Brushes.White;
             canvasBackground.Stroke = Brushes.Black;
-            canvasBackground.StrokeThickness = 1;
+            //canvasBackground.StrokeThickness = 1;
 
             canvas.Children.Add(canvasBackground);
-            Display.Children.Add(canvas);
+            panel.Children.Add(canvas);
+
+
+            Border border = new Border();
+            border.Background = Brushes.Black;
+            border.BorderThickness = Avalonia.Thickness.Parse("2");
+            Canvas.SetLeft(border, obj.X); 
+            Canvas.SetTop(border, obj.Y);
+            border.Child = panel;
+
+            Display.Children.Add(border);
+            return canvas;
         }
     }
 }

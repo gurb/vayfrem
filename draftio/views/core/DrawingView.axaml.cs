@@ -61,16 +61,8 @@ public partial class DrawingView : UserControl
             isMove = false;
             lastPosition = point.Position;
 
-            if(ViewModel.SelectedObject != null)
-            {
-                
-                moveOffset = new Vector2(firstPosition.X - ViewModel.SelectedObject.X, firstPosition.Y - ViewModel.SelectedObject.Y);
-
-                ViewModel.SelectedObject.X = lastPosition.X - moveOffset.X;
-                ViewModel.SelectedObject.Y = lastPosition.Y - moveOffset.Y;
-
-                draw();
-            }
+            handleTranslate();
+            draw();
         }
     }
 
@@ -84,14 +76,23 @@ public partial class DrawingView : UserControl
         {
             isDraw = true;
             firstPosition = position;
+
+            ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
         }
-        
+
         if (point.Properties.IsMiddleButtonPressed)
         {
             isMove = true;
             firstPosition = position;
 
-            ViewModel.CollisionDetect(new Vector2(firstPosition.X, firstPosition.Y));
+            ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
+        }
+
+        if (point.Properties.IsRightButtonPressed)
+        {
+            firstPosition = position;
+
+            ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
         }
     }
 
@@ -109,8 +110,24 @@ public partial class DrawingView : UserControl
             Height = Math.Abs(firstPosition.Y - lastPosition.Y)
         };
 
+
+
+
         ViewModel.AddObject(passData);
     }
+
+
+    private void handleTranslate()
+    {
+        if (ViewModel.SelectedObject != null)
+        {
+            moveOffset = new Vector2(firstPosition.X - ViewModel.SelectedObject.X, firstPosition.Y - ViewModel.SelectedObject.Y);
+
+            ViewModel.SelectedObject.X = lastPosition.X - moveOffset.X;
+            ViewModel.SelectedObject.Y = lastPosition.Y - moveOffset.Y;
+        }
+    }
+
     private void draw()
     {
         Display.Children.Clear();
