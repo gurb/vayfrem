@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using draftio.models.dtos;
 using draftio.models.objects;
+using draftio.models.structs;
 using System.Collections.Generic;
 
 namespace draftio.viewmodels
@@ -10,6 +11,11 @@ namespace draftio.viewmodels
     {
         [ObservableProperty]
         List<IObject> objects = new();
+
+        [ObservableProperty]
+        IObject? selectedObject;
+
+       
 
         public DrawingViewModel() { }
 
@@ -30,6 +36,31 @@ namespace draftio.viewmodels
             canvasObj.Height = passData.Height;
 
             Objects.Add(canvasObj);
+        }
+
+        public void CollisionDetect(Vector2 mousePosition)
+        {
+            bool isCollide = false;
+
+            foreach (var obj in Objects)
+            {
+                if (mousePosition.X >= obj.X &&
+                    mousePosition.X <= obj.X + obj.Width &&
+                    mousePosition.Y >= obj.Y &&
+                    mousePosition.Y <= obj.Y + obj.Height)
+                {
+
+                    
+
+                    SelectedObject = obj;
+                    isCollide = true;
+                }
+            }
+
+            if(!isCollide)
+            {
+                SelectedObject = null;
+            }
         }
     }
 }

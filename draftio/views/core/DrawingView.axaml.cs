@@ -5,6 +5,7 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using draftio.models.dtos;
+using draftio.models.structs;
 using draftio.services;
 using draftio.viewmodels;
 using System;
@@ -17,11 +18,13 @@ public partial class DrawingView : UserControl
     private readonly RenderManager renderManager;
 
     // status of draw operation
-    private bool isActive;
+    private bool isDraw;
+    private bool isMove;
     private Point currentPosition;
     private Point firstPosition;
     private Point lastPosition;
-    
+    private Vector2 moveOffset = new Vector2(0, 0);
+
     public DrawingView()
     {
         ViewModel = App.GetService<DrawingViewModel>();
@@ -45,13 +48,29 @@ public partial class DrawingView : UserControl
         var point = e.GetCurrentPoint(sender as Control);
 
 
-        if (isActive)
+        if (isDraw)
         {
-            isActive = false;
+            isDraw = false;
             lastPosition = point.Position;
 
-            handle();
+            handleDraw();
             draw();
+        }
+        if (isMove)
+        {
+            isMove = false;
+            lastPosition = point.Position;
+
+            if(ViewModel.SelectedObject != null)
+            {
+                
+                moveOffset = new Vector2(firstPosition.X - ViewModel.SelectedObject.X, firstPosition.Y - ViewModel.SelectedObject.Y);
+
+                ViewModel.SelectedObject.X = lastPosition.X - moveOffset.X;
+                ViewModel.SelectedObject.Y = lastPosition.Y - moveOffset.Y;
+
+                draw();
+            }
         }
     }
 
@@ -63,12 +82,20 @@ public partial class DrawingView : UserControl
 
         if (point.Properties.IsLeftButtonPressed)
         {
-            isActive = true;
+            isDraw = true;
             firstPosition = position;
-        } 
+        }
+        
+        if (point.Properties.IsMiddleButtonPressed)
+        {
+            isMove = true;
+            firstPosition = position;
+
+            ViewModel.CollisionDetect(new Vector2(firstPosition.X, firstPosition.Y));
+        }
     }
 
-    private void handle()
+    private void handleDraw()
     {
         // just draw rectangle for now
 
