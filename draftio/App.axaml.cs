@@ -39,6 +39,9 @@ namespace draftio
                 {
                     services.AddTransient<MainViewModel>();
                     services.AddTransient<ProjectTreeViewModel>();
+                    services.AddTransient<DrawingViewModel>();
+
+                    services.AddSingleton<RenderManager>();
                 })
                 .Build();
 

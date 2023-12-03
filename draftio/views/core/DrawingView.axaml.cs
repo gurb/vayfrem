@@ -4,12 +4,17 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using draftio.models.dtos;
+using draftio.services;
+using draftio.viewmodels;
 using System;
 
 namespace draftio;
 
 public partial class DrawingView : UserControl
 {
+    public DrawingViewModel ViewModel { get; private set; }
+    private readonly RenderManager renderManager;
 
     // status of draw operation
     private bool isActive;
@@ -17,9 +22,13 @@ public partial class DrawingView : UserControl
     private Point firstPosition;
     private Point lastPosition;
     
-
     public DrawingView()
     {
+        ViewModel = App.GetService<DrawingViewModel>();
+        DataContext = ViewModel;
+
+        renderManager = App.GetService<RenderManager>();
+
         InitializeComponent();
         Display.PointerPressed += OnPointerPressed;
         Display.PointerReleased += OnPointerReleased;
@@ -41,7 +50,8 @@ public partial class DrawingView : UserControl
             isActive = false;
             lastPosition = point.Position;
 
-            handleDraw();
+            handle();
+            draw();
         }
     }
 
@@ -58,29 +68,26 @@ public partial class DrawingView : UserControl
         } 
     }
 
-
-    private void handleDraw()
+    private void handle()
     {
         // just draw rectangle for now
-       
+
         // canvas can be used as rendertarget
-        Canvas canvas = new Canvas();
-        Canvas.SetLeft(canvas, Math.Min(firstPosition.X, lastPosition.X));
-        Canvas.SetTop(canvas, Math.Min(firstPosition.Y, lastPosition.Y));
-        canvas.Width = Math.Abs(firstPosition.X - lastPosition.X);
-        canvas.Height = Math.Abs(firstPosition.Y - lastPosition.Y);
 
-        Rectangle canvasBackground = new Rectangle();
-        Canvas.SetLeft(canvasBackground, 0);
-        Canvas.SetTop(canvasBackground, 0);
-        canvasBackground.Width = canvas.Width;
-        canvasBackground.Height = canvas.Height;
-        canvasBackground.Fill = Brushes.Transparent;
-        canvasBackground.Stroke = Brushes.Black;
-        canvasBackground.StrokeThickness = 1;
+        PassData passData = new PassData
+        {
+            X = Math.Min(firstPosition.X, lastPosition.X),
+            Y = Math.Min(firstPosition.Y, lastPosition.Y),
+            Width = Math.Abs(firstPosition.X - lastPosition.X),
+            Height = Math.Abs(firstPosition.Y - lastPosition.Y)
+        };
 
-        canvas.Children.Add(canvasBackground);
-        Display.Children.Add(canvas);
+        ViewModel.AddObject(passData);
+    }
+    private void draw()
+    {
+        Display.Children.Clear();
 
+        renderManager.Render(Display, ViewModel.Objects);
     }
 }
