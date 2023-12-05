@@ -30,11 +30,9 @@ namespace draftio.services
                     {
                         Render(canvas, canvasObj.Children);
                     }
-       
                 }
             }
         }
-
 
         private Panel DrawCanvas (Panel Display, IObject obj)
         {
@@ -66,8 +64,11 @@ namespace draftio.services
             Border border = new Border();
             border.Background = Brushes.Black;
             border.BorderThickness = Avalonia.Thickness.Parse("2");
-            Canvas.SetLeft(border, obj.X); 
-            Canvas.SetTop(border, obj.Y);
+            
+            border.Padding = Avalonia.Thickness.Parse("0");
+            border.Margin = Avalonia.Thickness.Parse("0");
+            Canvas.SetLeft(border, obj.X - 2); 
+            Canvas.SetTop(border, obj.Y - 2);
             border.Child = panel;
 
             Display.Children.Add(border);

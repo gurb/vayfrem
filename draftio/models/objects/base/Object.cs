@@ -15,6 +15,27 @@ namespace draftio.models.objects.@base
         public ObjectType ObjectType { get; set; }
         public IObject? Parent { get; set; }
 
+        public double WorldX
+        {
+            get
+            {
+                if (Parent == null)
+                    return X;
+                else
+                    return X + Parent.WorldX;
+            }
+        }
+        public double WorldY
+        {
+            get
+            {
+                if (Parent == null)
+                    return Y;
+                else
+                    return Y + Parent.WorldY;
+            }
+        }
+
         public virtual void InitializeObject () { }
     }
 }

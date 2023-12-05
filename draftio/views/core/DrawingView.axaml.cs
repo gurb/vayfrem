@@ -9,6 +9,7 @@ using draftio.models.structs;
 using draftio.services;
 using draftio.viewmodels;
 using System;
+using System.Diagnostics;
 
 namespace draftio;
 
@@ -71,12 +72,12 @@ public partial class DrawingView : UserControl
         var point = e.GetCurrentPoint(sender as Control);
 
         var position = point.Position;
+        Trace.Write(position);
 
         if (point.Properties.IsLeftButtonPressed)
         {
             isDraw = true;
             firstPosition = position;
-
             ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
         }
 
@@ -109,9 +110,6 @@ public partial class DrawingView : UserControl
             Width = Math.Abs(firstPosition.X - lastPosition.X),
             Height = Math.Abs(firstPosition.Y - lastPosition.Y)
         };
-
-
-
 
         ViewModel.AddObject(passData);
     }

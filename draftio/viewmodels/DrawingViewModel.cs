@@ -37,8 +37,8 @@ namespace draftio.viewmodels
                 {
                     CanvasObj selectedCanvas = (CanvasObj)SelectedObject;
                     canvasObj.Parent = selectedCanvas;
-                    canvasObj.X = canvasObj.X - selectedCanvas.X;
-                    canvasObj.Y = canvasObj.Y - selectedCanvas.Y;
+                    canvasObj.X = canvasObj.X - selectedCanvas.WorldX;
+                    canvasObj.Y = canvasObj.Y - selectedCanvas.WorldY;
 
                     selectedCanvas.Add(canvasObj);
                 }

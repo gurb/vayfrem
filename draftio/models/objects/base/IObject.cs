@@ -5,14 +5,16 @@ namespace draftio.models.objects
 {
     public interface IObject
     {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
-        public ColorS BackgroundColor { get; set; }
-        public ColorS BorderColor { get; set; }
-        public float BorderSize { get; set; }
-        public IObject? Parent { get; set; }
-        public ObjectType ObjectType { get; set; }
+        double X { get; set; }
+        double Y { get; set; }
+        double Width { get; set; }
+        double Height { get; set; }
+        ColorS BackgroundColor { get; set; }
+        ColorS BorderColor { get; set; }
+        float BorderSize { get; set; }
+        IObject? Parent { get; set; }
+        ObjectType ObjectType { get; set; }
+        double WorldX { get; }
+        double WorldY { get; }
     }
 }
