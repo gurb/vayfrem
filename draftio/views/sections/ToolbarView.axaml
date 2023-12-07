@@ -4,21 +4,31 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="draftio.ToolbarView">
+	<UserControl.Styles>
+		<Style Selector = "Button.Selected">
+			<!--<Setter Property = "Foreground" Value = "# FFFFFFFF" />-->
+			<!--<Setter Property = "BorderThickness" Value = "2" />-->
+			<Setter Property="Background" Value = "#888" />
+			<!--<Setter Property = "BorderBrush" Value = "# FFFFFFFF" />-->
+		</Style>
+	</UserControl.Styles>
+	
+	
 	<StackPanel Orientation="Horizontal">
-		<Button Padding="5">
-			<Image Source="avares://draftio/assets/run.png" Width="25" Height="25">
+		<Button x:Name="RectTool" Classes="Selected" Margin="5" Padding="10">
+			<Image Source="avares://draftio/assets/rect.png" Width="25" Height="25">
 			</Image>
 		</Button>
-		<Button Padding="5">
-			<Image Source="avares://draftio/assets/run.png" Width="25" Height="25">
+		<Button x:Name="TextTool" Margin="5" Padding="10">
+			<Image Source="avares://draftio/assets/text.png" Width="25" Height="25">
 			</Image>
 		</Button>
-		<Button Padding="5">
-			<Image Source="avares://draftio/assets/run.png" Width="25" Height="25">
+		<Button x:Name="ZoomInTool" Margin="5" Padding="10">
+			<Image Source="avares://draftio/assets/zoomin.png" Width="25" Height="25">
 			</Image>
 		</Button>
-		<Button Padding="5">
-			<Image Source="avares://draftio/assets/run.png" Width="25" Height="25">
+		<Button x:Name="ZoomOutTool" Margin="5" Padding="10">
+			<Image Source="avares://draftio/assets/zoomout.png" Width="25" Height="25">
 			</Image>
 		</Button>
 	</StackPanel>

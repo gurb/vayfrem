@@ -17,6 +17,8 @@ public partial class DrawingView : UserControl
 {
     public DrawingViewModel ViewModel { get; private set; }
     private readonly RenderManager renderManager;
+    private readonly ToolManager toolManager;
+
 
     // status of draw operation
     private bool isDraw;
@@ -32,6 +34,7 @@ public partial class DrawingView : UserControl
         DataContext = ViewModel;
 
         renderManager = App.GetService<RenderManager>();
+        toolManager = App.GetService<ToolManager>();
 
         InitializeComponent();
         Display.PointerPressed += OnPointerPressed;

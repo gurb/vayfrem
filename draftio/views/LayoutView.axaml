@@ -13,7 +13,7 @@
 		</Grid>	
 		
 		<!-- header 2 area -->
-		<Grid Grid.Row="1" Background="Gray">
+		<Grid Grid.Row="1" Background="LightGray">
 			<views:ToolbarView/>
 		</Grid>
 		

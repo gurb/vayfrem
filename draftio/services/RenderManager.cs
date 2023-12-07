@@ -13,7 +13,6 @@ namespace draftio.services
     // this service just will be used for rendering operations
     public class RenderManager
     {
-
         public RenderManager() { }
 
         public void Render(Panel Display, List<IObject> objects)
