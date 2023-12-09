@@ -23,7 +23,7 @@ namespace draftio.models.objects
             this.ObjectType = enums.ObjectType.Text;
         }
 
-        public void TextBox_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
+        public void TextBox_TextChanged(object? sender, TextChangedEventArgs e)
         {
             TextBox? textBox = sender as TextBox;
 
@@ -32,5 +32,6 @@ namespace draftio.models.objects
                 Text = textBox.Text;
             }
         }
+
     }
 }

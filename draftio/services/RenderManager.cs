@@ -114,7 +114,7 @@ namespace draftio.services
                 textBox.TextWrapping = TextWrapping.Wrap;
                 textBox.Background = Brushes.Gray;
                 textBox.Text = obj.Text;
-                textBox.KeyDown += obj.TextBox_KeyDown;
+                textBox.TextChanged += obj.TextBox_TextChanged;
 
 
                 canvas.Children.Add(textBox);
@@ -156,7 +156,7 @@ namespace draftio.services
             }
         }
 
-
+        
         public void RenderOverlay(Canvas Overlay, Point first, Point last, bool drawActive, bool moveActive, IObject? moveObject, Vector2 moveOffset)
         {
             Overlay.Children.Clear();
