@@ -62,6 +62,7 @@ namespace draftio.viewmodels
 
         private void AddText(PassData passData)
         {
+            CloseEditMode();
             TextObj textObj = new TextObj();
             textObj.X = passData.X;
             textObj.Y = passData.Y;
@@ -69,6 +70,7 @@ namespace draftio.viewmodels
             textObj.Height = passData.Height;
             textObj.IsEditMode = true;
             ActiveTextObject = textObj;
+
 
             if (SelectedObject != null)
             {
