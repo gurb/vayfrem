@@ -10,5 +10,6 @@ namespace draftio.models.enums
     {
         Canvas,
         Rectangle,
+        Text,
     }
 }

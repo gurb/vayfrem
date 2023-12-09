@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using draftio.models.dtos;
+using draftio.models.enums;
 using draftio.models.objects;
 using draftio.models.structs;
 using System.Collections.Generic;
@@ -15,12 +16,22 @@ namespace draftio.viewmodels
         [ObservableProperty]
         IObject? selectedObject;
 
+        [ObservableProperty]
+        IObject? activeTextObject;
+
         public DrawingViewModel() { }
 
         [RelayCommand]
         public void AddObject(PassData passData)
         {
-            AddCanvas(passData);
+            if(passData.SelectedObjectType == ObjectType.Canvas)
+            {
+                AddCanvas(passData);
+            }
+            else if(passData.SelectedObjectType == ObjectType.Text)
+            {
+                AddText(passData);
+            }
         }
 
         private void AddCanvas(PassData passData)
@@ -41,11 +52,39 @@ namespace draftio.viewmodels
                     canvasObj.Y = canvasObj.Y - selectedCanvas.WorldY;
 
                     selectedCanvas.Add(canvasObj);
-                }
-            } else
+                    return;
+                } 
+                
+            } 
+
+            Objects.Add(canvasObj);
+        }
+
+        private void AddText(PassData passData)
+        {
+            TextObj textObj = new TextObj();
+            textObj.X = passData.X;
+            textObj.Y = passData.Y;
+            textObj.Width = passData.Width;
+            textObj.Height = passData.Height;
+            textObj.IsEditMode = true;
+            ActiveTextObject = textObj;
+
+            if (SelectedObject != null)
             {
-                Objects.Add(canvasObj);
+                if(SelectedObject.ObjectType == models.enums.ObjectType.Canvas)
+                {
+                    CanvasObj selectedCanvas = (CanvasObj)SelectedObject;
+                    textObj.Parent = selectedCanvas;
+                    textObj.X = textObj.X - selectedCanvas.WorldX;
+                    textObj.Y = textObj.Y - selectedCanvas.WorldY;
+
+                    selectedCanvas.Add(textObj);
+                    return;
+                }
             }
+
+            Objects.Add(textObj);
         }
 
         public void CollisionDetectPoint(Vector2 mousePosition, CanvasObj? canvas = null)
@@ -94,6 +133,18 @@ namespace draftio.viewmodels
                 {
                     SelectedObject = null;
                 }
+                CloseEditMode();
+            }
+        }
+
+
+        private void CloseEditMode()
+        {
+            if(ActiveTextObject != null)
+            {
+                TextObj obj = (TextObj)ActiveTextObject;
+                obj.IsEditMode = false;
+                ActiveTextObject = null;
             }
         }
     }

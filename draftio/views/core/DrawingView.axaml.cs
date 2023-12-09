@@ -111,7 +111,8 @@ public partial class DrawingView : UserControl
             X = Math.Min(firstPosition.X, lastPosition.X),
             Y = Math.Min(firstPosition.Y, lastPosition.Y),
             Width = Math.Abs(firstPosition.X - lastPosition.X),
-            Height = Math.Abs(firstPosition.Y - lastPosition.Y)
+            Height = Math.Abs(firstPosition.Y - lastPosition.Y),
+            SelectedObjectType = toolManager.SelectedObjectType
         };
 
         ViewModel.AddObject(passData);
