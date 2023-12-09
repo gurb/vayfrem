@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="draftio.DrawingView">
-	<Canvas x:Name="Display" Background="White">
-		
-	</Canvas>
+	<Grid>
+		<Canvas x:Name="Display" Background="White" ZIndex="1"></Canvas>
+		<Canvas x:Name="Overlay" Background="Transparent" ZIndex="1"></Canvas>
+	</Grid>
 </UserControl>

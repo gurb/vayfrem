@@ -9,8 +9,6 @@ namespace draftio.models.objects
 {
     public class TextObj: Object
     {
-        public IObject? Parent { get; set; }
-
         public bool IsEditMode { get; set; }
 
         public string? Text { get; set; }
@@ -24,7 +22,6 @@ namespace draftio.models.objects
         {
             this.ObjectType = enums.ObjectType.Text;
         }
-
 
         public void TextBox_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
         {

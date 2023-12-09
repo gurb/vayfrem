@@ -1,7 +1,9 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using draftio.models.objects;
+using draftio.models.structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,8 @@ namespace draftio.services
     // this service just will be used for rendering operations
     public class RenderManager
     {
+        private Vector2 childMoveOffset = new Vector2(0,0);
+
         public RenderManager() { }
 
         public void Render(Panel Display, List<IObject> objects)
@@ -152,6 +156,48 @@ namespace draftio.services
             }
         }
 
-        
+
+        public void RenderOverlay(Canvas Overlay, Point first, Point last, bool drawActive, bool moveActive, IObject? moveObject, Vector2 moveOffset)
+        {
+            Overlay.Children.Clear();
+
+            if (drawActive)
+            {
+                Rectangle overlayActive = new Rectangle();
+                Canvas.SetLeft(overlayActive, Math.Min(first.X, last.X));
+                Canvas.SetTop(overlayActive, Math.Min(first.Y, last.Y));
+                overlayActive.Width = Math.Abs(first.X - last.X);
+                overlayActive.Height = Math.Abs(first.Y - last.Y);
+                overlayActive.Fill = Brushes.Transparent;
+                overlayActive.Stroke = Brushes.Black;
+                overlayActive.StrokeThickness = 1;
+
+                Overlay.Children.Add(overlayActive);
+            }
+
+            if(moveActive && moveObject != null)
+            {
+                childMoveOffset = new Vector2(0, 0);
+
+                Rectangle overlayActive = new Rectangle();
+                
+                if(moveObject.Parent != null)
+                {
+                    childMoveOffset.X = moveObject.Parent.WorldX;
+                    childMoveOffset.Y = moveObject.Parent.WorldY;
+                }
+
+                Canvas.SetLeft(overlayActive, (childMoveOffset.X + last.X) - (moveOffset.X));
+                Canvas.SetTop(overlayActive, (childMoveOffset.Y + last.Y) - (moveOffset.Y));
+                overlayActive.Width = moveObject.Width;
+                overlayActive.Height = moveObject.Height;
+                overlayActive.Fill = Brushes.Aqua;
+                overlayActive.Opacity = 0.4;
+                overlayActive.Stroke = Brushes.Aqua;
+                overlayActive.StrokeThickness = 1;
+
+                Overlay.Children.Add(overlayActive);
+            }
+        } 
     }
 }

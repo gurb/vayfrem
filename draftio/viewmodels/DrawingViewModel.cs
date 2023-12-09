@@ -54,7 +54,6 @@ namespace draftio.viewmodels
                     selectedCanvas.Add(canvasObj);
                     return;
                 } 
-                
             } 
 
             Objects.Add(canvasObj);
@@ -85,7 +84,6 @@ namespace draftio.viewmodels
                     return;
                 }
             }
-
             Objects.Add(textObj);
         }
 
@@ -120,7 +118,6 @@ namespace draftio.viewmodels
                     {
                         SelectedObject = obj;
                     }
-
                     isCollide = true;
                 }
             }

@@ -8,7 +8,6 @@ namespace draftio.models.objects
 {
     public class RectangleObj: Object
     {
-        public IObject? Parent { get; set; }
 
         public RectangleObj() 
         {

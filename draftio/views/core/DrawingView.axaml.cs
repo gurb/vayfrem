@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using draftio.models.dtos;
@@ -28,6 +29,7 @@ public partial class DrawingView : UserControl
     private Point lastPosition;
     private Vector2 moveOffset = new Vector2(0, 0);
 
+
     public DrawingView()
     {
         ViewModel = App.GetService<DrawingViewModel>();
@@ -40,11 +42,15 @@ public partial class DrawingView : UserControl
         Display.PointerPressed += OnPointerPressed;
         Display.PointerReleased += OnPointerReleased;
         Display.PointerMoved += OnPointerMoved;
+
+        Overlay.IsEnabled = false;
     }
+
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
         currentPosition = e.GetPosition(this);
+        renderManager.RenderOverlay(Overlay, firstPosition, currentPosition, isDraw, isMove, ViewModel.SelectedObject, moveOffset);
     }
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -82,6 +88,7 @@ public partial class DrawingView : UserControl
             isDraw = true;
             firstPosition = position;
             ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
+           
         }
 
         if (point.Properties.IsMiddleButtonPressed)
@@ -89,7 +96,14 @@ public partial class DrawingView : UserControl
             isMove = true;
             firstPosition = position;
 
+
             ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
+
+            if(ViewModel.SelectedObject != null)
+            {
+                // first we need to find moveOffset so we can handle overlay movement draw properly 
+                moveOffset = new Vector2(firstPosition.X - ViewModel.SelectedObject.X, firstPosition.Y - ViewModel.SelectedObject.Y);
+            }
         }
 
         if (point.Properties.IsRightButtonPressed)
