@@ -5,12 +5,12 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Threading;
 using draftio.models.dtos;
 using draftio.models.structs;
 using draftio.services;
 using draftio.viewmodels;
 using System;
-using System.Diagnostics;
 
 namespace draftio;
 
@@ -28,6 +28,13 @@ public partial class DrawingView : UserControl
     private Point firstPosition;
     private Point lastPosition;
     private Vector2 moveOffset = new Vector2(0, 0);
+    private double scaleOverlay = 1.0;
+    private double scaleDisplay = 1.0;
+    private DispatcherTimer timer;
+    private Canvas Overlay;
+
+    private Point zoomOrigin;
+
 
 
     public DrawingView()
@@ -43,15 +50,43 @@ public partial class DrawingView : UserControl
         Display.PointerReleased += OnPointerReleased;
         Display.PointerMoved += OnPointerMoved;
 
+        Overlay = new Canvas();
+        Overlay.Width = 1920;
+        Overlay.Height = 1080;
         Overlay.IsEnabled = false;
+        Overlay.Background = Brushes.Transparent;
+        //Overlay.Opacity = 0.3;
+        Overlay.ZIndex = 2;
+
+
+        Canvas.SetTop(Overlay, 0);
+        Canvas.SetLeft(Overlay, 0);
+
+
+
+        Display.Children.Add(Overlay);
+
+        Display.PointerWheelChanged += DisplayZoom_OnPointerWheelChanged;
+
+
+        //timer = new DispatcherTimer();
+        //timer.Interval = TimeSpan.FromMilliseconds(60);
+        //timer.Tick += Timer_Tick;
+        //timer.Start();
     }
 
+    
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        currentPosition = e.GetPosition(this);
+
+        currentPosition = e.GetPosition(sender as Control);
+        zoomOrigin = currentPosition;
+
         renderManager.RenderOverlay(Overlay, firstPosition, currentPosition, isDraw, isMove, ViewModel.SelectedObject, moveOffset);
     }
+
+    
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
@@ -79,9 +114,7 @@ public partial class DrawingView : UserControl
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         var point = e.GetCurrentPoint(sender as Control);
-
         var position = point.Position;
-        Trace.Write(position);
 
         if (point.Properties.IsLeftButtonPressed)
         {
@@ -144,10 +177,46 @@ public partial class DrawingView : UserControl
         }
     }
 
+
     private void draw()
     {
         Display.Children.Clear();
+        Display.Children.Add(Overlay);
+
 
         renderManager.Render(Display, ViewModel.Objects);
     }
+
+
+    private void DisplayZoom_OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    {
+        const double zoomSpeed = 0.1;
+        double zoomFactor = e.Delta.Y > 0 ? (1 + zoomSpeed) : 1 / (1 + zoomSpeed);
+
+        // Calculate the new scale
+        double newScale = scaleDisplay * zoomFactor;
+
+        // Limit the scale within certain bounds if necessary
+        newScale = Math.Max(0.1, Math.Min(10, newScale));
+
+        // Calculate the translation to keep the mouse position fixed
+        Vector translation = new Vector(Display.Width / 2 - currentPosition.X, Display.Height / 2 - currentPosition.Y);
+        translation *= 1 - 1 / zoomFactor;
+
+        // Apply the scale and translation to the RenderTransform
+        Display.RenderTransform = new TransformGroup
+        {
+            Children =
+        {
+            new TranslateTransform(-translation.X, -translation.Y),
+            new ScaleTransform(newScale, newScale),
+            new TranslateTransform(translation.X, translation.Y)
+        }
+        };
+
+        // Update the scale for the next iteration
+        scaleDisplay = newScale;
+    }
+
+   
 }
