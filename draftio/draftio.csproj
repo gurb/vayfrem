@@ -23,6 +23,10 @@
 
   <ItemGroup>
 	 <AvaloniaResource Include="assets\**" />
+	 <AvaloniaXaml Remove="components\**" />
+	 <Compile Remove="components\**" />
+	 <EmbeddedResource Remove="components\**" />
+	 <None Remove="components\**" />
     <None Update="assets\run.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -30,6 +34,6 @@
 
 
   <ItemGroup>
-    <Folder Include="components\" />
+    <Folder Include="views\components\" />
   </ItemGroup>
 </Project>
