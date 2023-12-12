@@ -13,6 +13,7 @@ using draftio.viewmodels;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace draftio;
@@ -39,7 +40,7 @@ public partial class DrawingView : UserControl
 
     private Avalonia.Point origin;
     private Avalonia.Point start;
-
+    ScaleTransform xform;
 
     public DrawingView()
     {
@@ -78,7 +79,7 @@ public partial class DrawingView : UserControl
 
         TransformGroup group = new TransformGroup();
 
-        ScaleTransform xform = new ScaleTransform();
+        xform = new ScaleTransform();
         group.Children.Add(xform);
 
         TranslateTransform tt = new TranslateTransform();
@@ -106,11 +107,11 @@ public partial class DrawingView : UserControl
         {
             if (point.Properties.IsRightButtonPressed)
             {
-                var tt = (TranslateTransform)((TransformGroup)Display.RenderTransform)
-               .Children.First(tr => tr is TranslateTransform);
-                Vector v = start - e.GetPosition(BorderMain);
-                tt.X = origin.X - v.X;
-                tt.Y = origin.Y - v.Y;
+               // var tt = (TranslateTransform)((TransformGroup)Display.RenderTransform)
+               //.Children.First(tr => tr is TranslateTransform);
+               // Vector v = start - e.GetPosition(BorderMain);
+               // tt.X = origin.X - v.X;
+               // tt.Y = origin.Y - v.Y;
             }
         }
         
@@ -161,7 +162,7 @@ public partial class DrawingView : UserControl
 
         }
 
-        if (point.Properties.IsMiddleButtonPressed)
+        if (point.Properties.IsRightButtonPressed)
         {
             isMove = true;
             firstPosition = position;
@@ -175,17 +176,17 @@ public partial class DrawingView : UserControl
                 moveOffset = new Vector2(firstPosition.X - ViewModel.SelectedObject.X, firstPosition.Y - ViewModel.SelectedObject.Y);
             }
         }
-
-        if (point.Properties.IsRightButtonPressed)
+        
+        if (point.Properties.IsMiddleButtonPressed)
         {
             firstPosition = position;
 
             ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
 
-            var tt = (TranslateTransform)((TransformGroup)Display.RenderTransform)
-                .Children.First(tr => tr is TranslateTransform);
-            start = e.GetPosition(BorderMain);
-            origin = new Avalonia.Point(tt.X, tt.Y);
+            //var tt = (TranslateTransform)((TransformGroup)Display.RenderTransform)
+            //    .Children.First(tr => tr is TranslateTransform);
+            //start = e.GetPosition(BorderMain);
+            //origin = new Avalonia.Point(tt.X, tt.Y);
         }
     }
 
@@ -230,99 +231,91 @@ public partial class DrawingView : UserControl
     }
 
     private Avalonia.Point lastMousePosition = new Avalonia.Point(0, 0);
+    //private System.Drawing.Drawing2D.Matrix matrix = Matrix.Identity;
+    private double totalScale = 1.0;
+    private double scaleDelta = 0.1;
+
+    private double zoomFactor = 1.0;
+
+    private float scale = 1.0f;
+
     private void DisplayZoom_OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
+
+
+
+        //BorderMain.RenderTransformOrigin = new RelativePoint(position.X / 1920, position.Y / 1080, RelativeUnit.Relative);
+
+
+
+
+        //xform.ScaleX = 1;
+        //xform.ScaleY = 1;
+        //Display.RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
+
+
         //var position = e.GetPosition(sender as Control);
 
+        //Display.RenderTransformOrigin = new RelativePoint(position.X / 1920, position.Y / 1080, RelativeUnit.Relative);
+
+        //xform.ScaleX = 1;
+        //xform.ScaleY = 1;
 
 
-
-        //TransformGroup transformGroup = (TransformGroup)Display.RenderTransform;
-        //ScaleTransform sTransform = (ScaleTransform)transformGroup.Children[0];
-        //TranslateTransform tTransform = (TranslateTransform)((TransformGroup)Display.RenderTransform)
-        //        .Children.First(tr => tr is TranslateTransform);
-
-
-        //double zoom = e.Delta.Y > 0 ? .2 : -.2;
-
-        //Avalonia.Point relative = e.GetPosition(sender as Control);
-        //Display.RenderTransformOrigin = new RelativePoint(new Avalonia.Point((relative.X / Display.Bounds.Width), (relative.Y / Display.Bounds.Height)), RelativeUnit.Relative);
-
-
-
-
-        //sTransform.ScaleX += zoom;
-        //sTransform.ScaleY += zoom;
+        //st = ScaleAt(scale, scale, pos1.X, pos1.Y) * st.Value;
 
 
 
 
 
-
-
-        TransformGroup transformGroup = (TransformGroup)Display.RenderTransform;
-        ScaleTransform sTransform = (ScaleTransform)transformGroup.Children.First(tr => tr is ScaleTransform);
-        TranslateTransform tTransform = (TranslateTransform)transformGroup.Children.First(tr => tr is TranslateTransform);
-
-        double zoom = e.Delta.Y > 0 ? 0.2 : -0.2;
-
-        Avalonia.Point currentMousePosition = e.GetPosition(Display);
-
-        // Calculate the delta in mouse position since the last zoom
-        double deltaX = currentMousePosition.X - lastMousePosition.X;
-        double deltaY = currentMousePosition.Y - lastMousePosition.Y;
-
-        // Update the last mouse position
-        lastMousePosition = currentMousePosition;
-
-        // Apply the scale to the content
-        sTransform.ScaleX += zoom;
-        sTransform.ScaleY += zoom;
-
-        // Calculate the new translation
-        double newTranslateX = tTransform.Value.M31 + deltaX * zoom;
-        double newTranslateY = tTransform.Value.M32 + deltaY * zoom;
-
-        // Apply the translation to the content
-        tTransform = new TranslateTransform(newTranslateX, newTranslateY);
-
-        // Update the RenderTransformOrigin to the new position
-        Display.RenderTransformOrigin = new RelativePoint(new Avalonia.Point((currentMousePosition.X / Display.Bounds.Width), (currentMousePosition.Y / Display.Bounds.Height)), RelativeUnit.Relative);
+        //// Ölçekleme faktörü
 
 
 
-
-        Trace.WriteLine(Display.RenderTransformOrigin);
-
-
-
-
-        //const double zoomSpeed = 0.1;
-        //double zoomFactor = e.Delta.Y > 0 ? (1 + zoomSpeed) : 1 / (1 + zoomSpeed);
-
-        //// Calculate the new scale
-        //double newScale = scaleDisplay * zoomFactor;
-
-        //// Limit the scale within certain bounds if necessary
-        //newScale = Math.Max(0.1, Math.Min(10, newScale));
-
-        //// Calculate the translation to keep the mouse position fixed
-        //Vector translation = new Vector(Display.Width / 2 - currentPosition.X, Display.Height / 2 - currentPosition.Y);
-        //translation *= 1 - 1 / zoomFactor;
-
-        //// Apply the scale and translation to the RenderTransform
-        //Display.RenderTransform = new TransformGroup
+        //if (e.Delta.Y > 0)
         //{
-        //    Children =
+        //    scale = scale + 0.1f;
+        //} 
+        //else
         //{
-        //    new TranslateTransform(-translation.X, -translation.Y),
-        //    new ScaleTransform(newScale, newScale),
-        //    new TranslateTransform(translation.X, translation.Y)
+        //    scale = scale - 0.1f;
         //}
-        //};
 
-        //// Update the scale for the next iteration
-        //scaleDisplay = newScale;
+        //if (scale < 0.2f)
+        //{
+        //    scale = 0.2f;
+        //} 
+        //else if (scale > 1.9f)
+        //{
+        //    scale = 1.9f;
+        //}
+        //else
+        //{
+        //    xform.ScaleX = scale;
+        //    xform.ScaleY = scale;
+        //    Display.RenderTransformOrigin = new RelativePoint(position.X / 1920, position.Y / 1080, RelativeUnit.Relative);
+        //}
+
+
+
+
+
+
+
+
+        //var tt = (TranslateTransform)((TransformGroup)Display.RenderTransform)
+        //      .Children.First(tr => tr is TranslateTransform);
+        //tt.X = position.X / 1920;
+        //tt.Y = position.Y / 1080;
+
+        //Display.RenderTransformOrigin = new RelativePoint(position.X / 1920, position.Y / 1080, RelativeUnit.Relative);
+
+
+    }
+
+    public static Avalonia.Matrix ScaleAt(double scaleX, double scaleY, double centerX, double centerY)
+    {
+        return new Avalonia.Matrix(scaleX, 0, 0, scaleY, centerX - (scaleX * centerX), centerY - (scaleY * centerY));
     }
 
 
