@@ -5,7 +5,10 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:views="using:draftio"
 			 x:Class="draftio.ContentView">
-	<Grid ColumnDefinitions="*">
-		<views:DrawingView Grid.Column="0"/>
+	<Grid ColumnDefinitions="*" RowDefinitions="45 *">
+		<Grid Grid.Row="0" Background="LightBlue">
+			<views:TabsView/>
+		</Grid>
+		<views:DrawingView Grid.Row="1" Grid.Column="0"/>
 	</Grid>
 </UserControl>

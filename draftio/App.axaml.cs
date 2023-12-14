@@ -42,6 +42,7 @@ namespace draftio
                     services.AddTransient<DrawingViewModel>();
 
                     services.AddSingleton<RenderManager>();
+                    services.AddSingleton<ProjectManager>();
                     services.AddSingleton<ToolManager>();
                 })
                 .Build();

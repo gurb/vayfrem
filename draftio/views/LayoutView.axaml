@@ -16,9 +16,11 @@
 		<Grid Grid.Row="1" Background="LightGray">
 			<views:ToolbarView/>
 		</Grid>
+
+		
 		
 		<!-- body area-->
-		<Grid Grid.Row="2" Background="WhiteSmoke">
+		<Grid Grid.Row="3" Background="WhiteSmoke">
 			<views:BodyView/>
 		</Grid>
 	</Grid>

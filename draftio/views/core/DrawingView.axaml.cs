@@ -91,6 +91,13 @@ public partial class DrawingView : UserControl
         //timer.Interval = TimeSpan.FromMilliseconds(60);
         //timer.Tick += Timer_Tick;
         //timer.Start();
+        InitZoom();
+    }
+
+
+    private void InitZoom()
+    {
+        
     }
 
     
