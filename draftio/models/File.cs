@@ -16,7 +16,6 @@ namespace draftio.models
 
         public File ()
         {
-
             Type = NodeType.File;
         }
     }

@@ -14,6 +14,7 @@ namespace draftio.viewmodels
     public partial class ProjectTreeViewModel: ObservableObject
     {
         private readonly ProjectManager projectManager;
+        private readonly TabViewModel tabViewModel;
 
 
         [ObservableProperty]
@@ -25,8 +26,10 @@ namespace draftio.viewmodels
 
         public ProjectTreeViewModel() {
             projectManager = App.GetService<ProjectManager>();
+            tabViewModel = App.GetService<TabViewModel>();
 
-            if(projectManager.CurrentProject.RootFolder != null)
+
+            if (projectManager.CurrentProject.RootFolder != null)
             {
                 Nodes.Add(projectManager.CurrentProject.RootFolder);
 
@@ -34,6 +37,8 @@ namespace draftio.viewmodels
                 file.Name = "New";
                 file.ParentFolder = projectManager.CurrentProject.RootFolder;
                 projectManager.CurrentProject.RootFolder.Children.Add(file);
+
+                tabViewModel.AddTab(file);
             }
         }
 
