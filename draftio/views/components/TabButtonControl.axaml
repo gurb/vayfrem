@@ -7,13 +7,19 @@
 
   <Style Selector="controls|TabButtonControl">
     <!-- Set Defaults -->
-	  <Setter Property="Background" Value="{DynamicResource MainColor}" ></Setter> 
-	  
+	<Setter Property="Background" Value="{DynamicResource MainColor}" ></Setter>
+	 <Setter Property="VerticalAlignment" Value="Center"></Setter>  
 	  
     <Setter Property="Template">
       <ControlTemplate>
-        <TextBlock Background="{TemplateBinding Background}" Text="{TemplateBinding Title}" />
-      </ControlTemplate>
+		  <Border Padding="5, 5" Background="{TemplateBinding Background}">
+			  <Grid ColumnDefinitions="*, 10, 10">
+				  <TextBlock Grid.Column="0" Text="{TemplateBinding Title}" />
+				  <TextBlock Grid.Column="1" Text="" />
+				  <TextBlock Grid.Column="2" Text="x" />
+			  </Grid>
+		  </Border>
+	  </ControlTemplate>
     </Setter>
   </Style>
 </Styles>

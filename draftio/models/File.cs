@@ -18,5 +18,11 @@ namespace draftio.models
         {
             Type = NodeType.File;
         }
+
+        public File (string name)
+        {
+            Name = name;
+            Type = NodeType.File;
+        }
     }
 }

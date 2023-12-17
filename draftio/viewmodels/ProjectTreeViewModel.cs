@@ -39,8 +39,23 @@ namespace draftio.viewmodels
                 projectManager.CurrentProject.RootFolder.Children.Add(file);
 
                 tabViewModel.AddTab(file);
-                File test = new File();
-                tabViewModel.AddTab(test);
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("Uzun Bir Proje Başlığı"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+                tabViewModel.AddTab(new File("test"));
+
             }
         }
 
