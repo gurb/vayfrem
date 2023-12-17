@@ -23,7 +23,7 @@ namespace draftio.views.sections
 
         private void ProjectMenu_SizeChanged(object? sender, SizeChangedEventArgs e)
         {
-            DrawCanvas();
+             DrawCanvas();
         }
 
         private void AddButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

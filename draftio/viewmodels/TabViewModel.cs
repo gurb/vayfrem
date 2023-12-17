@@ -1,9 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using draftio.models;
 using draftio.models.enums;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +17,7 @@ namespace draftio.viewmodels
     {
 
         [ObservableProperty]
-        List<Node> nodes = new();
+        ObservableCollection<Node> nodes = new();
 
 
         public TabViewModel() 
