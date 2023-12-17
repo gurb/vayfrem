@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:draftio.viewmodels"
+			 xmlns:components="using:draftio.views.components"
              x:DataType="vm:TabViewModel"
 			 x:CompileBindings="True"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -12,7 +13,7 @@
 			<ListBox ItemsSource="{Binding Nodes}">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
-						<TextBlock FontSize="22" Height="100" Background="Black" Text="fasdf"/>
+						<components:TabButtonControl Title="{Binding Name}"></components:TabButtonControl>
 					</DataTemplate>
 				</ListBox.ItemTemplate>
 			</ListBox>

@@ -6,5 +6,10 @@
 
     <Application.Styles>
         <FluentTheme />
+		<StyleInclude Source="/views/components/TabButtonControl.axaml"></StyleInclude>
     </Application.Styles>
+
+	<Application.Resources>
+		<SolidColorBrush x:Key="MainColor">#bad7f2</SolidColorBrush>
+	</Application.Resources>
 </Application>

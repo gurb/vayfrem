@@ -32,4 +32,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="views\styles\" />
+  </ItemGroup>
 </Project>
