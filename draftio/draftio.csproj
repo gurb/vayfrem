@@ -25,17 +25,16 @@
   <ItemGroup>
 	 <AvaloniaResource Include="assets\**" />
 	 <AvaloniaXaml Remove="components\**" />
+	 <AvaloniaXaml Remove="views\styles\**" />
 	 <Compile Remove="components\**" />
+	 <Compile Remove="views\styles\**" />
 	 <EmbeddedResource Remove="components\**" />
+	 <EmbeddedResource Remove="views\styles\**" />
 	 <None Remove="components\**" />
+	 <None Remove="views\styles\**" />
     <None Update="assets\run.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="views\styles\" />
   </ItemGroup>
 
 

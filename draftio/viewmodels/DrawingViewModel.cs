@@ -1,15 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using draftio.models;
 using draftio.models.dtos;
 using draftio.models.enums;
 using draftio.models.objects;
 using draftio.models.structs;
+using draftio.services;
 using System.Collections.Generic;
 
 namespace draftio.viewmodels
 {
     public partial class DrawingViewModel : ObservableObject
     {
+
         [ObservableProperty]
         List<IObject> objects = new();
 
@@ -19,7 +22,13 @@ namespace draftio.viewmodels
         [ObservableProperty]
         IObject? activeTextObject;
 
-        public DrawingViewModel() { }
+        public delegate void DrawDelegate();
+        public DrawDelegate? drawDelegate;
+
+        public DrawingViewModel() 
+        {
+           
+        }
 
         [RelayCommand]
         public void AddObject(PassData passData)
@@ -57,6 +66,7 @@ namespace draftio.viewmodels
             } 
 
             Objects.Add(canvasObj);
+
         }
 
         private void AddText(PassData passData)
@@ -133,6 +143,17 @@ namespace draftio.viewmodels
                     SelectedObject = null;
                 }
                 CloseEditMode();
+            }
+        }
+
+
+        [RelayCommand]
+        public void ChangeFile(File file)
+        {
+            Objects = file.Objects;
+            if(drawDelegate != null)
+            {
+                drawDelegate.Invoke();
             }
         }
 

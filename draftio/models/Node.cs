@@ -1,4 +1,5 @@
-﻿using draftio.models.enums;
+﻿using Avalonia.Controls;
+using draftio.models.enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,5 +14,7 @@ namespace draftio.models
         public string? Name { get; set; }
         public NodeType Type { get; set; }
         public ObservableCollection<Node> Children { get; set; } = new ObservableCollection<Node>();
+        public bool IsSelected { get; set; } = false;
+        public Control? ConnectedControl { get; set; }
     }
 }

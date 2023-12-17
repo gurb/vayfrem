@@ -45,6 +45,7 @@ public partial class DrawingView : UserControl
     public DrawingView()
     {
         ViewModel = App.GetService<DrawingViewModel>();
+        ViewModel.drawDelegate += draw;
         DataContext = ViewModel;
 
         renderManager = App.GetService<RenderManager>();
@@ -226,6 +227,8 @@ public partial class DrawingView : UserControl
             ViewModel.SelectedObject.Y = lastPosition.Y - moveOffset.Y;
         }
     }
+
+
 
 
     private void draw()

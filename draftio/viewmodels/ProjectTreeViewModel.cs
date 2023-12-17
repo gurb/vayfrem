@@ -15,7 +15,7 @@ namespace draftio.viewmodels
     {
         private readonly ProjectManager projectManager;
         private readonly TabViewModel tabViewModel;
-
+        private readonly DrawingViewModel drawingViewModel;
 
         [ObservableProperty]
         List<Node> nodes = new();
@@ -23,10 +23,14 @@ namespace draftio.viewmodels
         [ObservableProperty]
         Folder? selectedFolder;
 
+        [ObservableProperty]
+        Node selectedNode;
+
 
         public ProjectTreeViewModel() {
             projectManager = App.GetService<ProjectManager>();
             tabViewModel = App.GetService<TabViewModel>();
+            drawingViewModel = App.GetService<DrawingViewModel>();
 
 
             if (projectManager.CurrentProject.RootFolder != null)
@@ -39,10 +43,9 @@ namespace draftio.viewmodels
                 projectManager.CurrentProject.RootFolder.Children.Add(file);
 
                 tabViewModel.AddTab(file);
-               
+                
             }
         }
-
 
         [RelayCommand]
         public void CreatePage()
@@ -73,5 +76,25 @@ namespace draftio.viewmodels
                 tabViewModel.AddTab(file);
             }
         }
+
+        [RelayCommand]
+        public void SetSelected(Node node)
+        {
+            if(SelectedNode != null)
+            {
+                SelectedNode.IsSelected = false;
+            }
+            SelectedNode = node;
+            SelectedNode.IsSelected = true;
+
+            if(node.Type == models.enums.NodeType.File)
+            {
+                drawingViewModel.ChangeFile((File)node);
+            }
+        }
+
+
+
+
     }
 }

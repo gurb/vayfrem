@@ -1,4 +1,5 @@
 ﻿using draftio.models.enums;
+using draftio.models.objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace draftio.models
         public Folder? ParentFolder { get; set; }
         public string? Data { get; set; }
         public string? TabGuid { get; set; }
+        public List<IObject> Objects { get; set; } = new List<IObject>();
 
         public File ()
         {
