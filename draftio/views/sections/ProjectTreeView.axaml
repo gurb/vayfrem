@@ -7,11 +7,22 @@
              x:DataType="vm:ProjectTreeViewModel"
 			 x:CompileBindings="True"
              x:Class="draftio.views.sections.ProjectTreeView">
-	<TreeView ItemsSource="{Binding Nodes}">
+	<Grid RowDefinitions="20, *, 20">
+		<StackPanel Grid.Row="0" Background="Gray"></StackPanel>
+		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible">
+			<StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+				<Canvas x:Name="ProjectMenu" Height="10" Background="Blue"></Canvas>
+			</StackPanel>
+		</ScrollViewer>
+		<StackPanel Grid.Row="2" Background="Gray">
+			<Button Width="50" Padding="0" x:Name="AddButton" HorizontalContentAlignment="Center">+</Button>
+		</StackPanel>
+	</Grid>
+	<!--<TreeView ItemsSource="{Binding Nodes}">
 		<TreeView.ItemTemplate>
 			<TreeDataTemplate ItemsSource="{Binding Children}">
 				<TextBlock Text="{Binding Name}"/>
 			</TreeDataTemplate>
 		</TreeView.ItemTemplate>
-	</TreeView>
+	</TreeView>-->
 </UserControl>

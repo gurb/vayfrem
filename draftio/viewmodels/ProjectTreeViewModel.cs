@@ -39,23 +39,7 @@ namespace draftio.viewmodels
                 projectManager.CurrentProject.RootFolder.Children.Add(file);
 
                 tabViewModel.AddTab(file);
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("Uzun Bir Proje Başlığı"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-                tabViewModel.AddTab(new File("test"));
-
+               
             }
         }
 
@@ -73,6 +57,20 @@ namespace draftio.viewmodels
             else
             {
                 file.ParentFolder = SelectedFolder;
+            }
+        }
+
+        [RelayCommand]
+        public void AddPage()
+        {
+            File file = new File();
+            file.Name = "New";
+            if (projectManager.CurrentProject.RootFolder != null)
+            {
+                file.ParentFolder = projectManager.CurrentProject.RootFolder;
+                projectManager.CurrentProject.RootFolder.Children.Add(file);
+                Nodes.Add(file);
+                tabViewModel.AddTab(file);
             }
         }
     }

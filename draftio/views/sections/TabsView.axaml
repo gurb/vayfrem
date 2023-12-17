@@ -31,7 +31,6 @@
 
 	<ScrollViewer HorizontalScrollBarVisibility="Visible">
 			<ListBox Padding="0" ItemsSource="{Binding Nodes}">
-	
 				<ListBox.ItemsPanel>
 					<ItemsPanelTemplate>
 						<StackPanel Orientation="Horizontal"/>
