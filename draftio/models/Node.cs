@@ -18,5 +18,6 @@ namespace draftio.models
         public bool IsSelected { get; set; } = false;
         public Control? ConnectedControl { get; set; }
         public bool IsVisible { get; set; }
+        public bool IsDrew { get; set; } = false;
     }
 }

@@ -7,7 +7,7 @@
              x:DataType="vm:ProjectTreeViewModel"
 			 x:CompileBindings="True"
              x:Class="draftio.views.sections.ProjectTreeView">
-	<Grid RowDefinitions="20, *, 20">
+	<Grid RowDefinitions="20, *, 30">
 		<StackPanel Grid.Row="0" Background="Gray"></StackPanel>
 		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible">
 			<StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
@@ -15,7 +15,10 @@
 			</StackPanel>
 		</ScrollViewer>
 		<StackPanel Grid.Row="2" Background="Gray">
-			<Button Width="50" Padding="0" x:Name="AddButton" HorizontalContentAlignment="Center">+</Button>
+			<Grid ColumnDefinitions="65, 65, *">
+				<Button Width="65" Grid.Column="0" Padding="0" Margin="5" x:Name="AddFileButton" HorizontalContentAlignment="Center">+ Page</Button>
+				<Button Width="65" Grid.Column="1" Padding="0" Margin="5" x:Name="AddFolderButton" HorizontalContentAlignment="Center">+ Folder</Button>
+			</Grid>
 		</StackPanel>
 	</Grid>
 	<!--<TreeView ItemsSource="{Binding Nodes}">

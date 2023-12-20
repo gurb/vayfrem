@@ -8,6 +8,8 @@ using draftio.models;
 using draftio.models.enums;
 using draftio.viewmodels;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Metrics;
 using System.Drawing;
 using System.Linq;
@@ -25,7 +27,8 @@ namespace draftio.views.sections
 
             InitializeComponent();
 
-            AddButton.Click += AddButton_Click;
+            AddFileButton.Click += AddFileButton_Click;
+            AddFolderButton.Click += AddFolderButton_Click;
             ProjectMenu.SizeChanged += ProjectMenu_SizeChanged;
         }
 
@@ -34,24 +37,48 @@ namespace draftio.views.sections
              DrawCanvas();
         }
 
-        private void AddButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void AddFileButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             ViewModel.AddPage();
             DrawCanvas();
         }
-
-        private void DrawCanvas()
+        private void AddFolderButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            ProjectMenu.Children.Clear();
+            ViewModel.AddFolder();
+            DrawCanvas();
+        }
 
-
-            int counter = 0;
-
-            ProjectMenu.Height = ViewModel.Nodes.Count * 40 + ViewModel.Nodes.Count * 10;
-
-
-            foreach (var node in ViewModel.Nodes)
+        private int DrawCanvas(ObservableCollection<Node>? nodesParam = null, int counterParam = 0)
+        {
+            int counter;
+            ObservableCollection<Node> nodes = new ObservableCollection<Node>();
+            if (nodesParam == null)
             {
+                nodes = ViewModel.Nodes;
+                counter = 0;
+
+                foreach (var node in nodes)
+                {
+                    node.IsDrew = false;
+                }
+
+                ProjectMenu.Children.Clear();
+                ProjectMenu.Height = ViewModel.Nodes.Count * 40 + ViewModel.Nodes.Count * 10;
+            }
+            else
+            {
+                nodes = nodesParam;
+                counter = counterParam;
+            }
+
+
+            foreach (var node in nodes)
+            {
+                if(node.IsDrew)
+                {
+                    continue;
+                }
+
                 Grid? button = MenuButton(node);
 
                 if(button != null)
@@ -73,11 +100,19 @@ namespace draftio.views.sections
 
 
                     ProjectMenu.Children.Add(button);
+                    node.IsDrew = true;
 
                     counter++;
+
+                    if(node.Children.Count > 0)
+                    {
+                        
+                        counter = DrawCanvas(node.Children, counter);
+                    }
                 }
-                
             }
+
+            return counter;
         }
 
         private void Button_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
@@ -152,7 +187,7 @@ namespace draftio.views.sections
             if(node.ParentNode != null)
             {
                 parentCounter++;
-                parentCount(node.ParentNode, counter);
+                return parentCount(node.ParentNode, parentCounter);
             }
 
             return parentCounter;

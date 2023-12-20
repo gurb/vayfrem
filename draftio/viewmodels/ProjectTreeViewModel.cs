@@ -5,6 +5,7 @@ using draftio.models.objects;
 using draftio.services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace draftio.viewmodels
         private readonly DrawingViewModel drawingViewModel;
 
         [ObservableProperty]
-        List<Node> nodes = new();
+        ObservableCollection<Node> nodes = new();
 
         [ObservableProperty]
         Folder? selectedFolder;
@@ -32,9 +33,12 @@ namespace draftio.viewmodels
             tabViewModel = App.GetService<TabViewModel>();
             drawingViewModel = App.GetService<DrawingViewModel>();
 
+           
 
             if (projectManager.CurrentProject.RootFolder != null)
             {
+                SelectedFolder = projectManager.CurrentProject.RootFolder;
+
                 Nodes.Add(projectManager.CurrentProject.RootFolder);
 
                 File file = new File();
@@ -68,12 +72,25 @@ namespace draftio.viewmodels
         {
             File file = new File();
             file.Name = "New";
-            if (projectManager.CurrentProject.RootFolder != null)
+            if (SelectedFolder != null)
             {
-                file.ParentNode = projectManager.CurrentProject.RootFolder;
-                projectManager.CurrentProject.RootFolder.Children.Add(file);
+                file.ParentNode = SelectedFolder;
+                SelectedFolder.Children.Add(file);
                 Nodes.Add(file);
                 tabViewModel.AddTab(file);
+            }
+        }
+
+        [RelayCommand]
+        public void AddFolder()
+        {
+            Folder folder = new Folder();
+            folder.Name = "Folder";
+            if(SelectedFolder != null)
+            {
+                folder.ParentNode = SelectedFolder; ;
+                SelectedFolder.Children.Add(folder);
+                Nodes.Add(folder);
             }
         }
 
@@ -90,6 +107,10 @@ namespace draftio.viewmodels
             if(node.Type == models.enums.NodeType.File)
             {
                 drawingViewModel.ChangeFile((File)node);
+            }
+            if(node.Type == models.enums.NodeType.Folder)
+            {
+                SelectedFolder = (Folder)node;
             }
         }
 
