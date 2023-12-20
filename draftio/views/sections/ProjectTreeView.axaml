@@ -9,9 +9,9 @@
              x:Class="draftio.views.sections.ProjectTreeView">
 	<Grid RowDefinitions="20, *, 30">
 		<StackPanel Grid.Row="0" Background="Gray"></StackPanel>
-		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible">
+		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" Background="White">
 			<StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
-				<Canvas x:Name="ProjectMenu" Height="10" Background="Blue"></Canvas>
+				<Canvas x:Name="ProjectMenu" Height="10" Background="White"></Canvas>
 			</StackPanel>
 		</ScrollViewer>
 		<StackPanel Grid.Row="2" Background="Gray">

@@ -1,18 +1,14 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using draftio.models;
 using draftio.models.enums;
 using draftio.viewmodels;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Metrics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace draftio.views.sections
 {
@@ -74,40 +70,52 @@ namespace draftio.views.sections
 
             foreach (var node in nodes)
             {
-                if(node.IsDrew)
+                if (node.IsVisible == false)
+                {
+                    iterateVisibleNode(node);
+                }
+
+                if (node.IsDrew)
                 {
                     continue;
                 }
+            
 
                 Grid? button = MenuButton(node);
 
                 if(button != null)
                 {
-                    Canvas.SetLeft(button, parentCount(node) * 10);
-                    Canvas.SetTop(button, counter * 40 + 10);
+                    Canvas.SetLeft(button, parentCount(node) * 20);
+                    Canvas.SetTop(button, counter * 26);
                     node.ConnectedControl = button;
                     button.PointerPressed += Button_PointerPressed;
 
-                    if (node.IsSelected)
-                    {
-                        button.Background = Avalonia.Media.Brushes.Red;
-                    }
-
-                    if (node.IsVisible)
-                    {
-                        // show children in tree menu
-                    }
-
 
                     ProjectMenu.Children.Add(button);
+
+                    if (node.IsSelected)
+                    {
+                        Avalonia.Controls.Shapes.Rectangle hover = new Avalonia.Controls.Shapes.Rectangle();
+                        hover.Fill = new SolidColorBrush(Avalonia.Media.Color.FromArgb(100, 100, 100, 100));
+                        hover.Stroke = Avalonia.Media.Brushes.Gray;
+                        hover.StrokeThickness = 2;
+                        hover.Width = ProjectMenu.Bounds.Width;
+                        hover.Height = 26;
+                        hover.IsEnabled = false;
+                        Canvas.SetLeft(hover, 0);
+                        Canvas.SetTop(hover, counter * 26);
+                        ProjectMenu.Children.Add(hover);
+                    }
+
                     node.IsDrew = true;
 
                     counter++;
 
                     if(node.Children.Count > 0)
                     {
-                        
+                       
                         counter = DrawCanvas(node.Children, counter);
+                        
                     }
                 }
             }
@@ -131,6 +139,7 @@ namespace draftio.views.sections
             }
         }
 
+
         private Grid? MenuButton(Node node)
         {
             Grid grid = new Grid();
@@ -139,20 +148,36 @@ namespace draftio.views.sections
             {
                 grid.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
                 grid.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
-                grid.Height = 30;
-                grid.Background = Avalonia.Media.Brushes.Aqua;
+                grid.Height = 25;
+                grid.Background = Avalonia.Media.Brushes.White;
                 grid.Width = ProjectMenu.Bounds.Width;
                 grid.ColumnDefinitions = new ColumnDefinitions("25, 25, *");
 
-                Avalonia.Controls.Shapes.Rectangle caret = new Avalonia.Controls.Shapes.Rectangle();
-                caret.Width = 25;
-                caret.Height = 25;
-                caret.Fill = new ImageBrush(new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/caret.png"))));
-                Grid.SetColumn(caret, 0);
-                grid.Children.Add(caret);
+
+                if(node.Type == NodeType.Folder)
+                {
+                    Avalonia.Controls.Shapes.Rectangle caret = new Avalonia.Controls.Shapes.Rectangle();
+                    caret.Width = 16;
+                    caret.Height = 16;
+                    caret.PointerPressed += Caret_PointerPressed;
+                    node.CaretControl = caret;
+                    if (node.IsVisible)
+                    {
+                        caret.Fill = new ImageBrush(new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/careton.png"))));
+                    }
+                    else
+                    {
+                        caret.Fill = new ImageBrush(new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/caret.png"))));
+                    }
+
+                    Grid.SetColumn(caret, 0);
+                    grid.Children.Add(caret);
+                }
 
                 Avalonia.Controls.Image icon = new Avalonia.Controls.Image();
-                if(node.Type == NodeType.File)
+                icon.Width = 20;
+                icon.Height = 20;
+                if (node.Type == NodeType.File)
                 {
                     icon.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/file.png")));
                 }
@@ -165,8 +190,9 @@ namespace draftio.views.sections
 
                 Label textBlock = new Label();
                 textBlock.Content = "Text";
-                textBlock.Height = 25;
-                textBlock.Background = Avalonia.Media.Brushes.White;
+                textBlock.Height = 20;
+                textBlock.FontSize = 12;
+                textBlock.Background = Avalonia.Media.Brushes.Transparent;
                 textBlock.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
                 textBlock.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
 
@@ -178,6 +204,34 @@ namespace draftio.views.sections
 
             return grid;
         }
+
+        private void Caret_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+        {
+            var point = e.GetCurrentPoint(sender as Control);
+
+            if (point.Properties.IsLeftButtonPressed)
+            {
+                var node = ViewModel.Nodes.Where(x => x.CaretControl == sender as Control).FirstOrDefault();
+
+                if (node != null)
+                {
+                    node.IsVisible = !node.IsVisible;
+                    
+                    DrawCanvas();
+                }
+            }
+        }
+
+
+        private void iterateVisibleNode (Node node)
+        {
+            foreach (var child in node.Children)
+            {
+                child.IsDrew = true;
+
+                iterateVisibleNode(child);
+            }
+        } 
 
 
         private int parentCount(Node node, int counter = 0)
@@ -193,8 +247,5 @@ namespace draftio.views.sections
             return parentCounter;
 
         }
-
-
-        
     }
 }
