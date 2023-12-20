@@ -59,7 +59,7 @@ namespace draftio.views.sections
                 }
 
                 ProjectMenu.Children.Clear();
-                ProjectMenu.Height = ViewModel.Nodes.Count * 40 + ViewModel.Nodes.Count * 10;
+                ProjectMenu.Height = ViewModel.Nodes.Count * 26;
             }
             else
             {
