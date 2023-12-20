@@ -39,7 +39,7 @@ namespace draftio.viewmodels
 
                 File file = new File();
                 file.Name = "New";
-                file.ParentFolder = projectManager.CurrentProject.RootFolder;
+                file.ParentNode = projectManager.CurrentProject.RootFolder;
                 projectManager.CurrentProject.RootFolder.Children.Add(file);
 
                 tabViewModel.AddTab(file);
@@ -55,11 +55,11 @@ namespace draftio.viewmodels
 
             if(SelectedFolder == null)
             {
-                file.ParentFolder = projectManager.CurrentProject.RootFolder;
+                file.ParentNode = projectManager.CurrentProject.RootFolder;
             }
             else
             {
-                file.ParentFolder = SelectedFolder;
+                file.ParentNode = SelectedFolder;
             }
         }
 
@@ -70,7 +70,7 @@ namespace draftio.viewmodels
             file.Name = "New";
             if (projectManager.CurrentProject.RootFolder != null)
             {
-                file.ParentFolder = projectManager.CurrentProject.RootFolder;
+                file.ParentNode = projectManager.CurrentProject.RootFolder;
                 projectManager.CurrentProject.RootFolder.Children.Add(file);
                 Nodes.Add(file);
                 tabViewModel.AddTab(file);

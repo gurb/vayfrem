@@ -11,7 +11,6 @@ namespace draftio.models
     public class File: Node
     {
         public FileType FileType { get; set; }
-        public Folder? ParentFolder { get; set; }
         public string? Data { get; set; }
         public string? TabGuid { get; set; }
         public List<IObject> Objects { get; set; } = new List<IObject>();

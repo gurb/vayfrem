@@ -5,6 +5,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using draftio.models;
+using draftio.models.enums;
 using draftio.viewmodels;
 using System;
 using System.Diagnostics.Metrics;
@@ -51,21 +52,31 @@ namespace draftio.views.sections
 
             foreach (var node in ViewModel.Nodes)
             {
-                Grid button = MenuButton();
-                Canvas.SetLeft(button, 0);
-                Canvas.SetTop(button, counter * 40 + 10);
-                node.ConnectedControl = button;
-                button.PointerPressed += Button_PointerPressed;
-                
-                if(node.IsSelected)
+                Grid? button = MenuButton(node);
+
+                if(button != null)
                 {
-                    button.Background = Avalonia.Media.Brushes.Red;
+                    Canvas.SetLeft(button, parentCount(node) * 10);
+                    Canvas.SetTop(button, counter * 40 + 10);
+                    node.ConnectedControl = button;
+                    button.PointerPressed += Button_PointerPressed;
+
+                    if (node.IsSelected)
+                    {
+                        button.Background = Avalonia.Media.Brushes.Red;
+                    }
+
+                    if (node.IsVisible)
+                    {
+                        // show children in tree menu
+                    }
+
+
+                    ProjectMenu.Children.Add(button);
+
+                    counter++;
                 }
-
-
-                ProjectMenu.Children.Add(button);
-
-                counter++;
+                
             }
         }
 
@@ -85,9 +96,7 @@ namespace draftio.views.sections
             }
         }
 
-
-
-        private Grid MenuButton()
+        private Grid? MenuButton(Node node)
         {
             Grid grid = new Grid();
 
@@ -108,7 +117,14 @@ namespace draftio.views.sections
                 grid.Children.Add(caret);
 
                 Avalonia.Controls.Image icon = new Avalonia.Controls.Image();
-                icon.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/file.png")));
+                if(node.Type == NodeType.File)
+                {
+                    icon.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/file.png")));
+                }
+                if (node.Type == NodeType.Folder)
+                {
+                    icon.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/folder.png")));
+                }
                 Grid.SetColumn(icon, 1);
                 grid.Children.Add(icon);
 
@@ -126,6 +142,21 @@ namespace draftio.views.sections
 
 
             return grid;
+        }
+
+
+        private int parentCount(Node node, int counter = 0)
+        {
+            int parentCounter = counter;
+
+            if(node.ParentNode != null)
+            {
+                parentCounter++;
+                parentCount(node.ParentNode, counter);
+            }
+
+            return parentCounter;
+
         }
 
 

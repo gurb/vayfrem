@@ -13,8 +13,10 @@ namespace draftio.models
     {
         public string? Name { get; set; }
         public NodeType Type { get; set; }
+        public Node? ParentNode { get; set; }
         public ObservableCollection<Node> Children { get; set; } = new ObservableCollection<Node>();
         public bool IsSelected { get; set; } = false;
         public Control? ConnectedControl { get; set; }
+        public bool IsVisible { get; set; }
     }
 }
