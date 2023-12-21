@@ -16,8 +16,10 @@ namespace draftio.models
         public Node? ParentNode { get; set; }
         public ObservableCollection<Node> Children { get; set; } = new ObservableCollection<Node>();
         public bool IsSelected { get; set; } = false;
-        public Control? ConnectedControl { get; set; }
+        public Control? ConnectedMenuControl { get; set; }
+        public Control? ConnectedTabControl { get; set; }
         public Control? CaretControl { get; set; }
+        public Control? CloseControl { get; set; }
         public bool IsVisible { get; set; } = true;
         public bool IsDrew { get; set; } = false;
     }

@@ -33,20 +33,18 @@ namespace draftio.viewmodels
             tabViewModel = App.GetService<TabViewModel>();
             drawingViewModel = App.GetService<DrawingViewModel>();
 
-           
-
             if (projectManager.CurrentProject.RootFolder != null)
             {
                 SelectedFolder = projectManager.CurrentProject.RootFolder;
 
                 Nodes.Add(projectManager.CurrentProject.RootFolder);
 
-                File file = new File();
-                file.Name = "New";
-                file.ParentNode = projectManager.CurrentProject.RootFolder;
-                projectManager.CurrentProject.RootFolder.Children.Add(file);
+                //File file = new File();
+                //file.Name = "New";
+                //file.ParentNode = projectManager.CurrentProject.RootFolder;
+                //projectManager.CurrentProject.RootFolder.Children.Add(file);
 
-                tabViewModel.AddTab(file);
+                //tabViewModel.AddTab(file);
                 
             }
         }
@@ -94,6 +92,19 @@ namespace draftio.viewmodels
             }
         }
 
+
+        [RelayCommand]
+        public void SetSelectedHover(Node node)
+        {
+            if (SelectedNode != null)
+            {
+                SelectedNode.IsSelected = false;
+            }
+            SelectedNode = node;
+            SelectedNode.IsSelected = true;
+
+        }
+
         [RelayCommand]
         public void SetSelected(Node node)
         {
@@ -104,9 +115,19 @@ namespace draftio.viewmodels
             SelectedNode = node;
             SelectedNode.IsSelected = true;
 
+            tabViewModel.SetSelectedOnly(node);
+
             if(node.Type == models.enums.NodeType.File)
             {
                 drawingViewModel.ChangeFile((File)node);
+
+                // if tab nodes does not contain selected node in tab view canvas, add it
+                var temp = tabViewModel.Nodes.FirstOrDefault(x => x == node);
+                if(temp == null)
+                {
+                    tabViewModel.AddTab(node);
+                }
+
             }
             if(node.Type == models.enums.NodeType.Folder)
             {
@@ -117,5 +138,17 @@ namespace draftio.viewmodels
 
 
 
+        //[RelayCommand]
+        //public void RemoveNode(Node node)
+        //{
+        //    Folder folder = new Folder();
+        //    folder.Name = "Folder";
+        //    if (SelectedFolder != null)
+        //    {
+        //        folder.ParentNode = SelectedFolder; ;
+        //        SelectedFolder.Children.Add(folder);
+        //        Nodes.Add(folder);
+        //    }
+        //}
     }
 }

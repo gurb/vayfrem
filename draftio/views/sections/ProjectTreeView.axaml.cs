@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Platform;
 using draftio.models;
@@ -15,6 +16,9 @@ namespace draftio.views.sections
     public partial class ProjectTreeView : UserControl
     {
         ProjectTreeViewModel ViewModel { get; set; }
+
+        TimeSpan lastClickTime = new TimeSpan();
+        Node? lastClickNode;
         
         public ProjectTreeView()
         {
@@ -87,9 +91,8 @@ namespace draftio.views.sections
                 {
                     Canvas.SetLeft(button, parentCount(node) * 20);
                     Canvas.SetTop(button, counter * 26);
-                    node.ConnectedControl = button;
+                    node.ConnectedMenuControl = button;
                     button.PointerPressed += Button_PointerPressed;
-
 
                     ProjectMenu.Children.Add(button);
 
@@ -129,14 +132,31 @@ namespace draftio.views.sections
 
             if (point.Properties.IsLeftButtonPressed)
             {
-                var node = ViewModel.Nodes.Where(x => x.ConnectedControl == sender as Control).FirstOrDefault();
 
-                if(node != null)
+                var node = ViewModel.Nodes.Where(x => x.ConnectedMenuControl == sender as Control).FirstOrDefault();
+
+
+
+                TimeSpan timeSinceLastClick = DateTime.Now.TimeOfDay - lastClickTime;
+                if (timeSinceLastClick.TotalMilliseconds < 300 && lastClickNode == node)
                 {
                     ViewModel.SetSelected(node);
+                }
+                lastClickTime = DateTime.Now.TimeOfDay;
+
+
+                if (node != null)
+                {
+                    ViewModel.SetSelectedHover(node);
+                    lastClickNode = node;
                     DrawCanvas();
                 }
+
+                
+
             }
+
+            
         }
 
 
@@ -189,7 +209,7 @@ namespace draftio.views.sections
                 grid.Children.Add(icon);
 
                 Label textBlock = new Label();
-                textBlock.Content = "Text";
+                textBlock.Content = node.Name;
                 textBlock.Height = 20;
                 textBlock.FontSize = 12;
                 textBlock.Background = Avalonia.Media.Brushes.Transparent;

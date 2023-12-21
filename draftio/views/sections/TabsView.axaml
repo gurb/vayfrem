@@ -10,37 +10,12 @@
              x:Class="draftio.TabsView">
 
 
-	<UserControl.Styles>
-		<Style Selector="ListBoxItem">
-			<Setter Property="Padding" Value="0"></Setter>
-			<Setter Property="Margin" Value="2 0"></Setter>
-			<Setter Property="Height" Value="35"></Setter>
-			<Setter Property="VerticalAlignment" Value="Center"></Setter>
-			<!--<Setter Property="Height" Value="{Binding ListBoxItemHeight}"></Setter>-->
-		</Style>
-		<Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
-			<Setter Property="Background" Value="Transparent"></Setter>
-		</Style>
-		<Style Selector="ListBoxItem:selected /template/ ContentPresenter">
-			<Setter Property="Background" Value="Transparent"></Setter>
-		</Style>
-		<Style Selector="ListBoxItem:focus /template/ ContentPresenter">
-			<Setter Property="Background" Value="Transparent"></Setter>
-		</Style>
-	</UserControl.Styles>
-
-	<ScrollViewer HorizontalScrollBarVisibility="Visible">
-			<ListBox Padding="0" ItemsSource="{Binding Nodes}">
-				<ListBox.ItemsPanel>
-					<ItemsPanelTemplate>
-						<StackPanel Orientation="Horizontal"/>
-					</ItemsPanelTemplate>
-				</ListBox.ItemsPanel>
-				<ListBox.ItemTemplate>
-					<DataTemplate>
-						<components:TabButtonControl Title="{Binding Name}"></components:TabButtonControl>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
-	</ScrollViewer>
+	<Grid ColumnDefinitions="*">
+		<ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Visible" Background="White">
+			<StackPanel VerticalAlignment="Stretch" Orientation="Horizontal">
+				<Canvas x:Name="TabMenu" Height="45" Background="White"></Canvas>
+			</StackPanel>
+		</ScrollViewer>
+	</Grid>
+	
 </UserControl>
