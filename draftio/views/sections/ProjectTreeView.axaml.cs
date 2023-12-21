@@ -135,10 +135,8 @@ namespace draftio.views.sections
 
                 var node = ViewModel.Nodes.Where(x => x.ConnectedMenuControl == sender as Control).FirstOrDefault();
 
-
-
                 TimeSpan timeSinceLastClick = DateTime.Now.TimeOfDay - lastClickTime;
-                if (timeSinceLastClick.TotalMilliseconds < 300 && lastClickNode == node)
+                if (node != null && node.Type == NodeType.File && timeSinceLastClick.TotalMilliseconds < 300 && lastClickNode == node)
                 {
                     ViewModel.SetSelected(node);
                 }
@@ -147,18 +145,20 @@ namespace draftio.views.sections
 
                 if (node != null)
                 {
-                    ViewModel.SetSelectedHover(node);
+                    if(node.Type == NodeType.Folder)
+                    {
+                        ViewModel.SetSelected(node);
+                    }
+                    else
+                    {
+                        ViewModel.SetSelectedHover(node);
+                    }
+
                     lastClickNode = node;
                     DrawCanvas();
                 }
-
-                
-
             }
-
-            
         }
-
 
         private Grid? MenuButton(Node node)
         {

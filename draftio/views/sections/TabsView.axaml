@@ -13,6 +13,7 @@
 	<Grid ColumnDefinitions="*">
 		<ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Visible" Background="White">
 			<StackPanel VerticalAlignment="Stretch" Orientation="Horizontal">
+			
 				<Canvas x:Name="TabMenu" Height="45" Background="White"></Canvas>
 			</StackPanel>
 		</ScrollViewer>

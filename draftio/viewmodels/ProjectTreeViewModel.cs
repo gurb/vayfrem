@@ -45,7 +45,6 @@ namespace draftio.viewmodels
                 //projectManager.CurrentProject.RootFolder.Children.Add(file);
 
                 //tabViewModel.AddTab(file);
-                
             }
         }
 
@@ -108,12 +107,21 @@ namespace draftio.viewmodels
         [RelayCommand]
         public void SetSelected(Node node)
         {
+            if(node == null)
+            {
+                return;
+            }
+
             if(SelectedNode != null)
             {
                 SelectedNode.IsSelected = false;
+
+               
             }
+
             SelectedNode = node;
             SelectedNode.IsSelected = true;
+
 
             tabViewModel.SetSelectedOnly(node);
 
