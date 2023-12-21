@@ -44,13 +44,12 @@ public partial class TabsView : UserControl
         }
 
 
-
         foreach (var node in ViewModel.Nodes)
         {
 
             Border? button = TabButton(node);
 
-            Canvas.SetLeft(button, (counter * button.Width) + counter * 10);
+            Canvas.SetLeft(button, (counter * button.Width) + counter * 4);
             Canvas.SetTop(button, 5);
             node.ConnectedTabControl = button;
             button.PointerPressed += Button_PointerPressed;
@@ -59,6 +58,8 @@ public partial class TabsView : UserControl
             if(ViewModel.SelectedNode == node)
             {
                 button.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(100, 100, 100, 100));
+                button.BorderBrush = Brushes.Gray;
+                button.BorderThickness = new Avalonia.Thickness(2, 2, 2, 0);
             }
 
             TabMenu.Children.Add(button);
@@ -89,7 +90,7 @@ public partial class TabsView : UserControl
         foreach (var node in ViewModel.Nodes)
         {
             width += node.Name.Length * 10 + 50;
-            width += 10; 
+            width += 4; 
         }
 
         return width;
@@ -98,9 +99,9 @@ public partial class TabsView : UserControl
     private Border TabButton(Node node)
     {
         Border border = new Border();
-        border.CornerRadius = new Avalonia.CornerRadius(4);
-        border.BorderBrush = Brushes.Gray;
-        border.BorderThickness = new Avalonia.Thickness(1);
+        border.CornerRadius = new Avalonia.CornerRadius(1);
+        border.BorderBrush = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 200, 200, 200));
+        border.BorderThickness = new Avalonia.Thickness(1, 1, 1, 0);
         border.Width = node.Name.Length * 10 + 50;
 
         Grid grid = new Grid();
@@ -116,9 +117,11 @@ public partial class TabsView : UserControl
         Label textBlock = new Label();
         textBlock.Content = node.Name;
         textBlock.Height = 20;
-        textBlock.FontSize = 12;
+        textBlock.FontSize = (ViewModel.SelectedNode != null && ViewModel.SelectedNode == node) ? 12 : 12;
+        textBlock.FontWeight = (ViewModel.SelectedNode != null && ViewModel.SelectedNode == node) ? FontWeight.Bold : FontWeight.Normal;
         textBlock.Margin = new Avalonia.Thickness(10, 0,0,0);
         textBlock.Background = Avalonia.Media.Brushes.Transparent;
+        textBlock.Foreground = (ViewModel.SelectedNode != null && ViewModel.SelectedNode == node) ? Brushes.Black : new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 150, 150, 150));
         textBlock.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         textBlock.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
         Grid.SetColumn(textBlock, 0);

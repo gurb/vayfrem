@@ -7,7 +7,7 @@
              x:Class="draftio.BodyView">
 	<Grid ColumnDefinitions="3*, 4, *">
 		<views:ContentView Grid.Column="0" />
-		<GridSplitter Grid.Column="1" Background="Black" ResizeDirection="Columns"/>
+		<GridSplitter Grid.Column="1" Background="LightGray" ResizeDirection="Columns"/>
 		<views:SidebarView Grid.Column="2" />
 	</Grid>
 </UserControl>

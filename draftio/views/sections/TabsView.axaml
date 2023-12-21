@@ -9,11 +9,34 @@
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="draftio.TabsView">
 
+	
+
 
 	<Grid ColumnDefinitions="*">
-		<ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Visible" Background="White"  x:Name="TabMenuScrollParent">
+		<ScrollViewer AllowAutoHide="False" Grid.Column="0" HorizontalScrollBarVisibility="Visible" Background="White"  x:Name="TabMenuScrollParent">
+			<ScrollViewer.Styles>
+				<Style Selector="ScrollBar /template/ RepeatButton">
+					<Setter Property="IsVisible" Value="False"/>
+				</Style>
+				<Style Selector="ScrollBar[IsExpanded=true] /template/ Border">
+					<Setter Property="Height" Value="5"></Setter>
+					<Setter Property="ClipToBounds" Value="True"/>
+					<Setter Property="CornerRadius" Value="2"/>
+				</Style>
+				<Style Selector="ScrollBar[IsExpanded=true] /template/ Rectangle">
+					<Setter Property="Fill" Value="#fff"/>
+				</Style>
+				<Style Selector="ScrollBar[IsExpanded=true] /template/ Thumb">
+					<Setter Property="Background" Value="#ccc"/>
+					<Setter Property="Cursor" Value="Hand"/>
+				</Style>
+				<Style Selector="ScrollBar[IsExpanded=true] /template/ Thumb /template/ Border">
+					<Setter Property="ClipToBounds" Value="True"/>
+					<Setter Property="CornerRadius" Value="2"/>
+					<Setter Property="Height" Value="4"/>
+				</Style>
+			</ScrollViewer.Styles>
 			<StackPanel VerticalAlignment="Stretch" Orientation="Horizontal">
-			
 				<Canvas x:Name="TabMenu" Height="45" Background="White"></Canvas>
 			</StackPanel>
 		</ScrollViewer>

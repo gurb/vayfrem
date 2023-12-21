@@ -36,8 +36,8 @@ namespace draftio.views.sections
 
         private void setStyle ()
         {
-            projectMenuHeader.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 184, 188, 189));
-            projectMenuFooter.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 184, 188, 189));
+            projectMenuHeader.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 204, 208, 209));
+            projectMenuFooter.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 204, 208, 209));
         }
 
         private void ProjectMenu_SizeChanged(object? sender, SizeChangedEventArgs e)
