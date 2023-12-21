@@ -34,11 +34,16 @@ public partial class TabsView : UserControl
         TabMenu.Children.Clear();
 
         double tabMenuWidth = CalcTabMenuWidth();
-        if(TabMenu.Bounds.Width < tabMenuWidth)
+        if(TabMenuScrollParent.Bounds.Width < tabMenuWidth)
         {
             TabMenu.Width = tabMenuWidth;
+        } 
+        else
+        {
+            TabMenu.Width = TabMenuScrollParent.Bounds.Width;
         }
-        
+
+
 
         foreach (var node in ViewModel.Nodes)
         {
@@ -83,7 +88,7 @@ public partial class TabsView : UserControl
         double width = 0;
         foreach (var node in ViewModel.Nodes)
         {
-            width += "Text".Length * 10 + 30;
+            width += node.Name.Length * 10 + 50;
             width += 10; 
         }
 

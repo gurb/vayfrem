@@ -30,6 +30,14 @@ namespace draftio.views.sections
             AddFileButton.Click += AddFileButton_Click;
             AddFolderButton.Click += AddFolderButton_Click;
             ProjectMenu.SizeChanged += ProjectMenu_SizeChanged;
+
+            setStyle();
+        }
+
+        private void setStyle ()
+        {
+            projectMenuHeader.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 184, 188, 189));
+            projectMenuFooter.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 184, 188, 189));
         }
 
         private void ProjectMenu_SizeChanged(object? sender, SizeChangedEventArgs e)
