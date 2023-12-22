@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Platform;
@@ -15,6 +16,9 @@ public partial class TabsView : UserControl
     TabViewModel ViewModel { get; set; }
     ProjectTreeViewModel projectViewModel { get; set; }
 
+    LinearGradientBrush tabButtonBgGradient;
+    SolidColorBrush tabButtonBg;
+
 
     public TabsView()
     {
@@ -25,6 +29,31 @@ public partial class TabsView : UserControl
         DataContext = ViewModel;
 
         InitializeComponent();
+
+        SetStyle();
+    }
+
+    private void SetStyle()
+    {
+        TabMenu.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 237, 236, 235));
+
+        SetColors();
+    }
+
+    private void SetColors ()
+    {
+        tabButtonBgGradient = new LinearGradientBrush
+        {
+            GradientStops = new GradientStops
+                {
+                    new GradientStop(Color.FromRgb(237, 236, 234), 0),  
+                    new GradientStop(Color.FromRgb(225, 225, 220), 1)   
+                },
+            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),  
+            EndPoint = new RelativePoint(0, 1, RelativeUnit.Relative)    
+        };
+
+        tabButtonBg = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 225, 225, 220));
     }
 
     private void DrawCanvas()
@@ -57,7 +86,7 @@ public partial class TabsView : UserControl
 
             if(ViewModel.SelectedNode == node)
             {
-                button.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(100, 100, 100, 100));
+                //button.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 100, 100, 100));
                 button.BorderBrush = Brushes.Gray;
                 button.BorderThickness = new Avalonia.Thickness(2, 2, 2, 0);
             }
@@ -108,7 +137,7 @@ public partial class TabsView : UserControl
         grid.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         grid.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
         grid.Height = 25;
-        grid.Background = Avalonia.Media.Brushes.Transparent;
+        grid.Background = (ViewModel.SelectedNode != null && ViewModel.SelectedNode == node) ? Brushes.White  : tabButtonBg;
         grid.Width = node.Name.Length * 10 + 50;
         string textWidth = ((node.Name.Length * 10) + 25).ToString();
         grid.ColumnDefinitions = new ColumnDefinitions($"{textWidth}, 30");
@@ -121,7 +150,7 @@ public partial class TabsView : UserControl
         textBlock.FontWeight = (ViewModel.SelectedNode != null && ViewModel.SelectedNode == node) ? FontWeight.Bold : FontWeight.Normal;
         textBlock.Margin = new Avalonia.Thickness(10, 0,0,0);
         textBlock.Background = Avalonia.Media.Brushes.Transparent;
-        textBlock.Foreground = (ViewModel.SelectedNode != null && ViewModel.SelectedNode == node) ? Brushes.Black : new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 150, 150, 150));
+        textBlock.Foreground = (ViewModel.SelectedNode != null && ViewModel.SelectedNode == node) ? Brushes.Black : new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 75, 75, 75));
         textBlock.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         textBlock.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
         Grid.SetColumn(textBlock, 0);

@@ -13,7 +13,7 @@
 
 
 	<Grid ColumnDefinitions="*">
-		<ScrollViewer AllowAutoHide="False" Grid.Column="0" HorizontalScrollBarVisibility="Visible" Background="White"  x:Name="TabMenuScrollParent">
+		<ScrollViewer AllowAutoHide="False" Grid.Column="0" HorizontalScrollBarVisibility="Visible" Background="LightGray"  x:Name="TabMenuScrollParent">
 			<ScrollViewer.Styles>
 				<Style Selector="ScrollBar /template/ RepeatButton">
 					<Setter Property="IsVisible" Value="False"/>
@@ -24,7 +24,7 @@
 					<Setter Property="CornerRadius" Value="2"/>
 				</Style>
 				<Style Selector="ScrollBar[IsExpanded=true] /template/ Rectangle">
-					<Setter Property="Fill" Value="#fff"/>
+					<Setter Property="Fill" Value="#EBECED"/>
 				</Style>
 				<Style Selector="ScrollBar[IsExpanded=true] /template/ Thumb">
 					<Setter Property="Background" Value="#ccc"/>
