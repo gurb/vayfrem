@@ -22,6 +22,9 @@ namespace draftio.viewmodels
         [ObservableProperty]
         ObservableCollection<Node> nodes = new();
 
+
+        List<Node> lastOpenedNodes = new List<Node>();
+
         [ObservableProperty]
         Node? selectedNode;
 
@@ -40,18 +43,21 @@ namespace draftio.viewmodels
             if(node.Type == NodeType.File)
             {
                 Nodes.Add(node);
-                if (drawDelegate != null)
-                {
-                    drawDelegate.Invoke();
-                }
+                lastOpenedNodes.Add(node);
+                
+                SetSelected(node);
+                SetSelectedOnly(node);
             }
         }
 
         [RelayCommand]
         public void SetSelected(Node node)
         {
-            
+            drawingViewModel.SetEmptyState(false);
+
             SelectedNode = node;
+
+            lastOpenedNodes.Add(node);
 
             if (node.Type == models.enums.NodeType.File)
             {
@@ -62,7 +68,12 @@ namespace draftio.viewmodels
         [RelayCommand]
         public void SetSelectedOnly(Node node)
         {
+            drawingViewModel.SetEmptyState(false);
+
             SelectedNode = node;
+            
+            lastOpenedNodes.Add(node);
+
             if (drawDelegate != null)
             {
                 drawDelegate.Invoke();
@@ -72,11 +83,41 @@ namespace draftio.viewmodels
         [RelayCommand]
         public void RemoveNode(Node node)
         {
+            Predicate<Node> predicate = (x => x == node);
+
+            lastOpenedNodes.RemoveAll(predicate);
+
+            if (node == SelectedNode)
+            {
+                if(lastOpenedNodes.Count > 0)
+                {
+                    SetSelectedOnly(lastOpenedNodes.Last());
+                }
+                else if (Nodes.Count > 0)
+                {
+                    SetSelectedOnly(Nodes.Last());
+                }
+
+            } 
+           
             Nodes.Remove(node);
             if (drawDelegate != null)
             {
                 drawDelegate.Invoke();
             }
+
+            if(SelectedNode != null && SelectedNode.Type == NodeType.File)
+            {
+                drawingViewModel.ChangeFile((File)SelectedNode);
+            } 
+            
+
+            if(Nodes.Count == 0)
+            {
+                // state is empty
+                drawingViewModel.SetEmptyState(true);
+            }
+
         }
     }
 }

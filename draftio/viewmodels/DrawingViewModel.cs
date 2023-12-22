@@ -22,6 +22,9 @@ namespace draftio.viewmodels
         [ObservableProperty]
         IObject? activeTextObject;
 
+        [ObservableProperty]
+        bool isEmpty = true;
+
         public delegate void DrawDelegate();
         public DrawDelegate? drawDelegate;
 
@@ -157,7 +160,6 @@ namespace draftio.viewmodels
             }
         }
 
-
         private void CloseEditMode()
         {
             if(ActiveTextObject != null)
@@ -165,6 +167,17 @@ namespace draftio.viewmodels
                 TextObj obj = (TextObj)ActiveTextObject;
                 obj.IsEditMode = false;
                 ActiveTextObject = null;
+            }
+        }
+
+        [RelayCommand]
+        public void SetEmptyState(bool isEmpty)
+        {
+            IsEmpty = isEmpty;
+
+            if (drawDelegate != null)
+            {
+                drawDelegate.Invoke();
             }
         }
     }

@@ -74,6 +74,8 @@ public partial class DrawingView : UserControl
 
         Display.PointerWheelChanged += DisplayZoom_OnPointerWheelChanged;
 
+        Display.IsVisible = false;
+
 
 
         // new ----------------------------------
@@ -229,15 +231,20 @@ public partial class DrawingView : UserControl
     }
 
 
-
-
     private void draw()
     {
         Display.Children.Clear();
-        Display.Children.Add(Overlay);
 
+        if(!ViewModel.IsEmpty)
+        {
+            Display.IsVisible = true;
+            Display.Children.Add(Overlay);
 
-        renderManager.Render(Display, ViewModel.Objects);
+            renderManager.Render(Display, ViewModel.Objects);
+        } else
+        {
+            Display.IsVisible = false;
+        }
     }
 
     private Avalonia.Point lastMousePosition = new Avalonia.Point(0, 0);

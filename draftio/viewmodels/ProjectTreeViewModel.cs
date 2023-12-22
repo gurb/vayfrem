@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using draftio.models;
 using draftio.models.objects;
@@ -68,7 +69,7 @@ namespace draftio.viewmodels
         public void AddPage()
         {
             File file = new File();
-            file.Name = "New";
+            file.Name = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
             if (SelectedFolder != null)
             {
                 file.ParentNode = SelectedFolder;
@@ -123,10 +124,10 @@ namespace draftio.viewmodels
             SelectedNode.IsSelected = true;
 
 
-            tabViewModel.SetSelectedOnly(node);
-
             if(node.Type == models.enums.NodeType.File)
             {
+                tabViewModel.SetSelectedOnly(node);
+
                 drawingViewModel.ChangeFile((File)node);
 
                 // if tab nodes does not contain selected node in tab view canvas, add it
