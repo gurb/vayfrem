@@ -14,7 +14,7 @@
 		
 		<!-- header 2 area -->
 		<Grid Grid.Row="1" Background="LightGray">
-			<views:ToolbarView/>
+			<views:ShortsView/>
 		</Grid>
 
 		

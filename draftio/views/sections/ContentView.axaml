@@ -9,6 +9,9 @@
 		<Grid Grid.Row="0" Background="LightBlue">
 			<views:TabsView/>
 		</Grid>
-		<views:DrawingView Grid.Row="1" Grid.Column="0"/>
+		<Grid Grid.Row="1" ColumnDefinitions="45 *">
+			<views:ToolbarView Grid.Column="0"></views:ToolbarView>
+			<views:DrawingView Grid.Column="1"/>
+		</Grid>
 	</Grid>
 </UserControl>

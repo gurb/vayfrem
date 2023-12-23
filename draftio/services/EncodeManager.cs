@@ -1,9 +1,6 @@
-﻿using Avalonia.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace draftio.services
 {
@@ -134,7 +131,6 @@ namespace draftio.services
             return generated_encrypt;
         }
 
-
         public string Decode(string instance)
         {
             return Descrypt(instance);
@@ -145,7 +141,6 @@ namespace draftio.services
             return Enumerable.Range(0, str.Length / chunkSize)
                 .Select(i => str.Substring(i * chunkSize, chunkSize));
         }
-
 
         private string Descrypt(string instance)
         {
@@ -183,6 +178,5 @@ namespace draftio.services
 
             return true;
         }
-
     }
 }
