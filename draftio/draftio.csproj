@@ -37,6 +37,12 @@
     </None>
   </ItemGroup>
 
+	<ItemGroup>
+	    <Content Include="resources\**">
+		    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    </Content>
+	</ItemGroup>
+
 
   <ItemGroup>
     <AvaloniaResource Update="assets\rect.png">

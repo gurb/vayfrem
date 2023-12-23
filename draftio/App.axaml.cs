@@ -37,6 +37,8 @@ namespace draftio
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices((context, services) =>
                 {
+                    services.AddSingleton<FileManager>();
+
                     services.AddTransient<MainViewModel>();
                     services.AddSingleton<ProjectTreeViewModel>();
                     services.AddSingleton<TabViewModel>();
@@ -58,10 +60,15 @@ namespace draftio
 
         public override void OnFrameworkInitializationCompleted()
         {
+            var fileManager = App.GetService<FileManager>();
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                fileManager.SetArgs(desktop.Args);
+
                 desktop.MainWindow = new MainWindow();
-            }
+
+            };
 
             base.OnFrameworkInitializationCompleted();
         }
