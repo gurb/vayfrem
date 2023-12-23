@@ -5,29 +5,37 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="draftio.ShortsView">
 	<UserControl.Styles>
-		<Style Selector = "Button.Selected">
-			<!--<Setter Property = "Foreground" Value = "# FFFFFFFF" />-->
-			<!--<Setter Property = "BorderThickness" Value = "2" />-->
-			<Setter Property="Background" Value = "#888" />
-			<!--<Setter Property = "BorderBrush" Value = "# FFFFFFFF" />-->
+		<Style Selector = "Button">
+			<Setter Property="Background" Value = "#ccc" />
 		</Style>
+		<!--<Style Selector = "Button.Selected">
+			--><!--<Setter Property = "Foreground" Value = "# FFFFFFFF" />--><!--
+			--><!--<Setter Property = "BorderThickness" Value = "2" />--><!--
+			<Setter Property="Background" Value = "#999" />
+			--><!--<Setter Property = "BorderBrush" Value = "# FFFFFFFF" />--><!--
+		</Style>-->
 	</UserControl.Styles>
 
 
 	<StackPanel Orientation="Horizontal">
-		<Button x:Name="RectTool" Classes="Selected" Margin="5" Padding="10">
-			<Image Source="avares://draftio/assets/rect.png" Width="25" Height="25">
+		<Button x:Name="RectTool" Classes="Selected" Margin="2" Padding="7">
+			<Image Source="avares://draftio/assets/open.png" Width="25" Height="25">
 			</Image>
 		</Button>
-		<Button x:Name="TextTool" Margin="5" Padding="10">
-			<Image Source="avares://draftio/assets/text.png" Width="25" Height="25">
+		<Button x:Name="TextTool" Margin="2" Padding="7">
+			<Image Source="avares://draftio/assets/save.png" Width="25" Height="25">
 			</Image>
 		</Button>
-		<Button x:Name="ZoomInTool" Margin="5" Padding="10">
+		<Button x:Name="SaveAllTool" Margin="2" Padding="7">
+			<Image Source="avares://draftio/assets/saveall.png" Width="25" Height="25">
+			</Image>
+		</Button>
+		<Rectangle VerticalAlignment="Stretch" Width="1" Margin="5, 8, 5, 8" Fill="#999" />
+		<Button x:Name="ZoomInTool" Margin="2" Padding="7">
 			<Image Source="avares://draftio/assets/zoomin.png" Width="25" Height="25">
 			</Image>
 		</Button>
-		<Button x:Name="ZoomOutTool" Margin="5" Padding="10">
+		<Button x:Name="ZoomOutTool" Margin="2" Padding="7">
 			<Image Source="avares://draftio/assets/zoomout.png" Width="25" Height="25">
 			</Image>
 		</Button>
