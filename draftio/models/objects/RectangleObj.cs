@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace draftio.models.objects
 {
-    public class RectangleObj: Object
+    public class RectangleObj: GObject
     {
 
         public RectangleObj() 

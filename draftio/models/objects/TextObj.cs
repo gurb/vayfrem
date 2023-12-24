@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace draftio.models.objects
 {
-    public class TextObj: Object
+    public class TextObj: GObject
     {
         public bool IsEditMode { get; set; }
 

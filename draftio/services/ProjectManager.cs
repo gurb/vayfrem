@@ -21,6 +21,8 @@ namespace draftio.services
 
             CurrentProject.RootFolder = new Folder();
             CurrentProject.RootFolder.Name = "Base";
+
+            CurrentProject.Nodes.Add(CurrentProject.RootFolder);
         }
 
     }

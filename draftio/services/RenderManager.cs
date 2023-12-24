@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using draftio.models.objects;
+using draftio.models.objects.@base;
 using draftio.models.structs;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace draftio.services
 
         public RenderManager() { }
 
-        public void Render(Panel Display, List<IObject> objects)
+        public void Render(Panel Display, List<GObject> objects)
         {
             foreach (var obj in objects)
             {
@@ -164,8 +165,8 @@ namespace draftio.services
             if (drawActive)
             {
                 Rectangle overlayActive = new Rectangle();
-                Canvas.SetLeft(overlayActive, Math.Min(first.X, last.X));
-                Canvas.SetTop(overlayActive, Math.Min(first.Y, last.Y));
+                Canvas.SetLeft(overlayActive, System.Math.Min(first.X, last.X));
+                Canvas.SetTop(overlayActive, System.Math.Min(first.Y, last.Y));
                 overlayActive.Width = Math.Abs(first.X - last.X);
                 overlayActive.Height = Math.Abs(first.Y - last.Y);
                 overlayActive.Fill = Brushes.Transparent;

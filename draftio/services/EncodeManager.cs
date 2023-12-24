@@ -125,7 +125,7 @@ namespace draftio.services
             foreach (var ch in instance)
             {
                 var key = _encryption_dict.FirstOrDefault(x => x.Value == ch.ToString()).Key;
-                generated_encrypt += _encryption_dict[key];
+                generated_encrypt += key;
             }
 
             return generated_encrypt;

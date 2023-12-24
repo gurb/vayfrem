@@ -17,6 +17,7 @@ namespace draftio.viewmodels
     {
 
         private readonly DrawingViewModel drawingViewModel;
+        private readonly ShortsViewModel shortsViewModel;
 
 
         [ObservableProperty]
@@ -35,6 +36,7 @@ namespace draftio.viewmodels
         public TabViewModel() 
         {
             drawingViewModel = App.GetService<DrawingViewModel>();
+            shortsViewModel = App.GetService<ShortsViewModel>();
         }
 
         [RelayCommand]
@@ -116,8 +118,9 @@ namespace draftio.viewmodels
             {
                 // state is empty
                 drawingViewModel.SetEmptyState(true);
+                shortsViewModel.SetCurrentFile(null);
+                shortsViewModel.ChangeSaveState(true);
             }
-
         }
     }
 }

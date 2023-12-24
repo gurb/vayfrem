@@ -3,10 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="draftio.ShortsView">
+			 xmlns:vm="using:draftio.viewmodels"
+             x:DataType="vm:ShortsViewModel"
+			 x:CompileBindings="True"
+			 x:Class="draftio.ShortsView">
 	<UserControl.Styles>
 		<Style Selector = "Button">
 			<Setter Property="Background" Value = "#ccc" />
+		</Style>
+		<Style Selector = "Image.Enabled">
+			<!--<Setter Property="Effect" Value = "Gray" />-->
 		</Style>
 		<!--<Style Selector = "Button.Selected">
 			--><!--<Setter Property = "Foreground" Value = "# FFFFFFFF" />--><!--
@@ -18,24 +24,24 @@
 
 
 	<StackPanel Orientation="Horizontal">
-		<Button x:Name="RectTool" Classes="Selected" Margin="2" Padding="7">
+		<Button x:Name="OpenFile" Classes="Selected" Margin="2" Padding="7">
 			<Image Source="avares://draftio/assets/open.png" Width="25" Height="25">
 			</Image>
 		</Button>
-		<Button x:Name="TextTool" Margin="2" Padding="7">
-			<Image Source="avares://draftio/assets/save.png" Width="25" Height="25">
+		<Button x:Name="SaveFile" IsEnabled="{Binding !IsSaved}" Margin="2" Padding="7">
+			<Image x:Name="SaveImageFile" Source="avares://draftio/assets/save.png" Width="25" Height="25">
 			</Image>
 		</Button>
-		<Button x:Name="SaveAllTool" Margin="2" Padding="7">
+		<Button x:Name="SaveAllFile" Margin="2" Padding="7">
 			<Image Source="avares://draftio/assets/saveall.png" Width="25" Height="25">
 			</Image>
 		</Button>
 		<Rectangle VerticalAlignment="Stretch" Width="1" Margin="5, 8, 5, 8" Fill="#999" />
-		<Button x:Name="ZoomInTool" Margin="2" Padding="7">
+		<Button x:Name="ZoomIn" Margin="2" Padding="7">
 			<Image Source="avares://draftio/assets/zoomin.png" Width="25" Height="25">
 			</Image>
 		</Button>
-		<Button x:Name="ZoomOutTool" Margin="2" Padding="7">
+		<Button x:Name="ZoomOut" Margin="2" Padding="7">
 			<Image Source="avares://draftio/assets/zoomout.png" Width="25" Height="25">
 			</Image>
 		</Button>

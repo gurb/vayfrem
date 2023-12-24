@@ -7,21 +7,21 @@ using System.Threading.Tasks;
 
 namespace draftio.models.objects
 {
-    public class CanvasObj : Object
+    public class CanvasObj : GObject
     {
-        public List<IObject> Children { get; set; } = new List<IObject>();
+        public List<GObject> Children { get; set; } = new List<GObject>();
 
         public CanvasObj() 
         {
             InitializeObject();
         }
 
-        public void Add(IObject obj)
+        public void Add(GObject obj)
         {
             Children.Add(obj);
         }
 
-        public void Remove(IObject obj)
+        public void Remove(GObject obj)
         {
             Children.Remove(obj);
         }

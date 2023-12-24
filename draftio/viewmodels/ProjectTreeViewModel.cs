@@ -18,9 +18,10 @@ namespace draftio.viewmodels
         private readonly ProjectManager projectManager;
         private readonly TabViewModel tabViewModel;
         private readonly DrawingViewModel drawingViewModel;
+        private readonly ShortsViewModel shortsViewModel;
 
         [ObservableProperty]
-        ObservableCollection<Node> nodes = new();
+        ObservableCollection<Node> nodes;
 
         [ObservableProperty]
         Folder? selectedFolder;
@@ -33,19 +34,12 @@ namespace draftio.viewmodels
             projectManager = App.GetService<ProjectManager>();
             tabViewModel = App.GetService<TabViewModel>();
             drawingViewModel = App.GetService<DrawingViewModel>();
+            shortsViewModel = App.GetService<ShortsViewModel>();
 
             if (projectManager.CurrentProject.RootFolder != null)
             {
                 SelectedFolder = projectManager.CurrentProject.RootFolder;
-
-                Nodes.Add(projectManager.CurrentProject.RootFolder);
-
-                //File file = new File();
-                //file.Name = "New";
-                //file.ParentNode = projectManager.CurrentProject.RootFolder;
-                //projectManager.CurrentProject.RootFolder.Children.Add(file);
-
-                //tabViewModel.AddTab(file);
+                Nodes = projectManager.CurrentProject.Nodes;
             }
         }
 
@@ -70,12 +64,19 @@ namespace draftio.viewmodels
         {
             File file = new File();
             file.Name = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+            file.Guid = Guid.NewGuid().ToString();
             if (SelectedFolder != null)
             {
                 file.ParentNode = SelectedFolder;
                 SelectedFolder.Children.Add(file);
-                Nodes.Add(file);
+                
+                //Nodes.Add(file);
+                projectManager.CurrentProject.Nodes.Add(file);
+                Nodes = projectManager.CurrentProject.Nodes;
                 tabViewModel.AddTab(file);
+
+                shortsViewModel.ChangeSaveState(false);
+                shortsViewModel.SetCurrentFile(file);
             }
         }
 
@@ -84,11 +85,14 @@ namespace draftio.viewmodels
         {
             Folder folder = new Folder();
             folder.Name = "Folder";
+            folder.Guid = Guid.NewGuid().ToString();
             if(SelectedFolder != null)
             {
-                folder.ParentNode = SelectedFolder; ;
+                folder.ParentNode = SelectedFolder;
                 SelectedFolder.Children.Add(folder);
-                Nodes.Add(folder);
+                //Nodes.Add(folder);
+                projectManager.CurrentProject.Nodes.Add(folder);
+                Nodes = projectManager.CurrentProject.Nodes;
             }
         }
 
@@ -116,8 +120,6 @@ namespace draftio.viewmodels
             if(SelectedNode != null)
             {
                 SelectedNode.IsSelected = false;
-
-               
             }
 
             SelectedNode = node;
@@ -135,29 +137,15 @@ namespace draftio.viewmodels
                 if(temp == null)
                 {
                     tabViewModel.AddTab(node);
-                }
 
+                    shortsViewModel.ChangeSaveState(false);
+                }
+                shortsViewModel.SetCurrentFile((File)node);
             }
             if(node.Type == models.enums.NodeType.Folder)
             {
                 SelectedFolder = (Folder)node;
             }
         }
-
-
-
-
-        //[RelayCommand]
-        //public void RemoveNode(Node node)
-        //{
-        //    Folder folder = new Folder();
-        //    folder.Name = "Folder";
-        //    if (SelectedFolder != null)
-        //    {
-        //        folder.ParentNode = SelectedFolder; ;
-        //        SelectedFolder.Children.Add(folder);
-        //        Nodes.Add(folder);
-        //    }
-        //}
     }
 }

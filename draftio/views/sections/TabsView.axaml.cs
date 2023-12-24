@@ -144,7 +144,10 @@ public partial class TabsView : UserControl
 
 
         Label textBlock = new Label();
-        textBlock.Content = node.Name;
+        if (node.IsSaved)
+            textBlock.Content = node.Name;
+        else
+            textBlock.Content = node.Name + "*";
         textBlock.Height = 20;
         textBlock.FontSize = (ViewModel.SelectedNode != null && ViewModel.SelectedNode == node) ? 12 : 12;
         textBlock.FontWeight = (ViewModel.SelectedNode != null && ViewModel.SelectedNode == node) ? FontWeight.Bold : FontWeight.Normal;

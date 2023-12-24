@@ -1,9 +1,12 @@
 ﻿using draftio.models.enums;
 using draftio.models.structs;
+using System.Text.Json.Serialization;
 
 namespace draftio.models.objects.@base
 {
-    public class Object : IObject
+    [JsonDerivedType(typeof(CanvasObj), typeDiscriminator: "CanvasObjType")]
+    [JsonDerivedType(typeof(TextObj), typeDiscriminator: "TextObjType")]
+    public class GObject : IObject
     {
         public double X { get; set; }
         public double Y { get; set; }
@@ -13,6 +16,8 @@ namespace draftio.models.objects.@base
         public ColorS BorderColor { get; set; } = new ColorS(0, 0, 0, 255);
         public float BorderSize { get; set; }
         public ObjectType ObjectType { get; set; }
+        
+        [JsonIgnore]
         public IObject? Parent { get; set; }
 
         public double WorldX

@@ -4,6 +4,7 @@ using draftio.models;
 using draftio.models.dtos;
 using draftio.models.enums;
 using draftio.models.objects;
+using draftio.models.objects.@base;
 using draftio.models.structs;
 using draftio.services;
 using System.Collections.Generic;
@@ -13,8 +14,10 @@ namespace draftio.viewmodels
     public partial class DrawingViewModel : ObservableObject
     {
 
+        private readonly ShortsViewModel shortsViewModel;
+
         [ObservableProperty]
-        List<IObject> objects = new();
+        List<GObject> objects = new();
 
         [ObservableProperty]
         IObject? selectedObject;
@@ -25,18 +28,31 @@ namespace draftio.viewmodels
         [ObservableProperty]
         bool isEmpty = true;
 
+
+        File? currentFile;
+
+        public File? CurrentFile
+        {
+            get
+            {
+                return currentFile;
+            }
+        }
+
         public delegate void DrawDelegate();
         public DrawDelegate? drawDelegate;
 
         public DrawingViewModel() 
         {
-           
+            shortsViewModel = App.GetService<ShortsViewModel>();
         }
 
         [RelayCommand]
         public void AddObject(PassData passData)
         {
-            if(passData.SelectedObjectType == ObjectType.Canvas)
+            SetSaveStateCurrentFile();
+
+            if (passData.SelectedObjectType == ObjectType.Canvas)
             {
                 AddCanvas(passData);
             }
@@ -70,6 +86,16 @@ namespace draftio.viewmodels
 
             Objects.Add(canvasObj);
 
+        }
+
+
+        private void SetSaveStateCurrentFile ()
+        {
+            if(currentFile != null)
+            {
+                currentFile.IsSaved = false;
+                shortsViewModel.ChangeSaveState(false);
+            }
         }
 
         private void AddText(PassData passData)
@@ -153,6 +179,7 @@ namespace draftio.viewmodels
         [RelayCommand]
         public void ChangeFile(File file)
         {
+            currentFile = file;
             Objects = file.Objects;
             if(drawDelegate != null)
             {
