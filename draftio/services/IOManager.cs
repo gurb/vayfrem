@@ -51,9 +51,51 @@ namespace draftio.services
 
             return response;
         }
-        public VMResponse LoadFile()
+        public VMResponse LoadProject(string data)
         {
             VMResponse response = new VMResponse();
+
+            SaveProjectData loadedData = new SaveProjectData();
+            loadedData.Project = JsonSerializer.Deserialize<Project>(data);
+
+            response.Result = loadedData;
+
+            return response;
+        }
+
+
+        // this method is used by ProjectManager from start of custom file (*.gdraft)
+        public async Task<VMResponse> LoadProjectFromStart(string path)
+        {
+            VMResponse response = new VMResponse();
+            try
+            {
+                if(System.IO.File.Exists(path))
+                {
+                    using (StreamReader reader = System.IO.File.OpenText(path))
+                    {
+                        string jsonString = reader.ReadToEnd();
+                        SaveProjectData loadedData = new();
+
+                        loadedData.Project = JsonSerializer.Deserialize<Project>(jsonString);
+
+                        response.Result = loadedData;
+                    }
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Cannot found the file by giving path";
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+                throw new Exception(ex.Message);
+            }
 
             return response;
         }

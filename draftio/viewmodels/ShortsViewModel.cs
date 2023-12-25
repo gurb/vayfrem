@@ -54,6 +54,19 @@ namespace draftio.viewmodels
         }
 
 
+        public VMResponse LoadProject(string data)
+        {
+            VMResponse response = new VMResponse();
+
+            response = ioManager.LoadProject(data);
+
+            projectManager.CurrentProject = ((SaveProjectData)response.Result!).Project;
+
+
+            return response;
+        }
+
+
         // save only current page
         public VMResponse Save()
         {

@@ -7,6 +7,7 @@ using draftio.models.objects;
 using draftio.models.objects.@base;
 using draftio.models.structs;
 using draftio.services;
+using System;
 using System.Collections.Generic;
 
 namespace draftio.viewmodels
@@ -65,6 +66,7 @@ namespace draftio.viewmodels
         private void AddCanvas(PassData passData)
         {
             CanvasObj canvasObj = new CanvasObj();
+            canvasObj.Guid = Guid.NewGuid().ToString();
             canvasObj.X = passData.X;
             canvasObj.Y = passData.Y;
             canvasObj.Width = passData.Width;
@@ -76,6 +78,7 @@ namespace draftio.viewmodels
                 {
                     CanvasObj selectedCanvas = (CanvasObj)SelectedObject;
                     canvasObj.Parent = selectedCanvas;
+                    canvasObj.ParentGuid = selectedCanvas.Guid;
                     canvasObj.X = canvasObj.X - selectedCanvas.WorldX;
                     canvasObj.Y = canvasObj.Y - selectedCanvas.WorldY;
 
@@ -102,6 +105,7 @@ namespace draftio.viewmodels
         {
             CloseEditMode();
             TextObj textObj = new TextObj();
+            textObj.Guid = Guid.NewGuid().ToString();
             textObj.X = passData.X;
             textObj.Y = passData.Y;
             textObj.Width = passData.Width;
@@ -116,6 +120,7 @@ namespace draftio.viewmodels
                 {
                     CanvasObj selectedCanvas = (CanvasObj)SelectedObject;
                     textObj.Parent = selectedCanvas;
+                    textObj.ParentGuid = selectedCanvas.Guid;
                     textObj.X = textObj.X - selectedCanvas.WorldX;
                     textObj.Y = textObj.Y - selectedCanvas.WorldY;
 

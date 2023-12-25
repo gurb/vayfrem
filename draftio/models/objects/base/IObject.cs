@@ -6,6 +6,9 @@ namespace draftio.models.objects
 {
     public interface IObject
     {
+        string Guid { get; set; }
+        string? ParentGuid { get; set; }
+
         double X { get; set; }
         double Y { get; set; }
         double Width { get; set; }

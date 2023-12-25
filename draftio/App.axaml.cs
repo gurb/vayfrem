@@ -37,11 +37,12 @@ namespace draftio
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices((context, services) =>
                 {
+                    services.AddTransient<MainViewModel>();
+
                     services.AddSingleton<FileManager>();
                     services.AddSingleton<EncodeManager>();
                     services.AddSingleton<IOManager>();
 
-                    services.AddTransient<MainViewModel>();
                     services.AddSingleton<ShortsViewModel>();
                     services.AddSingleton<ProjectTreeViewModel>();
                     services.AddSingleton<TabViewModel>();

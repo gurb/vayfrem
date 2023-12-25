@@ -68,6 +68,7 @@ namespace draftio.viewmodels
             if (SelectedFolder != null)
             {
                 file.ParentNode = SelectedFolder;
+                file.ParentGuid = SelectedFolder.Guid;
                 SelectedFolder.Children.Add(file);
                 
                 //Nodes.Add(file);
@@ -89,6 +90,7 @@ namespace draftio.viewmodels
             if(SelectedFolder != null)
             {
                 folder.ParentNode = SelectedFolder;
+                folder.ParentGuid = SelectedFolder.Guid;
                 SelectedFolder.Children.Add(folder);
                 //Nodes.Add(folder);
                 projectManager.CurrentProject.Nodes.Add(folder);

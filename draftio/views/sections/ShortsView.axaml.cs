@@ -13,8 +13,8 @@ namespace draftio
 {
     public partial class ShortsView : UserControl
     {
-
         ShortsViewModel ViewModel { get; set; }
+
 
 
         private Image _saveImageFile_original;
@@ -40,11 +40,17 @@ namespace draftio
         private async void OpenFile_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             var topLevel = TopLevel.GetTopLevel(this);
-            
+
+            FilePickerFileType fileType = new FilePickerFileType("Draft File")
+            {
+                Patterns = new[] { "*.gdraft" },
+            };
+
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new Avalonia.Platform.Storage.FilePickerOpenOptions
             {
                 Title = "Open Project",
-                AllowMultiple = false
+                AllowMultiple = false,
+                FileTypeFilter = new[] { fileType }
             });
 
             if(files.Count >= 1)
@@ -53,6 +59,16 @@ namespace draftio
                 using var streamReader = new StreamReader(stream);
                 
                 var fileContent = await streamReader.ReadToEndAsync();
+
+                VMResponse response = ViewModel.LoadProject(fileContent);
+                if (response.Success)
+                {
+                    
+                }
+                else
+                {
+                    await MessageBox.Show(this, "Error", response.Message!, MessageBox.MessageBoxButtons.Ok);
+                }
             }
         }
 
@@ -60,9 +76,15 @@ namespace draftio
         {
             var topLevel = TopLevel.GetTopLevel(this);
 
+            FilePickerFileType fileType = new FilePickerFileType("Draft File")
+            {
+                Patterns = new[] { "*.gdraft" },
+            };
+
             var file = await topLevel!.StorageProvider.SaveFilePickerAsync(new Avalonia.Platform.Storage.FilePickerSaveOptions
             {
-                Title = "Save File"
+                Title = "Save File",
+                FileTypeChoices = new[] { fileType }, 
             });
 
             if(file is not null)

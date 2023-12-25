@@ -1,5 +1,6 @@
 ﻿using draftio.models.enums;
 using draftio.models.structs;
+using System;
 using System.Text.Json.Serialization;
 
 namespace draftio.models.objects.@base
@@ -8,6 +9,9 @@ namespace draftio.models.objects.@base
     [JsonDerivedType(typeof(TextObj), typeDiscriminator: "TextObjType")]
     public class GObject : IObject
     {
+        public string? Guid { get; set; }
+        public string? ParentGuid { get; set; }
+
         public double X { get; set; }
         public double Y { get; set; }
         public double Width { get; set; }
@@ -41,6 +45,8 @@ namespace draftio.models.objects.@base
             }
         }
 
-        public virtual void InitializeObject () { }
+        public virtual void InitializeObject () 
+        {
+        }
     }
 }
