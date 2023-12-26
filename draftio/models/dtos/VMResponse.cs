@@ -11,6 +11,5 @@ namespace draftio.models.dtos
         public bool Success { get; set; } = true;
         public string? Message { get; set; }
         public object? Result { get; set; }
-
     }
 }

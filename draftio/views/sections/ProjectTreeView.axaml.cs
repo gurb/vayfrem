@@ -23,6 +23,7 @@ namespace draftio.views.sections
         public ProjectTreeView()
         {
             ViewModel = App.GetService<ProjectTreeViewModel>();
+            ViewModel.drawProjectView += RefreshDraw;
             DataContext = ViewModel;
 
             InitializeComponent();
@@ -53,6 +54,11 @@ namespace draftio.views.sections
         private void AddFolderButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             ViewModel.AddFolder();
+            DrawCanvas();
+        }
+
+        private void RefreshDraw()
+        {
             DrawCanvas();
         }
 

@@ -18,10 +18,12 @@ namespace draftio.services
 
         public Project? CurrentProject { get; set; }
 
+
         public ProjectManager()
         {
             fileManager = App.GetService<FileManager>();
             ioManager = App.GetService<IOManager>();
+
         }
 
         public async Task<VMResponse> InitializeProject()
@@ -36,6 +38,9 @@ namespace draftio.services
                     if (res.Result.Success)
                     {
                         CurrentProject = ((SaveProjectData)res.Result.Result!).Project;
+                        projects.Add(CurrentProject!);
+
+                        CurrentProject!.RootFolder = (Folder)CurrentProject.Nodes[0];
                     }
                     else
                     {
@@ -51,6 +56,7 @@ namespace draftio.services
 
                     CurrentProject.RootFolder = new Folder();
                     CurrentProject.RootFolder.Name = "Base";
+                    CurrentProject.RootFolder.Guid = Guid.NewGuid().ToString();
 
                     CurrentProject.Nodes.Add(CurrentProject.RootFolder);
                 }

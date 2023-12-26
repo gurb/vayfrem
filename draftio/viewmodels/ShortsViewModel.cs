@@ -26,6 +26,9 @@ namespace draftio.viewmodels
         public delegate void ChangeViewDelegate();
         public ChangeViewDelegate? changeDelegate;
 
+        public delegate void ProjectVMDelegate();
+        public ProjectVMDelegate? refreshProjectVM;
+
         public ShortsViewModel()
         {
             fileManager = App.GetService<FileManager>();
@@ -61,6 +64,12 @@ namespace draftio.viewmodels
             response = ioManager.LoadProject(data);
 
             projectManager.CurrentProject = ((SaveProjectData)response.Result!).Project;
+            projectManager.projects.Add(projectManager.CurrentProject!);
+
+            if(refreshProjectVM != null)
+            {
+                refreshProjectVM.Invoke();
+            }
 
 
             return response;

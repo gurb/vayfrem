@@ -31,6 +31,12 @@ public partial class TabsView : UserControl
         InitializeComponent();
 
         SetStyle();
+        AfterInit();
+    }
+
+    private void AfterInit()
+    {
+        DrawCanvas();
     }
 
     private void SetStyle()
@@ -63,6 +69,7 @@ public partial class TabsView : UserControl
         TabMenu.Children.Clear();
 
         double tabMenuWidth = CalcTabMenuWidth();
+
         if(TabMenuScrollParent.Bounds.Width < tabMenuWidth)
         {
             TabMenu.Width = tabMenuWidth;

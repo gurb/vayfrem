@@ -44,9 +44,9 @@ namespace draftio
                     services.AddSingleton<IOManager>();
 
                     services.AddSingleton<ShortsViewModel>();
-                    services.AddSingleton<ProjectTreeViewModel>();
                     services.AddSingleton<TabViewModel>();
                     services.AddSingleton<DrawingViewModel>();
+                    services.AddSingleton<ProjectTreeViewModel>();
 
                     services.AddSingleton<RenderManager>();
                     services.AddSingleton<ProjectManager>();

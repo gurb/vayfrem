@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using draftio.models;
 using draftio.models.objects;
 using draftio.models.objects.@base;
+using System.Collections.ObjectModel;
 
 namespace draftio.services
 {
@@ -75,6 +76,9 @@ namespace draftio.services
             {
                 foreach (var node in project.Nodes)
                 {
+
+                    node.Children = new ObservableCollection<Node>(project.Nodes.Where(n => n.ParentGuid == node.Guid));
+
                     if(node.ParentGuid != null)
                     {
                         var parentNode = project.Nodes.FirstOrDefault(n => n.Guid == node.ParentGuid);
@@ -144,6 +148,8 @@ namespace draftio.services
                         SaveProjectData loadedData = new();
 
                         loadedData.Project = JsonSerializer.Deserialize<Project>(jsonString);
+
+                        HandleSaveData(loadedData.Project);
 
                         response.Result = loadedData;
                     }

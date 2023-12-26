@@ -27,19 +27,21 @@ namespace draftio.viewmodels
         Folder? selectedFolder;
 
         [ObservableProperty]
-        Node selectedNode;
+        Node? selectedNode;
 
+        public delegate void DrawProjectViewDelegate();
+        public DrawProjectViewDelegate? drawProjectView;
 
         public ProjectTreeViewModel() {
             projectManager = App.GetService<ProjectManager>();
             tabViewModel = App.GetService<TabViewModel>();
             drawingViewModel = App.GetService<DrawingViewModel>();
             shortsViewModel = App.GetService<ShortsViewModel>();
+            shortsViewModel.refreshProjectVM += Refresh;
 
             if (projectManager.CurrentProject.RootFolder != null)
             {
-                SelectedFolder = projectManager.CurrentProject.RootFolder;
-                Nodes = projectManager.CurrentProject.Nodes;
+                Refresh();
             }
         }
 
@@ -98,6 +100,31 @@ namespace draftio.viewmodels
             }
         }
 
+        [RelayCommand]
+        public void Refresh()
+        {
+            Nodes = projectManager.CurrentProject.Nodes;
+
+            var node = Nodes.FirstOrDefault(x => x.IsSelected == true);
+
+            
+
+            if(node != null)
+            {
+                SetSelected(node);
+
+                if(node.ParentNode != null)
+                {
+                    SelectedFolder = (Folder)node.ParentNode;
+                }
+            }
+
+            if (drawProjectView != null)
+            {
+                drawProjectView.Invoke();
+            }
+        }
+
 
         [RelayCommand]
         public void SetSelectedHover(Node node)
@@ -128,16 +155,20 @@ namespace draftio.viewmodels
             SelectedNode.IsSelected = true;
 
 
+
             if(node.Type == models.enums.NodeType.File)
             {
                 tabViewModel.SetSelectedOnly(node);
 
                 drawingViewModel.ChangeFile((File)node);
+                
 
                 // if tab nodes does not contain selected node in tab view canvas, add it
                 var temp = tabViewModel.Nodes.FirstOrDefault(x => x == node);
                 if(temp == null)
                 {
+
+                    
                     tabViewModel.AddTab(node);
 
                     shortsViewModel.ChangeSaveState(false);

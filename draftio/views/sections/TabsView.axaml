@@ -36,7 +36,7 @@
 					<Setter Property="Height" Value="4"/>
 				</Style>
 			</ScrollViewer.Styles>
-			<StackPanel VerticalAlignment="Stretch" Orientation="Horizontal">
+			<StackPanel VerticalAlignment="Stretch" Orientation="Horizontal" Background="#EDECEB">
 				<Canvas x:Name="TabMenu" Height="45" Background="White"></Canvas>
 			</StackPanel>
 		</ScrollViewer>
