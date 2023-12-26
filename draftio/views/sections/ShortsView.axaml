@@ -37,6 +37,15 @@
 			</Image>
 		</Button>
 		<Rectangle VerticalAlignment="Stretch" Width="1" Margin="5, 8, 5, 8" Fill="#999" />
+		<Button x:Name="Undo" Margin="2" Padding="7">
+			<Image Source="avares://draftio/assets/undo.png" Width="25" Height="25">
+			</Image>
+		</Button>
+		<Button x:Name="Redo" Margin="2" Padding="7">
+			<Image Source="avares://draftio/assets/redo.png" Width="25" Height="25">
+			</Image>
+		</Button>
+		<Rectangle VerticalAlignment="Stretch" Width="1" Margin="5, 8, 5, 8" Fill="#999" />
 		<Button x:Name="ZoomIn" Margin="2" Padding="7">
 			<Image Source="avares://draftio/assets/zoomin.png" Width="25" Height="25">
 			</Image>

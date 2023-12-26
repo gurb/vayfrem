@@ -51,6 +51,8 @@ namespace draftio
                     services.AddSingleton<RenderManager>();
                     services.AddSingleton<ProjectManager>();
                     services.AddSingleton<ToolManager>();
+
+                    services.AddSingleton<UndoRedoManager>();
                 })
                 .Build();
 
