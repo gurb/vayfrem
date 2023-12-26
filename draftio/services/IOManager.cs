@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using draftio.models;
+using draftio.models.objects;
+using draftio.models.objects.@base;
 
 namespace draftio.services
 {
@@ -58,9 +60,73 @@ namespace draftio.services
             SaveProjectData loadedData = new SaveProjectData();
             loadedData.Project = JsonSerializer.Deserialize<Project>(data);
 
+            HandleSaveData(loadedData.Project);
+
+
             response.Result = loadedData;
 
             return response;
+        }
+
+        // after loading
+        private void HandleSaveData(Project? project)
+        {
+            if (project != null)
+            {
+                foreach (var node in project.Nodes)
+                {
+                    if(node.ParentGuid != null)
+                    {
+                        var parentNode = project.Nodes.FirstOrDefault(n => n.Guid == node.ParentGuid);
+
+                        if(parentNode != null)
+                        {
+                            node.ParentNode = parentNode;
+                        }
+                    }
+
+                    if(node.Type == models.enums.NodeType.File)
+                    {
+                        models.File file = (models.File)node;
+                        
+                        foreach(var obj in file.Objects)
+                        {
+                            if (obj.ObjectType == models.enums.ObjectType.Canvas)
+                            {
+                                CanvasObj canvasObj = (CanvasObj)obj;
+
+                                if(canvasObj.Children != null && canvasObj.Children.Count > 0)
+                                {
+                                    IterateChildren(canvasObj);
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("Not found project");
+            }
+        }
+
+        private void IterateChildren (CanvasObj parent)
+        {
+            foreach(var obj in parent.Children)
+            {
+                obj.Parent = parent;
+
+                if(obj.ObjectType == models.enums.ObjectType.Canvas)
+                {
+                    CanvasObj canvasObj = (CanvasObj)obj;
+
+                    if (canvasObj.Children != null && canvasObj.Children.Count > 0)
+                    {
+                        IterateChildren(canvasObj);
+                    }
+                }
+            }
         }
 
 
