@@ -1,4 +1,5 @@
-﻿using draftio.models.interfaces;
+﻿using draftio.models.dtos;
+using draftio.models.interfaces;
 using draftio.models.objects.@base;
 using System;
 
@@ -8,7 +9,7 @@ namespace draftio.models.commands
     {
         public GObject? RemovedObject { get; set; }
 
-        public void Execute()
+        public void Execute(UndoRedoDTO urdto)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,8 @@
-﻿using draftio.models.interfaces;
+﻿using Avalonia.Animation.Easings;
+using draftio.models;
+using draftio.models.dtos;
+using draftio.models.interfaces;
+using draftio.models.objects.@base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,27 +13,44 @@ namespace draftio.services
 {
     public class UndoRedoManager
     {
+
+        private readonly ProjectManager projectManager;
+
         public Dictionary<string, Stack<ICommand>> UndoLogs { get; set; }
         public Dictionary<string, Stack<ICommand>> RedoLogs { get; set; }
+
+        private List<GObject>? currentFileObjects = new List<GObject>();
 
 
         public UndoRedoManager() 
         {
+            projectManager = App.GetService<ProjectManager>();
+
             UndoLogs = new Dictionary<string, Stack<ICommand>>();
             RedoLogs = new Dictionary<string, Stack<ICommand>>();
+        }
+
+        public void SetCurrentFileObjects (List<GObject> objects)
+        {
+            currentFileObjects!.Clear();
+
+            foreach (var item in objects)
+            {
+                currentFileObjects.Add(item);
+            }
         }
 
 
         public void AddCommand(string guid, ICommand command)
         {
-            if(UndoLogs[guid] == null)
+            if(!UndoLogs.ContainsKey(guid))
             {
                 UndoLogs[guid] = new Stack<ICommand>();
             }
 
             UndoLogs[guid].Push(command);
 
-            if (RedoLogs[guid] != null)
+            if (RedoLogs.ContainsKey(guid))
             {
                 RedoLogs[guid].Clear();
             }
@@ -46,6 +67,8 @@ namespace draftio.services
                 ICommand command = UndoLogs[guid].Pop();
 
                 RedoLogs[guid].Push(command);
+
+                Execute(guid);
             }
         }
 
@@ -53,9 +76,13 @@ namespace draftio.services
         {
             if (RedoLogs.ContainsKey(guid) && RedoLogs[guid].Count > 0)
             {
-                ICommand command = UndoLogs[guid].Pop();
+                ICommand command = RedoLogs[guid].Pop();
 
                 UndoLogs[guid].Push(command);
+
+                
+
+                Execute(guid);
             }
         }
 
@@ -63,13 +90,34 @@ namespace draftio.services
         {
             // we can reach the page node via guid parameter, and we can handle changes of object according to the command logs.
 
-            if (UndoLogs.ContainsKey(guid) && UndoLogs[guid].Count > 0)
+            var node = GetNode(guid);
+
+            if (UndoLogs.ContainsKey(guid) && UndoLogs[guid].Count > 0 && node != null)
             {
                 foreach (var command in UndoLogs[guid])
                 {
-                    command.Execute();
+                    UndoRedoDTO urdto = new UndoRedoDTO
+                    {
+                        page = node,
+                        objects = currentFileObjects
+                    };
+
+                    command.Execute(urdto);
                 }
             }
+        }
+
+        private File? GetNode(string guid)
+        {
+            if(projectManager.CurrentProject != null)
+            {
+                var node = projectManager.CurrentProject.Nodes.FirstOrDefault(x => x.Guid == guid);
+                if(node != null && node.Type == models.enums.NodeType.File)
+                {
+                    return (File)node;
+                }
+            }
+            return null;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using draftio.models;
+using draftio.models.commands;
 using draftio.models.dtos;
 using draftio.models.enums;
 using draftio.models.objects;
@@ -16,6 +17,7 @@ namespace draftio.viewmodels
     {
 
         private readonly ShortsViewModel shortsViewModel;
+        private readonly UndoRedoManager undoRedoManager;
 
         [ObservableProperty]
         List<GObject> objects = new();
@@ -46,6 +48,7 @@ namespace draftio.viewmodels
         public DrawingViewModel() 
         {
             shortsViewModel = App.GetService<ShortsViewModel>();
+            undoRedoManager = App.GetService<UndoRedoManager>();
         }
 
         [RelayCommand]
@@ -83,12 +86,13 @@ namespace draftio.viewmodels
                     canvasObj.Y = canvasObj.Y - selectedCanvas.WorldY;
 
                     selectedCanvas.Add(canvasObj);
+                    undoRedoManager.AddCommand(CurrentFile!.Guid!, new AddCommand(canvasObj));
                     return;
                 } 
             } 
 
             Objects.Add(canvasObj);
-
+            undoRedoManager.AddCommand(CurrentFile!.Guid!, new AddCommand(canvasObj));
         }
 
 

@@ -1,4 +1,5 @@
-﻿using draftio.models.interfaces;
+﻿using draftio.models.dtos;
+using draftio.models.interfaces;
 using draftio.models.structs;
 using System;
 
@@ -10,7 +11,7 @@ namespace draftio.models.commands
         public Vector2? NewPosition { get; set; }
         public string? ObjectGuid { get; set; }
 
-        public void Execute()
+        public void Execute(UndoRedoDTO urdto)
         {
             throw new NotImplementedException();
         }

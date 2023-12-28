@@ -2,12 +2,15 @@
 using CommunityToolkit.Mvvm.Input;
 using draftio.models;
 using draftio.models.dtos;
+using draftio.models.objects;
+using draftio.models.objects.@base;
 using draftio.services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace draftio.viewmodels
 {
@@ -16,6 +19,7 @@ namespace draftio.viewmodels
         private readonly FileManager fileManager;
         private readonly IOManager ioManager;
         private readonly ProjectManager projectManager;
+        private readonly UndoRedoManager undoRedoManager;
 
         [ObservableProperty]
         bool isSaved = false;
@@ -34,6 +38,7 @@ namespace draftio.viewmodels
             fileManager = App.GetService<FileManager>();
             ioManager = App.GetService<IOManager>();
             projectManager = App.GetService<ProjectManager>();
+            undoRedoManager = App.GetService<UndoRedoManager>();
 
             if (currentFile == null)
             {
@@ -75,7 +80,6 @@ namespace draftio.viewmodels
             return response;
         }
 
-
         // save only current page
         public VMResponse Save()
         {
@@ -101,6 +105,86 @@ namespace draftio.viewmodels
             }
 
             return response;
+        }
+
+        public VMResponse Undo()
+        {
+            VMResponse response = new VMResponse();
+
+            if(currentFile != null)
+            {
+                List<GObject> objects = CopyObjects(currentFile.Objects);
+
+                foreach(var obj in currentFile.Objects)
+                {
+                    if(obj.ObjectType == models.enums.ObjectType.Canvas)
+                    {
+                        var canvasObj = (CanvasObj)obj;
+                        canvasObj.Children.Clear();
+                    }
+                }
+                currentFile.Objects.Clear();
+
+                undoRedoManager.SetCurrentFileObjects(objects);
+                undoRedoManager.Undo(currentFile.Guid!);
+
+                if (refreshProjectVM != null)
+                {
+                    refreshProjectVM.Invoke();
+                }
+            }
+
+            return response;
+        }
+
+        public VMResponse Redo()
+        {
+            VMResponse response = new VMResponse();
+
+            if(currentFile != null)
+            {
+                List<GObject> objects = CopyObjects(currentFile.Objects);
+
+                foreach (var obj in currentFile.Objects)
+                {
+                    if (obj.ObjectType == models.enums.ObjectType.Canvas)
+                    {
+                        var canvasObj = (CanvasObj)obj;
+                        canvasObj.Children.Clear();
+                    }
+                }
+                currentFile.Objects.Clear();
+
+                undoRedoManager.SetCurrentFileObjects(objects);
+                undoRedoManager.Redo(currentFile.Guid!);
+
+                if (refreshProjectVM != null)
+                {
+                    refreshProjectVM.Invoke();
+                }
+            }
+
+            return response;
+        }
+
+
+        private List<GObject> CopyObjects(List<GObject> param)
+        {
+            List<GObject> objects = new List<GObject>();
+
+            foreach(var obj in param)
+            {
+                if(obj.ObjectType == models.enums.ObjectType.Canvas)
+                {
+                    CanvasObj canvasObj = (CanvasObj)obj;
+                    objects.AddRange(CopyObjects(canvasObj.Children));
+                    canvasObj.Children.Clear();
+                }
+                
+                objects.Add(obj);
+            }
+
+            return objects; 
         }
     }
 }

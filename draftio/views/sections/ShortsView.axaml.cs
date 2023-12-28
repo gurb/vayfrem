@@ -32,9 +32,23 @@ namespace draftio
             OpenFile.Click += OpenFile_Click;
             // this operation just valid for single page
             SaveFile.Click += SaveFile_Click;
+            // this operation just valid for current single page
+            Undo.Click += Undo_Click;
+            // this operation just valid for current single page
+            Redo.Click += Redo_Click;
 
             GenerateImages();
             changeViews();
+        }
+
+        private void Undo_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            ViewModel.Undo(); 
+        }
+
+        private void Redo_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            ViewModel.Redo();
         }
 
         private async void OpenFile_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
