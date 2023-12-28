@@ -107,7 +107,6 @@ namespace draftio.viewmodels
 
             var node = Nodes.FirstOrDefault(x => x.IsSelected == true);
 
-            
 
             if(node != null)
             {

@@ -39,6 +39,9 @@ namespace draftio.viewmodels
         public delegate void ProjectVMDelegate();
         public ProjectVMDelegate? refreshProjectVM;
 
+        public delegate void DrawDelegate(File node);
+        public DrawDelegate? drawDelegate;
+
         public ShortsViewModel()
         {
             fileManager = App.GetService<FileManager>();
@@ -84,13 +87,13 @@ namespace draftio.viewmodels
             }
         }
 
-
-
         public void SetCurrentFile(File? file)
         {
             currentFile = file;
-        }
 
+            ChangeUndoState(undoRedoManager.CheckUndo(currentFile.Guid!));
+            ChangeRedoState(undoRedoManager.CheckRedo(currentFile.Guid!));
+        }
 
         public VMResponse LoadProject(string data)
         {
@@ -158,9 +161,9 @@ namespace draftio.viewmodels
                 undoRedoManager.SetCurrentFileObjects(objects);
                 undoRedoManager.Undo(currentFile.Guid!);
 
-                if (refreshProjectVM != null)
+                if (drawDelegate != null)
                 {
-                    refreshProjectVM.Invoke();
+                    drawDelegate.Invoke(currentFile);
                 }
 
                 ChangeUndoState(undoRedoManager.CheckUndo(currentFile.Guid!));
@@ -192,9 +195,9 @@ namespace draftio.viewmodels
                 undoRedoManager.SetCurrentFileObjects(objects);
                 undoRedoManager.Redo(currentFile.Guid!);
 
-                if (refreshProjectVM != null)
+                if (drawDelegate != null)
                 {
-                    refreshProjectVM.Invoke();
+                    drawDelegate.Invoke(currentFile);
                 }
 
                 ChangeUndoState(undoRedoManager.CheckUndo(currentFile.Guid!));

@@ -40,7 +40,6 @@ namespace draftio.services
             }
         }
 
-
         public void AddCommand(string guid, ICommand command)
         {
             if(!UndoLogs.ContainsKey(guid))

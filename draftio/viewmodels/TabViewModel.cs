@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using draftio.models;
 using draftio.models.enums;
+using draftio.services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -49,6 +50,7 @@ namespace draftio.viewmodels
                 
                 SetSelected(node);
                 SetSelectedOnly(node);
+                
             }
         }
 
@@ -64,6 +66,7 @@ namespace draftio.viewmodels
             if (node.Type == models.enums.NodeType.File)
             {
                 drawingViewModel.ChangeFile((File)node);
+                shortsViewModel.SetCurrentFile((File)SelectedNode);
             }
         }
 
@@ -73,6 +76,11 @@ namespace draftio.viewmodels
             drawingViewModel.SetEmptyState(false);
 
             SelectedNode = node;
+
+            if(node.Type == NodeType.File)
+            {
+                shortsViewModel.SetCurrentFile((File)node);
+            }
             
             lastOpenedNodes.Add(node);
 
@@ -111,6 +119,7 @@ namespace draftio.viewmodels
             if(SelectedNode != null && SelectedNode.Type == NodeType.File)
             {
                 drawingViewModel.ChangeFile((File)SelectedNode);
+                shortsViewModel.SetCurrentFile((File)SelectedNode);
             } 
             
 

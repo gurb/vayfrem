@@ -48,6 +48,7 @@ namespace draftio.viewmodels
         public DrawingViewModel() 
         {
             shortsViewModel = App.GetService<ShortsViewModel>();
+            shortsViewModel.drawDelegate += ChangeFile;
             undoRedoManager = App.GetService<UndoRedoManager>();
         }
 
