@@ -11,6 +11,12 @@
 		<Style Selector = "Button">
 			<Setter Property="Background" Value = "#ccc" />
 		</Style>
+		<Style Selector = "Button.Disabled /template/ ContentPresenter">
+			<Setter Property="Background" Value = "#c1c1c1" />
+		</Style>
+
+		
+		
 		<Style Selector = "Image.Enabled">
 			<!--<Setter Property="Effect" Value = "Gray" />-->
 		</Style>
@@ -28,7 +34,7 @@
 			<Image Source="avares://draftio/assets/open.png" Width="25" Height="25">
 			</Image>
 		</Button>
-		<Button x:Name="SaveFile" IsEnabled="{Binding !IsSaved}" Margin="2" Padding="7">
+		<Button x:Name="SaveFile" Classes="Disabled" IsEnabled="{Binding !IsSaved}" Margin="2" Padding="7">
 			<Image x:Name="SaveImageFile" Source="avares://draftio/assets/save.png" Width="25" Height="25">
 			</Image>
 		</Button>
@@ -37,12 +43,12 @@
 			</Image>
 		</Button>
 		<Rectangle VerticalAlignment="Stretch" Width="1" Margin="5, 8, 5, 8" Fill="#999" />
-		<Button x:Name="Undo" Margin="2" Padding="7">
-			<Image Source="avares://draftio/assets/undo.png" Width="25" Height="25">
+		<Button x:Name="Undo" Classes="Disabled" IsEnabled="{Binding IsUndo}" Margin="2" Padding="7">
+			<Image x:Name="UndoImageFile" Source="avares://draftio/assets/undo.png" Width="25" Height="25">
 			</Image>
 		</Button>
-		<Button x:Name="Redo" Margin="2" Padding="7">
-			<Image Source="avares://draftio/assets/redo.png" Width="25" Height="25">
+		<Button x:Name="Redo" Classes="Disabled" IsEnabled="{Binding IsRedo}" Margin="2" Padding="7">
+			<Image x:Name="RedoImageFile" Source="avares://draftio/assets/redo.png" Width="25" Height="25">
 			</Image>
 		</Button>
 		<Rectangle VerticalAlignment="Stretch" Width="1" Margin="5, 8, 5, 8" Fill="#999" />

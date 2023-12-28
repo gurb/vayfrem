@@ -24,6 +24,12 @@ namespace draftio.viewmodels
         [ObservableProperty]
         bool isSaved = false;
 
+        [ObservableProperty]
+        bool isUndo = false;
+
+        [ObservableProperty]
+        bool isRedo = false;
+
         File? currentFile;
 
 
@@ -55,6 +61,30 @@ namespace draftio.viewmodels
                 changeDelegate.Invoke();
             }
         }
+
+
+        [RelayCommand]
+        public void ChangeUndoState(bool undoState)
+        {
+            IsUndo = undoState;
+            if (changeDelegate != null)
+            {
+                changeDelegate.Invoke();
+            }
+        }
+
+
+        [RelayCommand]
+        public void ChangeRedoState(bool redoState)
+        {
+            IsRedo = redoState;
+            if (changeDelegate != null)
+            {
+                changeDelegate.Invoke();
+            }
+        }
+
+
 
         public void SetCurrentFile(File? file)
         {
@@ -132,6 +162,10 @@ namespace draftio.viewmodels
                 {
                     refreshProjectVM.Invoke();
                 }
+
+                ChangeUndoState(undoRedoManager.CheckUndo(currentFile.Guid!));
+                ChangeRedoState(undoRedoManager.CheckRedo(currentFile.Guid!));
+
             }
 
             return response;
@@ -162,6 +196,9 @@ namespace draftio.viewmodels
                 {
                     refreshProjectVM.Invoke();
                 }
+
+                ChangeUndoState(undoRedoManager.CheckUndo(currentFile.Guid!));
+                ChangeRedoState(undoRedoManager.CheckRedo(currentFile.Guid!));
             }
 
             return response;

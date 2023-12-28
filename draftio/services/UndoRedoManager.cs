@@ -72,6 +72,16 @@ namespace draftio.services
             }
         }
 
+        public bool CheckUndo(string guid)
+        {
+            if (UndoLogs.ContainsKey(guid))
+            {
+                if (UndoLogs[guid].Count > 0) return true;
+                else return false;
+            }
+            return false;
+        }
+
         public void Redo(string guid)
         {
             if (RedoLogs.ContainsKey(guid) && RedoLogs[guid].Count > 0)
@@ -80,10 +90,18 @@ namespace draftio.services
 
                 UndoLogs[guid].Push(command);
 
-                
-
                 Execute(guid);
             }
+        }
+
+        public bool CheckRedo(string guid)
+        {
+            if (RedoLogs.ContainsKey(guid))
+            {
+                if (RedoLogs[guid].Count > 0) return true;
+                else return false;
+            }
+            return false;
         }
 
         public void Execute(string guid)

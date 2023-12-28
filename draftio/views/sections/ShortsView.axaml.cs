@@ -15,10 +15,14 @@ namespace draftio
     {
         ShortsViewModel ViewModel { get; set; }
 
-
-
         private Image _saveImageFile_original;
         private Image _grayScaleImageFile;
+
+        private Image _undoImageFile_original;
+        private Image _grayScaleUndoImageFile;
+
+        private Image _redoImageFile_original;
+        private Image _grayScaleRedoImageFile;
 
         public ShortsView()
         {
@@ -127,15 +131,42 @@ namespace draftio
             {
                 SaveImageFile.Source = _saveImageFile_original.Source;
             }
+
+            if(ViewModel.IsUndo)
+            {
+                UndoImageFile.Source = _undoImageFile_original.Source;
+            }
+            else
+            {
+                UndoImageFile.Source = _grayScaleUndoImageFile.Source;
+            }
+
+            if (ViewModel.IsRedo)
+            {
+                RedoImageFile.Source = _redoImageFile_original.Source;
+            }
+            else
+            {
+                RedoImageFile.Source = _grayScaleRedoImageFile.Source;
+            }
         }
 
         private void GenerateImages ()
         {
             _saveImageFile_original = new Image();
             _saveImageFile_original.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/save.png")));
-
             _grayScaleImageFile = new Image();
             _grayScaleImageFile.Source = GetGrayScaleImage("avares://draftio/assets/save.png");
+
+            _undoImageFile_original = new Image();
+            _undoImageFile_original.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/undo.png")));
+            _grayScaleUndoImageFile = new Image();
+            _grayScaleUndoImageFile.Source = GetGrayScaleFromBlackImage("avares://draftio/assets/undo.png");
+
+            _redoImageFile_original = new Image();
+            _redoImageFile_original.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/redo.png")));
+            _grayScaleRedoImageFile = new Image();
+            _grayScaleRedoImageFile.Source = GetGrayScaleFromBlackImage("avares://draftio/assets/redo.png");
         }
 
         public Avalonia.Media.Imaging.Bitmap GetGrayScaleImage(string path)
@@ -171,6 +202,47 @@ namespace draftio
                 };
 
                 canvas.DrawBitmap(originalBitmap, 0,0, paint);
+            }
+
+            return grayScaleBitmap;
+        }
+
+        public Avalonia.Media.Imaging.Bitmap GetGrayScaleFromBlackImage(string path)
+        {
+            Stream stream = AssetLoader.Open(new Uri(path));
+
+            SKBitmap originalBitmap;
+            using (SKManagedStream skStream = new SKManagedStream(stream))
+            {
+                originalBitmap = SKBitmap.Decode(skStream);
+            }
+
+            SKBitmap grayScaleBitmap = ConvertFromBlackToGrayScale(originalBitmap);
+
+            return SKBitmapToAvaloniaBitmap(grayScaleBitmap);
+        }
+
+        private SKBitmap ConvertFromBlackToGrayScale(SKBitmap originalBitmap)
+        {
+            SKBitmap grayScaleBitmap = new SKBitmap(originalBitmap.Width, originalBitmap.Height);
+
+            using (SKCanvas canvas = new SKCanvas(grayScaleBitmap))
+            {
+
+
+                SKPaint paint = new SKPaint
+                {
+                    ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+                    {
+                        0.2126f, 0.7152f, 0.722f, 0.3f, 0.3f,
+                        0.2126f, 0.7152f, 0.722f, 0.3f, 0.3f,
+                        0.2126f, 0.7152f, 0.722f, 0.3f, 0.3f,
+                        0, 0, 0, 1, 0
+                    })
+                };
+
+
+                canvas.DrawBitmap(originalBitmap, 0, 0, paint);
             }
 
             return grayScaleBitmap;

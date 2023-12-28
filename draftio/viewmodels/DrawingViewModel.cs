@@ -87,12 +87,16 @@ namespace draftio.viewmodels
 
                     selectedCanvas.Add(canvasObj);
                     undoRedoManager.AddCommand(CurrentFile!.Guid!, new AddCommand(canvasObj));
+                    shortsViewModel.ChangeUndoState(true);
+                    shortsViewModel.ChangeRedoState(false);
                     return;
                 } 
             } 
 
             Objects.Add(canvasObj);
             undoRedoManager.AddCommand(CurrentFile!.Guid!, new AddCommand(canvasObj));
+            shortsViewModel.ChangeUndoState(true);
+            shortsViewModel.ChangeRedoState(false);
         }
 
 
