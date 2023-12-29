@@ -1,7 +1,9 @@
 ﻿using Avalonia.Animation.Easings;
 using draftio.models;
+using draftio.models.commands;
 using draftio.models.dtos;
 using draftio.models.interfaces;
+using draftio.models.objects;
 using draftio.models.objects.@base;
 using System;
 using System.Collections.Generic;
@@ -18,6 +20,7 @@ namespace draftio.services
 
         public Dictionary<string, Stack<ICommand>> UndoLogs { get; set; }
         public Dictionary<string, Stack<ICommand>> RedoLogs { get; set; }
+        public Dictionary<string, List<GObject>> HardCoded { get; set; }
 
         private List<GObject>? currentFileObjects = new List<GObject>();
 
@@ -28,7 +31,34 @@ namespace draftio.services
 
             UndoLogs = new Dictionary<string, Stack<ICommand>>();
             RedoLogs = new Dictionary<string, Stack<ICommand>>();
+            HardCoded = new Dictionary<string, List<GObject>>();
         }
+
+        // save objects from saved and opened project file
+        public void SetHardCoded(string guid, List<GObject> hardCodedObjects)
+        {
+            if(hardCodedObjects.Count == 0)
+            {
+                return;
+            }
+
+            if (!HardCoded.ContainsKey(guid))
+            {
+                HardCoded[guid] = new List<GObject>();
+            }
+
+            foreach (var obj in hardCodedObjects)
+            {
+                if(obj.ObjectType == models.enums.ObjectType.Canvas)
+                {
+                    var canvasObj = (CanvasObj)obj;
+                    SetHardCoded(guid, canvasObj.Children);
+                }
+
+                HardCoded[guid].Add(obj);
+            }
+        }
+
 
         public void SetCurrentFileObjects (List<GObject> objects)
         {
@@ -108,6 +138,18 @@ namespace draftio.services
             // we can reach the page node via guid parameter, and we can handle changes of object according to the command logs.
 
             var node = GetNode(guid);
+
+            if(HardCoded.ContainsKey(guid))
+            {
+                HardCodedCommand hc_command = new HardCodedCommand(HardCoded[guid]);
+
+                UndoRedoDTO hc_urdto = new UndoRedoDTO
+                {
+                    page = node,
+                };
+
+                hc_command.Execute(hc_urdto);
+            }
 
             if (UndoLogs.ContainsKey(guid) && UndoLogs[guid].Count > 0 && node != null)
             {

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using draftio.models;
 using draftio.models.dtos;
 using draftio.services;
 using System;
@@ -12,6 +13,7 @@ namespace draftio.viewmodels
     public partial class MainViewModel : ObservableObject
     {
         private readonly ProjectManager projectManager;
+        private readonly UndoRedoManager undoRedoManager;
 
         [ObservableProperty]
         private string? _message = "this is a test";
@@ -23,6 +25,8 @@ namespace draftio.viewmodels
         {
             var fileManager = App.GetService<FileManager>();
             projectManager = App.GetService<ProjectManager>();
+            undoRedoManager = App.GetService<UndoRedoManager>();
+
 
             string[]? args = fileManager.Args;
 
@@ -36,6 +40,23 @@ namespace draftio.viewmodels
 
             var res = projectManager.InitializeProject();
             response = res.Result;
+
+            if(response.Success && response.Result != null)
+            {
+                Project? project = (Project)response.Result;
+
+                foreach (var node in project.Nodes)
+                {
+                    if(node.Type == models.enums.NodeType.File)
+                    {
+                        File file = (File)node;
+
+                        // set hardcoded objects for undo/redo management
+                        undoRedoManager.SetHardCoded(file.Guid!, file.Objects);
+                    }
+                }
+               
+            }
 
             return response;
         }

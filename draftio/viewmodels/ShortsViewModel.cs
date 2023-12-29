@@ -91,8 +91,11 @@ namespace draftio.viewmodels
         {
             currentFile = file;
 
-            ChangeUndoState(undoRedoManager.CheckUndo(currentFile.Guid!));
-            ChangeRedoState(undoRedoManager.CheckRedo(currentFile.Guid!));
+            if(currentFile != null)
+            {
+                ChangeUndoState(undoRedoManager.CheckUndo(currentFile.Guid!));
+                ChangeRedoState(undoRedoManager.CheckRedo(currentFile.Guid!));
+            }
         }
 
         public VMResponse LoadProject(string data)
@@ -102,6 +105,9 @@ namespace draftio.viewmodels
             response = ioManager.LoadProject(data);
 
             projectManager.CurrentProject = ((SaveProjectData)response.Result!).Project;
+            
+            SetHardCodedFiles(projectManager.CurrentProject!);
+            
             projectManager.projects.Add(projectManager.CurrentProject!);
 
             if(refreshProjectVM != null)
@@ -111,6 +117,21 @@ namespace draftio.viewmodels
 
 
             return response;
+        }
+
+
+        private void SetHardCodedFiles(Project project)
+        {
+            foreach (var node in project.Nodes)
+            {
+                if (node.Type == models.enums.NodeType.File)
+                {
+                    File file = (File)node;
+
+                    // set hardcoded objects for undo/redo management
+                    undoRedoManager.SetHardCoded(file.Guid!, file.Objects);
+                }
+            }
         }
 
         // save only current page

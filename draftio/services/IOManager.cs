@@ -92,6 +92,8 @@ namespace draftio.services
                     if(node.Type == models.enums.NodeType.File)
                     {
                         models.File file = (models.File)node;
+
+                        
                         
                         foreach(var obj in file.Objects)
                         {

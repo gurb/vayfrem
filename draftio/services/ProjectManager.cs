@@ -14,6 +14,7 @@ namespace draftio.services
         private readonly FileManager fileManager;
         private readonly IOManager ioManager;
 
+
         public List<Project> projects = new List<Project>();
 
         public Project? CurrentProject { get; set; }
@@ -39,6 +40,8 @@ namespace draftio.services
                     {
                         CurrentProject = ((SaveProjectData)res.Result.Result!).Project;
                         projects.Add(CurrentProject!);
+
+                        response.Result = CurrentProject;
 
                         CurrentProject!.RootFolder = (Folder)CurrentProject.Nodes[0];
                     }
