@@ -15,6 +15,10 @@
 	
 	
 	<StackPanel Orientation="Vertical">
+		<Button x:Name="SelectTool" Margin="5" Padding="10">
+			<Image Source="avares://draftio/assets/cursor.png" Width="25" Height="25">
+			</Image>
+		</Button>
 		<Button x:Name="RectTool" Classes="Selected" Margin="5" Padding="10">
 			<Image Source="avares://draftio/assets/rect.png" Width="25" Height="25">
 			</Image>

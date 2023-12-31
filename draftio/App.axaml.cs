@@ -32,7 +32,6 @@ namespace draftio
 
         public App()
         {
-            
             AppHost = Host.CreateDefaultBuilder()
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices((context, services) =>

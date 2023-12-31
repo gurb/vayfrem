@@ -10,6 +10,7 @@ using draftio.models.structs;
 using draftio.services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace draftio.viewmodels
 {
@@ -23,13 +24,22 @@ namespace draftio.viewmodels
         List<GObject> objects = new();
 
         [ObservableProperty]
-        IObject? selectedObject;
+        GObject? selectedObject;
 
         [ObservableProperty]
-        IObject? activeTextObject;
+        GObject? activeTextObject;
 
         [ObservableProperty]
         bool isEmpty = true;
+
+        [ObservableProperty]
+        SelectionObj? selectionObj;
+
+        [ObservableProperty]
+        bool isScale = false;
+
+        [ObservableProperty]
+        bool isOverScalePoint;
 
 
         File? currentFile;
@@ -50,6 +60,8 @@ namespace draftio.viewmodels
             shortsViewModel = App.GetService<ShortsViewModel>();
             shortsViewModel.drawDelegate += ChangeFile;
             undoRedoManager = App.GetService<UndoRedoManager>();
+
+            selectionObj = new SelectionObj();
         }
 
         [RelayCommand]
@@ -100,6 +112,20 @@ namespace draftio.viewmodels
             shortsViewModel.ChangeRedoState(false);
         }
 
+        public void SetSelectedObject(GObject? obj)
+        {
+            if(SelectionObj!.SelectedObject != null)
+            {
+                SelectionObj!.SelectedObject.ZIndex = 1;
+            }
+            SelectionObj!.SelectedObject = obj;
+            SelectionObj!.SelectedObject!.ZIndex = SelectionObj!.ZIndex;
+        }
+
+        public GObject? GetSelectionObject()
+        {
+            return SelectionObj!.SelectedObject;
+        }
 
         private void SetSaveStateCurrentFile ()
         {
@@ -145,6 +171,8 @@ namespace draftio.viewmodels
             bool isCollide = false;
 
             var tempObjects = canvas != null ? canvas.Children : Objects;
+
+            tempObjects = tempObjects.OrderBy(x => x.ZIndex).ToList();
 
             foreach (var obj in tempObjects)
             {

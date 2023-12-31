@@ -20,10 +20,17 @@ public partial class ToolbarView : UserControl
         InitializeComponent();
         selectedButton = RectTool;
 
+        SelectTool.Click += SelectTool_Click;
         RectTool.Click += RectTool_Click;
         TextTool.Click += TextTool_Click;
         ZoomInTool.Click += ZoomInTool_Click;
         ZoomOutTool.Click += ZoomOutTool_Click;
+    }
+
+    private void SelectTool_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        setButton(SelectTool);
+        toolManager.SetToolOption(ToolOption.Select);
     }
 
     private void TextTool_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

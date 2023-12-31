@@ -5,6 +5,8 @@ using Avalonia.Media;
 using draftio.models.objects;
 using draftio.models.objects.@base;
 using draftio.models.structs;
+using draftio.viewmodels;
+using draftio.views.components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +19,24 @@ namespace draftio.services
     public class RenderManager
     {
         private Vector2 childMoveOffset = new Vector2(0,0);
+        private readonly DrawingViewModel drawingViewModel;
+        public Canvas? MainDisplay { get; set; }
+        public double Zoom { get; set; }
 
-        public RenderManager() { }
+        SelectionObject selectionObject = new SelectionObject();
+
+        public RenderManager() 
+        {
+            drawingViewModel = App.GetService<DrawingViewModel>();
+        }
+
+        public void SetMainDisplay(Canvas mainDisplay)
+        {
+            MainDisplay = mainDisplay;
+            selectionObject.SetViewModel(drawingViewModel);
+            selectionObject.SetMainDisplay(MainDisplay);
+        }
+
 
         public void Render(Panel Display, List<GObject> objects)
         {
@@ -157,7 +175,7 @@ namespace draftio.services
             }
         }
 
-        
+        // last equals currentPosition ****
         public void RenderOverlay(Canvas Overlay, Point first, Point last, bool drawActive, bool moveActive, IObject? moveObject, Vector2 moveOffset)
         {
             Overlay.Children.Clear();
@@ -198,6 +216,23 @@ namespace draftio.services
                 overlayActive.StrokeThickness = 1;
 
                 Overlay.Children.Add(overlayActive);
+            }
+
+            if(drawingViewModel.SelectionObj!.SelectedObject != null)
+            {
+                GObject selected = drawingViewModel.SelectionObj!.SelectedObject;
+
+                selectionObject.Width = selected.Width;
+                selectionObject.Height = selected.Height;
+                Canvas.SetLeft(selectionObject, selected.WorldX);
+                Canvas.SetTop(selectionObject, selected.WorldY);
+
+                selectionObject.OverlayPosition = new Point(selected.WorldX, selected.WorldY);
+
+                selectionObject.Update(last, Zoom);
+                selectionObject.Draw();
+
+                Overlay.Children.Add(selectionObject);
             }
         } 
     }

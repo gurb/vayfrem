@@ -18,7 +18,7 @@ public partial class MainView : UserControl
         ViewModel = App.GetService<MainViewModel>();
         DataContext = ViewModel;
         InitializeComponent();
-    
+
         CheckProjectStatus();
     }
 

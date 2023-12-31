@@ -16,6 +16,7 @@ namespace draftio.models.objects.@base
         public double Y { get; set; }
         public double Width { get; set; }
         public double Height { get; set; }
+        public int ZIndex { get; set; } = 1;
         public ColorS BackgroundColor { get; set; } = new ColorS(255, 255, 255, 255);
         public ColorS BorderColor { get; set; } = new ColorS(0, 0, 0, 255);
         public float BorderSize { get; set; }

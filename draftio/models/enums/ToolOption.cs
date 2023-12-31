@@ -8,6 +8,7 @@ namespace draftio.models.enums
 {
     public enum ToolOption
     {
+        Select,
         Rect,
         Text,
         Erase,

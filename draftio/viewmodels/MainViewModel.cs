@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using draftio.models;
 using draftio.models.dtos;
 using draftio.services;
@@ -14,6 +15,7 @@ namespace draftio.viewmodels
     {
         private readonly ProjectManager projectManager;
         private readonly UndoRedoManager undoRedoManager;
+
 
         [ObservableProperty]
         private string? _message = "this is a test";

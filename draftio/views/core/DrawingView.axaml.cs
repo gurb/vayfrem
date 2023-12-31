@@ -7,6 +7,8 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
 using draftio.models.dtos;
+using draftio.models.enums;
+using draftio.models.objects.@base;
 using draftio.models.structs;
 using draftio.services;
 using draftio.viewmodels;
@@ -28,6 +30,7 @@ public partial class DrawingView : UserControl
     // status of draw operation
     private bool isDraw;
     private bool isMove;
+    private bool isSelect;
     private Avalonia.Point currentPosition;
     private Avalonia.Point firstPosition;
     private Avalonia.Point lastPosition;
@@ -55,6 +58,7 @@ public partial class DrawingView : UserControl
         Display.PointerPressed += OnPointerPressed;
         Display.PointerReleased += OnPointerReleased;
         Display.PointerMoved += OnPointerMoved;
+        Display.PointerWheelChanged += Display_PointerWheelChanged;
 
         Overlay = new Canvas();
         Overlay.Width = 1920;
@@ -68,14 +72,9 @@ public partial class DrawingView : UserControl
         Canvas.SetTop(Overlay, 0);
         Canvas.SetLeft(Overlay, 0);
 
-
-
         Display.Children.Add(Overlay);
 
-        Display.PointerWheelChanged += DisplayZoom_OnPointerWheelChanged;
-
         Display.IsVisible = false;
-
 
 
         // new ----------------------------------
@@ -95,23 +94,28 @@ public partial class DrawingView : UserControl
         //timer.Tick += Timer_Tick;
         //timer.Start();
         AfterInit();
+        renderManager.SetMainDisplay(Display);
     }
 
+    private void Display_PointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    {
+        var point = e.GetCurrentPoint(sender as Control);
+        currentPosition = e.GetPosition(sender as Control);
+
+        renderManager.Zoom = ZoomBorder.ZoomX;
+
+        renderManager.RenderOverlay(Overlay, firstPosition, currentPosition, isDraw, isMove, ViewModel.SelectedObject, moveOffset);
+    }
 
     private void AfterInit()
     {
         draw();
     }
-
     
-
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
         var point = e.GetCurrentPoint(sender as Control);
         currentPosition = e.GetPosition(sender as Control);
-
-        
-
 
         if (Display.IsPointerOver)
         {
@@ -124,10 +128,11 @@ public partial class DrawingView : UserControl
                // tt.Y = origin.Y - v.Y;
             }
         }
-        
 
-
-
+        if(ViewModel.IsScale)
+        {
+            handleScale();
+        }
 
         renderManager.RenderOverlay(Overlay, firstPosition, currentPosition, isDraw, isMove, ViewModel.SelectedObject, moveOffset);
     }
@@ -155,28 +160,47 @@ public partial class DrawingView : UserControl
             handleTranslate();
             draw();
         }
+        ViewModel.IsScale = false;
     }
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         var point = e.GetCurrentPoint(sender as Control);
         var position = point.Position;
+        currentPosition = position;
 
-        if (point.Properties.IsLeftButtonPressed)
+
+        if (point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select)
+        {
+            isSelect = true;
+            firstPosition = position;
+            ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
+            handleSelection();
+        }
+
+        if(point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && isSelect && ViewModel.IsOverScalePoint)
+        {
+            ViewModel.IsScale = true;
+        }
+
+
+        if (point.Properties.IsLeftButtonPressed 
+            && 
+            (
+                toolManager.SelectedToolOption == ToolOption.Rect ||
+                toolManager.SelectedToolOption == ToolOption.Text
+            ))
         {
             isDraw = true;
             firstPosition = position;
             ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
-
-
-
         }
+        
 
         if (point.Properties.IsRightButtonPressed)
         {
             isMove = true;
             firstPosition = position;
-
 
             ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
 
@@ -230,6 +254,44 @@ public partial class DrawingView : UserControl
         }
     }
 
+    private void handleSelection()
+    {
+        if (ViewModel.SelectedObject != null)
+        {
+            ViewModel.SetSelectedObject(ViewModel.SelectedObject);
+        }
+    }
+
+    private void handleScale()
+    {
+        if (ViewModel.SelectedObject != null)
+        {
+            GObject? obj = ViewModel.GetSelectionObject();
+
+            if(obj != null)
+            {
+                if(currentPosition.X > obj.X)
+                {
+                    obj.Width = obj.Width - (currentPosition.X - obj.X);
+                }
+                else
+                {
+                    obj.Width = obj.Width - (obj.X - currentPosition.X);
+                }
+                if(currentPosition.Y > obj.Y)
+                {
+                    obj.Height = obj.Height - (currentPosition.Y - obj.Y);
+                }
+                else
+                {
+                    obj.Height = obj.Height - (obj.Y - currentPosition.Y);
+                }
+                //obj.Height = obj.Height - (currentPosition.Y - obj.Y);
+                obj.X = currentPosition.X;
+                obj.Y = currentPosition.Y;
+            }
+        }
+    }
 
     private void draw()
     {
@@ -247,96 +309,8 @@ public partial class DrawingView : UserControl
         }
     }
 
-    private Avalonia.Point lastMousePosition = new Avalonia.Point(0, 0);
-    //private System.Drawing.Drawing2D.Matrix matrix = Matrix.Identity;
-    private double totalScale = 1.0;
-    private double scaleDelta = 0.1;
-
-    private double zoomFactor = 1.0;
-
-    private float scale = 1.0f;
-
-    private void DisplayZoom_OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
-    {
-
-
-
-        //BorderMain.RenderTransformOrigin = new RelativePoint(position.X / 1920, position.Y / 1080, RelativeUnit.Relative);
-
-
-
-
-        //xform.ScaleX = 1;
-        //xform.ScaleY = 1;
-        //Display.RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
-
-
-        //var position = e.GetPosition(sender as Control);
-
-        //Display.RenderTransformOrigin = new RelativePoint(position.X / 1920, position.Y / 1080, RelativeUnit.Relative);
-
-        //xform.ScaleX = 1;
-        //xform.ScaleY = 1;
-
-
-        //st = ScaleAt(scale, scale, pos1.X, pos1.Y) * st.Value;
-
-
-
-
-
-        //// Ölçekleme faktörü
-
-
-
-        //if (e.Delta.Y > 0)
-        //{
-        //    scale = scale + 0.1f;
-        //} 
-        //else
-        //{
-        //    scale = scale - 0.1f;
-        //}
-
-        //if (scale < 0.2f)
-        //{
-        //    scale = 0.2f;
-        //} 
-        //else if (scale > 1.9f)
-        //{
-        //    scale = 1.9f;
-        //}
-        //else
-        //{
-        //    xform.ScaleX = scale;
-        //    xform.ScaleY = scale;
-        //    Display.RenderTransformOrigin = new RelativePoint(position.X / 1920, position.Y / 1080, RelativeUnit.Relative);
-        //}
-
-
-
-
-
-
-
-
-        //var tt = (TranslateTransform)((TransformGroup)Display.RenderTransform)
-        //      .Children.First(tr => tr is TranslateTransform);
-        //tt.X = position.X / 1920;
-        //tt.Y = position.Y / 1080;
-
-        //Display.RenderTransformOrigin = new RelativePoint(position.X / 1920, position.Y / 1080, RelativeUnit.Relative);
-
-
-    }
-
     public static Avalonia.Matrix ScaleAt(double scaleX, double scaleY, double centerX, double centerY)
     {
         return new Avalonia.Matrix(scaleX, 0, 0, scaleY, centerX - (scaleX * centerX), centerY - (scaleY * centerY));
     }
-
-
-
-
-
 }
