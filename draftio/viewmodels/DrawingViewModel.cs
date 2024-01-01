@@ -82,6 +82,8 @@ namespace draftio.viewmodels
             canvasObj.Width = passData.Width;
             canvasObj.Height = passData.Height;
 
+            if (passData.Width < 10 && passData.Height < 10) return;
+
             if(SelectedObject != null)
             {
                 if(SelectedObject.ObjectType == models.enums.ObjectType.Canvas)

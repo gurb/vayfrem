@@ -6,9 +6,11 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="draftio.SidebarView">
 	<Grid RowDefinitions="* *">
-		<Grid Grid.Column="0">
+		<Grid Grid.Row="0">
 			<views:ProjectTreeView/>
 		</Grid>
-		<Grid Grid.Column="1"></Grid>
+		<Grid  Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+			<views:PropertyView/>
+		</Grid>
 	</Grid>
 </UserControl>

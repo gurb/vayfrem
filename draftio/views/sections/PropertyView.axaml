@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:vm="using:draftio.viewmodels"
+             x:DataType="vm:PropertyViewModel"
+			 x:CompileBindings="True"
+			 x:Class="draftio.views.sections.PropertyView">
+
+
+		<DataGrid Margin="0"  x:Name="datagrid" ItemsSource="{Binding Properties}"
+			IsReadOnly="True"
+			CanUserReorderColumns="True"
+			CanUserResizeColumns="True"
+			CanUserSortColumns="False"
+			GridLinesVisibility="All"
+			HorizontalAlignment="Stretch"
+			ColumnWidth="*"
+			BorderThickness="1" BorderBrush="Gray">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Property" Width="*"  Binding="{Binding Name}"/>
+				<DataGridTextColumn Header="Values" Width="*" Binding="{Binding Value}" />
+			</DataGrid.Columns>
+		</DataGrid>
+	
+</UserControl>
