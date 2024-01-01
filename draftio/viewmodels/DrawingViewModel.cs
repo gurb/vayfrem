@@ -41,6 +41,9 @@ namespace draftio.viewmodels
         [ObservableProperty]
         bool isOverScalePoint;
 
+        [ObservableProperty]
+        string? getOverScalePoint;
+
 
         File? currentFile;
 
@@ -126,6 +129,7 @@ namespace draftio.viewmodels
         {
             return SelectionObj!.SelectedObject;
         }
+
 
         private void SetSaveStateCurrentFile ()
         {

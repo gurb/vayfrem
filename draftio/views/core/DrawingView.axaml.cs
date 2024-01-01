@@ -160,7 +160,12 @@ public partial class DrawingView : UserControl
             handleTranslate();
             draw();
         }
-        ViewModel.IsScale = false;
+
+        if(ViewModel.IsScale)
+        {
+            ViewModel.IsScale = false;
+            draw();
+        }
     }
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -170,7 +175,7 @@ public partial class DrawingView : UserControl
         currentPosition = position;
 
 
-        if (point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select)
+        if (point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && !ViewModel.IsOverScalePoint && !ViewModel.IsScale)
         {
             isSelect = true;
             firstPosition = position;
@@ -178,7 +183,7 @@ public partial class DrawingView : UserControl
             handleSelection();
         }
 
-        if(point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && isSelect && ViewModel.IsOverScalePoint)
+        if(point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && isSelect && ViewModel.IsOverScalePoint && !ViewModel.IsScale)
         {
             ViewModel.IsScale = true;
         }
@@ -268,27 +273,158 @@ public partial class DrawingView : UserControl
         {
             GObject? obj = ViewModel.GetSelectionObject();
 
-            if(obj != null)
+            string? scalePointType = ViewModel.GetOverScalePoint;
+
+            Avalonia.Point currentPos = currentPosition;
+
+            double old_X = obj.X;
+            double old_Y = obj.Y;
+
+            if(obj.Parent != null)
             {
-                if(currentPosition.X > obj.X)
+                currentPos = new Avalonia.Point(currentPos.X - obj.Parent.WorldX, currentPos.Y - obj.Parent.WorldY);
+            }
+
+            if(currentPos.X < obj.X && (scalePointType ==  "TopRight" || scalePointType == "MiddleRight" || scalePointType == "BottomRight"))
+            {
+                return;
+            }
+            if(currentPos.Y < obj.Y && (scalePointType == "BottomLeft" || scalePointType == "BottomCenter" || scalePointType == "BottomRight")) 
+            { 
+                return; 
+            }
+
+            if(obj != null && scalePointType != null)
+            {
+
+                if(scalePointType == "TopLeft")
                 {
-                    obj.Width = obj.Width - (currentPosition.X - obj.X);
+                    if (currentPos.X > obj.X)
+                    {
+                        obj.Width = obj.Width - (currentPos.X - obj.X);
+                    }
+                    else
+                    {
+                        obj.Width = obj.Width + (obj.X - currentPos.X);
+                    }
+                    if (currentPos.Y > obj.Y)
+                    {
+                        obj.Height = obj.Height - (currentPos.Y - obj.Y);
+                    }
+                    else
+                    {
+                        obj.Height = obj.Height + (obj.Y - currentPos.Y);
+                    }
+                    
+                    obj.X = currentPos.X;
+                    obj.Y = currentPos.Y;
                 }
-                else
+                
+                if(scalePointType == "TopCenter")
                 {
-                    obj.Width = obj.Width - (obj.X - currentPosition.X);
+                    if (currentPos.Y > obj.Y)
+                    {
+                        obj.Height = obj.Height - (currentPos.Y - obj.Y);
+                    }
+                    else
+                    {
+                        obj.Height = obj.Height + (obj.Y - currentPos.Y);
+                    }
+                    
+                    obj.Y = currentPos.Y;
                 }
-                if(currentPosition.Y > obj.Y)
+                if(scalePointType == "TopRight")
                 {
-                    obj.Height = obj.Height - (currentPosition.Y - obj.Y);
+                    if (currentPos.X > obj.X + obj.Width)
+                    {
+                        obj.Width = Math.Abs(currentPos.X - obj.X);
+                    }
+                    else
+                    {
+                        obj.Width = Math.Abs(currentPos.X - obj.X);
+                    }
+                    if (currentPos.Y > obj.Y)
+                    {
+                        obj.Height = obj.Height + (obj.Y - currentPos.Y);
+                    }
+                    else
+                    {
+                        obj.Height = obj.Height + (obj.Y - currentPos.Y);
+                    }
+                    
+                    obj.Y = currentPos.Y;
                 }
-                else
+
+                if(scalePointType == "MiddleLeft")
                 {
-                    obj.Height = obj.Height - (obj.Y - currentPosition.Y);
+                    if (currentPos.X > obj.X)
+                    {
+                        obj.Width = obj.Width - (currentPos.X - obj.X);
+                    }
+                    else
+                    {
+                        obj.Width = obj.Width + (obj.X - currentPos.X);
+                    }
+
+                    obj.X = currentPos.X;
                 }
-                //obj.Height = obj.Height - (currentPosition.Y - obj.Y);
-                obj.X = currentPosition.X;
-                obj.Y = currentPosition.Y;
+
+                if (scalePointType == "MiddleRight")
+                {
+                    if (currentPos.X > obj.X + Width)
+                    {
+                        obj.Width = Math.Abs(currentPos.X - obj.X);
+                    }
+                    else
+                    {
+                        obj.Width = Math.Abs(currentPos.X - obj.X);
+                    }
+                }
+
+                if(scalePointType == "BottomLeft")
+                {
+                    if (currentPos.X > obj.X)
+                    {
+                        obj.Width = obj.Width - (currentPos.X - obj.X);
+                    }
+                    else
+                    {
+                        obj.Width = obj.Width + (obj.X - currentPos.X);
+                    }
+                    if (currentPos.Y > obj.Y)
+                    {
+                        obj.Height = Math.Abs(currentPos.Y - obj.Y);
+                    }
+                    else
+                    {
+                        obj.Height = Math.Abs(obj.Y - currentPos.Y);
+                    }
+                    obj.X = currentPos.X;
+                }
+
+                if(scalePointType == "BottomCenter")
+                {
+                    obj.Height = Math.Abs(currentPos.Y - obj.Y);
+                }
+
+                if(scalePointType == "BottomRight")
+                {
+                    obj.Width = Math.Abs(currentPos.X - obj.X);
+                    obj.Height = Math.Abs(currentPos.Y - obj.Y);
+                }
+
+                if (obj.Width <= 50)
+                {
+                    obj.X = old_X;
+                    obj.Width = 51;
+                    return;
+                }
+                if (obj.Height <= 50)
+                {
+                    obj.Y = old_Y;
+                    obj.Height = 51;
+                    return;
+                }
             }
         }
     }

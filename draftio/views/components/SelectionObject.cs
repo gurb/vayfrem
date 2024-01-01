@@ -188,6 +188,11 @@ namespace draftio.views.components
         {
             bool isCollide = false;
 
+            if(ViewModel.IsScale)
+            {
+                return;
+            }
+
             foreach (var obj in rects)
             {
                 if (mousePosition.X >= obj.Bounds.TopLeft.X &&

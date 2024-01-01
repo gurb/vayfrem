@@ -21,7 +21,7 @@ namespace draftio.services
         private Vector2 childMoveOffset = new Vector2(0,0);
         private readonly DrawingViewModel drawingViewModel;
         public Canvas? MainDisplay { get; set; }
-        public double Zoom { get; set; }
+        public double Zoom { get; set; } = 1;
 
         SelectionObject selectionObject = new SelectionObject();
 
