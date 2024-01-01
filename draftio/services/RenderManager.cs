@@ -218,9 +218,9 @@ namespace draftio.services
                 Overlay.Children.Add(overlayActive);
             }
 
-            if(drawingViewModel.SelectionObj!.SelectedObject != null)
+            if(drawingViewModel.CurrentFile != null && drawingViewModel.CurrentFile.Selection!.SelectedObject != null)
             {
-                GObject selected = drawingViewModel.SelectionObj!.SelectedObject;
+                GObject selected = drawingViewModel.CurrentFile.Selection!.SelectedObject;
 
                 selectionObject.Width = selected.Width;
                 selectionObject.Height = selected.Height;

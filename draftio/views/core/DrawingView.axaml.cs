@@ -138,7 +138,6 @@ public partial class DrawingView : UserControl
     }
 
     
-
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         var point = e.GetCurrentPoint(sender as Control);
@@ -264,6 +263,9 @@ public partial class DrawingView : UserControl
         if (ViewModel.SelectedObject != null)
         {
             ViewModel.SetSelectedObject(ViewModel.SelectedObject);
+        }else
+        {
+            ViewModel.SetSelectedObject(null);
         }
     }
 
@@ -439,6 +441,7 @@ public partial class DrawingView : UserControl
             Display.Children.Add(Overlay);
 
             renderManager.Render(Display, ViewModel.Objects);
+            renderManager.RenderOverlay(Overlay, firstPosition, currentPosition, isDraw, isMove, ViewModel.SelectedObject, moveOffset);
         } else
         {
             Display.IsVisible = false;

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace draftio.models
@@ -16,9 +17,13 @@ namespace draftio.models
         public string? TabGuid { get; set; }
         public List<GObject> Objects { get; set; } = new List<GObject>();
 
+        [JsonIgnore]
+        public SelectionObj? Selection { get; set; }
+
         public File ()
         {
             Type = NodeType.File;
+            Selection = new SelectionObj();
         }
 
         public File (string name)

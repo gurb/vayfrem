@@ -32,8 +32,6 @@ namespace draftio.viewmodels
         [ObservableProperty]
         bool isEmpty = true;
 
-        [ObservableProperty]
-        SelectionObj? selectionObj;
 
         [ObservableProperty]
         bool isScale = false;
@@ -44,27 +42,20 @@ namespace draftio.viewmodels
         [ObservableProperty]
         string? getOverScalePoint;
 
-
+        [ObservableProperty]
         File? currentFile;
 
-        public File? CurrentFile
-        {
-            get
-            {
-                return currentFile;
-            }
-        }
 
         public delegate void DrawDelegate();
         public DrawDelegate? drawDelegate;
+
+        public delegate void DrawOverlayDelegate();
 
         public DrawingViewModel() 
         {
             shortsViewModel = App.GetService<ShortsViewModel>();
             shortsViewModel.drawDelegate += ChangeFile;
             undoRedoManager = App.GetService<UndoRedoManager>();
-
-            selectionObj = new SelectionObj();
         }
 
         [RelayCommand]
@@ -117,25 +108,37 @@ namespace draftio.viewmodels
 
         public void SetSelectedObject(GObject? obj)
         {
-            if(SelectionObj!.SelectedObject != null)
+            if(CurrentFile == null)
             {
-                SelectionObj!.SelectedObject.ZIndex = 1;
+                return;
             }
-            SelectionObj!.SelectedObject = obj;
-            SelectionObj!.SelectedObject!.ZIndex = SelectionObj!.ZIndex;
+
+            if(CurrentFile.Selection!.SelectedObject != null)
+            {
+                CurrentFile.Selection!.SelectedObject.ZIndex = 1;
+            }
+
+            CurrentFile.Selection!.SelectedObject = obj;
+            
+            if(obj != null)
+            {
+                CurrentFile.Selection!.SelectedObject!.ZIndex = CurrentFile.Selection!.ZIndex;
+            }
         }
 
         public GObject? GetSelectionObject()
         {
-            return SelectionObj!.SelectedObject;
+            if (CurrentFile == null)
+                return null;
+            return CurrentFile.Selection!.SelectedObject;
         }
 
 
         private void SetSaveStateCurrentFile ()
         {
-            if(currentFile != null)
+            if(CurrentFile != null)
             {
-                currentFile.IsSaved = false;
+                CurrentFile.IsSaved = false;
                 shortsViewModel.ChangeSaveState(false);
             }
         }
@@ -225,8 +228,14 @@ namespace draftio.viewmodels
         [RelayCommand]
         public void ChangeFile(File file)
         {
-            currentFile = file;
+            CurrentFile = file;
             Objects = file.Objects;
+
+            if(file.Selection != null)
+            {
+                SetSelectedObject(file.Selection.SelectedObject);
+            }
+
             if(drawDelegate != null)
             {
                 drawDelegate.Invoke();
