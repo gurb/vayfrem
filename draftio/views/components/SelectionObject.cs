@@ -32,7 +32,6 @@ namespace draftio.views.components
 
         List<Rectangle> rects = new List<Rectangle>();
 
-        public string GetOverScalePoint { get; set; }
 
         public SelectionObject()
         {
@@ -241,7 +240,7 @@ namespace draftio.views.components
                 MainDisplay.Cursor = new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.BottomRightCorner);
             }
 
-            GetOverScalePoint = obj.Name!;
+            ViewModel.GetOverScalePoint = obj.Name!;
         }
     }
 }
