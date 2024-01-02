@@ -19,6 +19,7 @@ namespace draftio.viewmodels
 
         private readonly ShortsViewModel shortsViewModel;
         private readonly UndoRedoManager undoRedoManager;
+        private readonly PageTreeViewModel pageTreeViewModel;
 
         [ObservableProperty]
         List<GObject> objects = new();
@@ -31,7 +32,6 @@ namespace draftio.viewmodels
 
         [ObservableProperty]
         bool isEmpty = true;
-
 
         [ObservableProperty]
         bool isScale = false;
@@ -56,12 +56,16 @@ namespace draftio.viewmodels
             shortsViewModel = App.GetService<ShortsViewModel>();
             shortsViewModel.drawDelegate += ChangeFile;
             undoRedoManager = App.GetService<UndoRedoManager>();
+            pageTreeViewModel = App.GetService<PageTreeViewModel>();
+            pageTreeViewModel.drawDelegate += Draw;
         }
 
         [RelayCommand]
         public void AddObject(PassData passData)
         {
             SetSaveStateCurrentFile();
+
+            if (passData.Width < 10 && passData.Height < 10) return;
 
             if (passData.SelectedObjectType == ObjectType.Canvas)
             {
@@ -70,6 +74,11 @@ namespace draftio.viewmodels
             else if(passData.SelectedObjectType == ObjectType.Text)
             {
                 AddText(passData);
+            }
+
+            if(pageTreeViewModel.drawPageView != null)
+            {
+                pageTreeViewModel.Refresh(CurrentFile!);
             }
         }
 
@@ -81,8 +90,6 @@ namespace draftio.viewmodels
             canvasObj.Y = passData.Y;
             canvasObj.Width = passData.Width;
             canvasObj.Height = passData.Height;
-
-            if (passData.Width < 10 && passData.Height < 10) return;
 
             if(SelectedObject != null)
             {
@@ -239,6 +246,15 @@ namespace draftio.viewmodels
             }
 
             if(drawDelegate != null)
+            {
+                drawDelegate.Invoke();
+            }
+        }
+
+
+        public void Draw()
+        {
+            if (drawDelegate != null)
             {
                 drawDelegate.Invoke();
             }

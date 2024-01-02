@@ -12,6 +12,7 @@ namespace draftio.views.sections
             ViewModel = App.GetService<PropertyViewModel>();
             DataContext = ViewModel;
 
+
             InitializeComponent();
 
         }

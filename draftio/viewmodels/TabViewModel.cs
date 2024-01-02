@@ -19,6 +19,7 @@ namespace draftio.viewmodels
 
         private readonly DrawingViewModel drawingViewModel;
         private readonly ShortsViewModel shortsViewModel;
+        private readonly PageTreeViewModel pageTreeViewModel;
 
 
         [ObservableProperty]
@@ -38,6 +39,7 @@ namespace draftio.viewmodels
         {
             drawingViewModel = App.GetService<DrawingViewModel>();
             shortsViewModel = App.GetService<ShortsViewModel>();
+            pageTreeViewModel = App.GetService<PageTreeViewModel>();
         }
 
         [RelayCommand]
@@ -67,6 +69,7 @@ namespace draftio.viewmodels
             {
                 drawingViewModel.ChangeFile((File)node);
                 shortsViewModel.SetCurrentFile((File)SelectedNode);
+                pageTreeViewModel.SetCurrentFile((File)node);
             }
         }
 
@@ -74,6 +77,7 @@ namespace draftio.viewmodels
         public void SetSelectedOnly(Node node)
         {
             drawingViewModel.SetEmptyState(false);
+
 
             SelectedNode = node;
 
@@ -119,6 +123,7 @@ namespace draftio.viewmodels
             if(SelectedNode != null && SelectedNode.Type == NodeType.File)
             {
                 drawingViewModel.ChangeFile((File)SelectedNode);
+                pageTreeViewModel.SetCurrentFile((File)SelectedNode);
                 shortsViewModel.SetCurrentFile((File)SelectedNode);
             } 
             
@@ -127,6 +132,7 @@ namespace draftio.viewmodels
             {
                 // state is empty
                 drawingViewModel.SetEmptyState(true);
+                pageTreeViewModel.SetCurrentFile(null);
                 shortsViewModel.SetCurrentFile(null);
                 shortsViewModel.ChangeSaveState(true);
             }

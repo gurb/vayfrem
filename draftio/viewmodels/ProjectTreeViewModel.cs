@@ -19,6 +19,7 @@ namespace draftio.viewmodels
         private readonly TabViewModel tabViewModel;
         private readonly DrawingViewModel drawingViewModel;
         private readonly ShortsViewModel shortsViewModel;
+        private readonly PageTreeViewModel pageTreeViewModel;
 
         [ObservableProperty]
         ObservableCollection<Node> nodes;
@@ -38,6 +39,7 @@ namespace draftio.viewmodels
             drawingViewModel = App.GetService<DrawingViewModel>();
             shortsViewModel = App.GetService<ShortsViewModel>();
             shortsViewModel.refreshProjectVM += Refresh;
+            pageTreeViewModel = App.GetService<PageTreeViewModel>();
 
             if (projectManager.CurrentProject.RootFolder != null)
             {
@@ -153,21 +155,17 @@ namespace draftio.viewmodels
             SelectedNode = node;
             SelectedNode.IsSelected = true;
 
-
-
             if(node.Type == models.enums.NodeType.File)
             {
                 tabViewModel.SetSelectedOnly(node);
 
                 drawingViewModel.ChangeFile((File)node);
-                
+                pageTreeViewModel.SetCurrentFile((File)node);
 
                 // if tab nodes does not contain selected node in tab view canvas, add it
                 var temp = tabViewModel.Nodes.FirstOrDefault(x => x == node);
                 if(temp == null)
                 {
-
-                    
                     tabViewModel.AddTab(node);
 
                     shortsViewModel.ChangeSaveState(false);

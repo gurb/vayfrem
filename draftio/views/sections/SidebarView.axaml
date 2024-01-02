@@ -7,7 +7,57 @@
              x:Class="draftio.SidebarView">
 	<Grid RowDefinitions="* *">
 		<Grid Grid.Row="0">
-			<views:ProjectTreeView/>
+			<TabControl x:Name="TabPanel" Margin="0" Padding="0">
+				<TabControl.Styles>
+					<Style Selector="TabControl">
+
+					</Style>
+					<Style Selector="TabItem">
+						<Setter Property="Foreground" Value="Black"/>
+						<Setter Property="FontSize" Value="14"/>
+						<!--<Setter Property="VerticalAlignment" Value="Center"/>-->
+						<Setter Property="Margin" Value="0 0 0 0"/>
+						<Setter Property="Padding" Value="0 0"/>
+						<Setter Property="MinHeight" Value="30"/>
+						<Setter Property="BorderThickness" Value="1, 1, 1, 0"/>
+						<Setter Property="BorderBrush" Value="#999"/>
+						<!--<Setter Property="VerticalContentAlignment" Value="Center"/>-->
+					</Style>
+					<Style Selector="TabItem:pressed">
+						<Setter Property="Background" Value="#ccc"/>
+					</Style>
+					<Style Selector="TabItem /template/ Border#PART_LayoutRoot">
+						<Setter Property="Height" Value="30"/>
+						<Setter Property="Margin" Value="0 0 5 0"/>
+					</Style>
+					<Style Selector="TabItem:pointerover /template/ Border#PART_LayoutRoot">
+						<Setter Property="Background" Value="#ccc"/>
+					</Style>
+					<Style Selector="TabControl WrapPanel">
+						<Setter Property="Background" Value="#2B579A"/>
+					</Style>
+					<Style Selector="TabItem:selected">
+						<Setter Property="Background" Value="#ccc"/>
+					</Style>
+					<Style Selector="TabItem:selected /template/ Border#PART_SelectedPipe">
+						<Setter Property="IsVisible" Value="False"/>
+					</Style>
+				</TabControl.Styles>
+				<TabItem Margin="0" Padding="5,0,5,0" Header="Project">
+					<views:ProjectTreeView/>
+				</TabItem>
+				<TabItem Margin="0" Padding="5,0,5,0" Header="Page">
+					<views:PageTreeView/>
+				</TabItem>
+				<TabItem Margin="0" Padding="5,0,5,0" Header="Tool Option">
+					<TextBlock>This is tab 2 content</TextBlock>
+				</TabItem>
+				<TabItem Margin="0" Padding="5,0,5,0" Header="Components">
+					<TextBlock>This is tab 3 content</TextBlock>
+				</TabItem>
+			</TabControl>
+
+
 		</Grid>
 		<Grid  Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
 			<views:PropertyView/>

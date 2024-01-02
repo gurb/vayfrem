@@ -1,6 +1,8 @@
-﻿using draftio.models.enums;
+﻿using Avalonia.Controls;
+using draftio.models.enums;
 using draftio.models.structs;
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace draftio.models.objects.@base
@@ -21,9 +23,32 @@ namespace draftio.models.objects.@base
         public ColorS BorderColor { get; set; } = new ColorS(0, 0, 0, 255);
         public float BorderSize { get; set; }
         public ObjectType ObjectType { get; set; }
-        
+
+        [JsonIgnore]
+        public bool IsDrew { get; set; }
+
+        [JsonIgnore]
+        public bool IsVisible { get; set; } = true;
+
+        [JsonIgnore]
+        public bool IsSelected { get; set; }
+
         [JsonIgnore]
         public IObject? Parent { get; set; }
+
+        [JsonIgnore]
+        public Control? ConnectedMenuControl { get; set; }
+
+        [JsonIgnore]
+        public Control? ConnectedTabControl { get; set; }
+
+        [JsonIgnore]
+        public Control? CaretControl { get; set; }
+
+        [JsonIgnore]
+        public Control? CloseControl { get; set; }
+
+
 
         public double WorldX
         {
