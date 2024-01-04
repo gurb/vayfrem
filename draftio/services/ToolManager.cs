@@ -1,4 +1,5 @@
 ﻿using draftio.models.enums;
+using draftio.viewmodels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,15 @@ namespace draftio.services
 {
     public class ToolManager
     {
+        private readonly ToolOptionsViewModel toolOptionsViewModel;
+
         public ToolOption SelectedToolOption { get; set; }
         public ObjectType SelectedObjectType { get; set; }
 
         public ToolManager() 
         {
+            toolOptionsViewModel = App.GetService<ToolOptionsViewModel>();
+
             SelectedToolOption = ToolOption.Rect;
             SelectedObjectType = ObjectType.Canvas;
         }
@@ -21,6 +26,8 @@ namespace draftio.services
         public void SetToolOption(ToolOption option)
         {
             SelectedToolOption = option;
+
+            toolOptionsViewModel.SetToolOption(option);
 
             switch (option)
             {

@@ -30,7 +30,7 @@ public partial class DrawingView : UserControl
     // status of draw operation
     private bool isDraw;
     private bool isMove;
-    private bool isSelect;
+    
     private Avalonia.Point currentPosition;
     private Avalonia.Point firstPosition;
     private Avalonia.Point lastPosition;
@@ -176,13 +176,13 @@ public partial class DrawingView : UserControl
 
         if (point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && !ViewModel.IsOverScalePoint && !ViewModel.IsScale)
         {
-            isSelect = true;
+            ViewModel.IsSelect = true;
             firstPosition = position;
             ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
             handleSelection();
         }
 
-        if(point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && isSelect && ViewModel.IsOverScalePoint && !ViewModel.IsScale)
+        if(point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && ViewModel.IsSelect && ViewModel.IsOverScalePoint && !ViewModel.IsScale)
         {
             ViewModel.IsScale = true;
         }
@@ -271,10 +271,10 @@ public partial class DrawingView : UserControl
 
     private void handleScale()
     {
-        if (ViewModel.SelectedObject != null)
+        GObject? obj = ViewModel.GetSelectionObject();
+        if (obj != null)
         {
-            GObject? obj = ViewModel.GetSelectionObject();
-
+            
             string? scalePointType = ViewModel.GetOverScalePoint;
 
             Avalonia.Point currentPos = currentPosition;

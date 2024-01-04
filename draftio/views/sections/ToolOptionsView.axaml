@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:draftio.viewmodels"
+             x:DataType="vm:ToolOptionsViewModel"
+			 x:CompileBindings="True"
+			 x:Class="draftio.views.sections.ToolOptionsView">
+	<Grid RowDefinitions="30, *, 30">
+		<StackPanel Grid.Row="0" x:Name="toolOptionHeader">
+			<TextBlock Margin="5">Page Objects</TextBlock>
+		</StackPanel>
+		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" Background="White">
+			<StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+				<Canvas x:Name="ToolOptionCanvas"  HorizontalAlignment="Stretch" Height="10" Background="White"></Canvas>
+			</StackPanel>
+		</ScrollViewer>
+		<StackPanel Grid.Row="2" x:Name="toolOptionFooter">
+			<Grid ColumnDefinitions="35, 35, *">
+				<!--<Button Width="30" Grid.Column="0" Padding="0" Margin="5" x:Name="AddFileButton" HorizontalContentAlignment="Center">
+					<Image Source="avares://draftio/assets/file-plus.png" Width="20" Height="20">
+					</Image>
+				</Button>
+				<Button Width="30" Grid.Column="1" Padding="0" Margin="5" x:Name="AddFolderButton" HorizontalContentAlignment="Center">
+					<Image Source="avares://draftio/assets/folder-plus.png" Width="20" Height="20">
+					</Image>
+				</Button>-->
+			</Grid>
+		</StackPanel>
+	</Grid>
+</UserControl>

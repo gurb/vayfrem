@@ -29,6 +29,10 @@ namespace draftio.viewmodels
         public delegate void DrawDelegate();
         public DrawDelegate? drawDelegate;
 
+
+        public delegate void SetSelectToolDelegate();
+        public SetSelectToolDelegate? setSelect;
+
         public PageTreeViewModel()
         {
             nodes = new ObservableCollection<GObject>();
@@ -38,7 +42,6 @@ namespace draftio.viewmodels
         {
             CurrentFile = file;
             Refresh(file);
-            
         }
 
         public void SetSelectedObject(GObject? obj)
@@ -54,6 +57,12 @@ namespace draftio.viewmodels
             }
 
             CurrentFile.Selection!.SelectedObject = obj;
+
+
+            if (setSelect != null)
+            {
+                setSelect.Invoke();
+            }
 
             if (obj != null)
             {
@@ -75,6 +84,7 @@ namespace draftio.viewmodels
             if (file != null)
             {
                 nodes = new ObservableCollection<GObject>(file.Objects);
+                SelectedObject = file.Selection!.SelectedObject;
             }
             else
             {
@@ -86,5 +96,6 @@ namespace draftio.viewmodels
                 drawPageView.Invoke();
             }
         }
+
     }
 }

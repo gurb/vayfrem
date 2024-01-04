@@ -48,7 +48,7 @@ namespace draftio.models.objects.@base
         [JsonIgnore]
         public Control? CloseControl { get; set; }
 
-
+        public List<Property> Properties { get; set; } = new List<Property>();
 
         public double WorldX
         {

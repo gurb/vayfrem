@@ -87,7 +87,7 @@ public partial class PageTreeView : UserControl
 
                 PageMenu.Children.Add(button);
 
-                if (node.IsSelected)
+                if (node == ViewModel.SelectedObject)
                 {
                     Avalonia.Controls.Shapes.Rectangle hover = new Avalonia.Controls.Shapes.Rectangle();
                     hover.Fill = new SolidColorBrush(Avalonia.Media.Color.FromArgb(100, 100, 100, 100));

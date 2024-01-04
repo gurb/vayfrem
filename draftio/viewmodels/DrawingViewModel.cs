@@ -34,6 +34,9 @@ namespace draftio.viewmodels
         bool isEmpty = true;
 
         [ObservableProperty]
+        bool isSelect = false;
+
+        [ObservableProperty]
         bool isScale = false;
 
         [ObservableProperty]
@@ -64,6 +67,7 @@ namespace draftio.viewmodels
         public void AddObject(PassData passData)
         {
             SetSaveStateCurrentFile();
+            SetSelectedObject(null);
 
             if (passData.Width < 10 && passData.Height < 10) return;
 
@@ -128,6 +132,10 @@ namespace draftio.viewmodels
             }
 
             CurrentFile.Selection!.SelectedObject = obj;
+
+            // if this function called from pageview menu
+            IsSelect = true;
+
             
             if(obj != null)
             {
@@ -181,6 +189,9 @@ namespace draftio.viewmodels
             }
             Objects.Add(textObj);
         }
+
+
+
 
         public void CollisionDetectPoint(Vector2 mousePosition, CanvasObj? canvas = null)
         {

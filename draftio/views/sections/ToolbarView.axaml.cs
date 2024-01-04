@@ -4,19 +4,24 @@ using Avalonia.Markup.Xaml;
 using draftio.services;
 using draftio.models.enums;
 using System.Drawing;
+using draftio.viewmodels;
 
 namespace draftio;
 
 public partial class ToolbarView : UserControl
 {
     private readonly ToolManager toolManager;
+    private readonly PageTreeViewModel pageTreeViewModel;
 
     Button selectedButton;
 
     public ToolbarView()
     {
         toolManager = App.GetService<ToolManager>();
+        pageTreeViewModel = App.GetService<PageTreeViewModel>();
+        pageTreeViewModel.setSelect += SetSelectTool;
         
+
         InitializeComponent();
         selectedButton = RectTool;
 
@@ -28,6 +33,12 @@ public partial class ToolbarView : UserControl
     }
 
     private void SelectTool_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        setButton(SelectTool);
+        toolManager.SetToolOption(ToolOption.Select);
+    }
+
+    public void SetSelectTool()
     {
         setButton(SelectTool);
         toolManager.SetToolOption(ToolOption.Select);
