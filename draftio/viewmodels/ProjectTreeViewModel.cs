@@ -106,9 +106,7 @@ namespace draftio.viewmodels
         public void Refresh()
         {
             Nodes = projectManager.CurrentProject.Nodes;
-
             var node = Nodes.FirstOrDefault(x => x.IsSelected == true);
-
 
             if(node != null)
             {

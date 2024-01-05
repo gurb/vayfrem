@@ -20,6 +20,7 @@ namespace draftio.services
     {
         private Vector2 childMoveOffset = new Vector2(0,0);
         private readonly DrawingViewModel drawingViewModel;
+        
         public Canvas? MainDisplay { get; set; }
         public double Zoom { get; set; } = 1;
 
@@ -46,7 +47,7 @@ namespace draftio.services
                 {
                     CanvasObj canvasObj = (CanvasObj)obj;
 
-                    Panel canvas = DrawCanvas(Display, obj);
+                    Panel canvas = DrawCanvas(Display, canvasObj);
                     
                     if (canvasObj != null && canvasObj.Children.Count() > 0)
                     {
@@ -62,7 +63,7 @@ namespace draftio.services
             }
         }
 
-        private Panel DrawCanvas (Panel Display, IObject obj)
+        private Panel DrawCanvas (Panel Display, CanvasObj obj)
         {
             RelativePanel panel = new RelativePanel();
             Canvas.SetLeft(panel, obj.X);
@@ -81,25 +82,27 @@ namespace draftio.services
             Canvas.SetTop(canvasBackground, 0);
             canvasBackground.Width = canvas.Width;
             canvasBackground.Height = canvas.Height;
-            canvasBackground.Fill = Brushes.White;
-            canvasBackground.Stroke = Brushes.Black;
+            canvasBackground.Fill = Brushes.Transparent;
+            //canvasBackground.Stroke = Brushes.Black;
             //canvasBackground.StrokeThickness = 1;
 
             canvas.Children.Add(canvasBackground);
-            panel.Children.Add(canvas);
-
+            //panel.Children.Add(canvas);
 
             Border border = new Border();
-            border.Background = Brushes.Black;
-            border.BorderThickness = Avalonia.Thickness.Parse("2");
-            
+            border.Background = new SolidColorBrush(obj.BackgroundColor, obj.Opacity);
+            border.BorderBrush = new SolidColorBrush(obj.BorderColor);
+            border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderThickness.ToString());
+            border.CornerRadius = new CornerRadius(obj.BorderRadius);
+
             border.Padding = Avalonia.Thickness.Parse("0");
             border.Margin = Avalonia.Thickness.Parse("0");
-            Canvas.SetLeft(border, obj.X - 2); 
-            Canvas.SetTop(border, obj.Y - 2);
-            border.Child = panel;
+            Canvas.SetLeft(border, obj.X); 
+            Canvas.SetTop(border, obj.Y);
+            border.Child = canvas;
+            panel.Children.Add(border);
 
-            Display.Children.Add(border);
+            Display.Children.Add(panel);
             return canvas;
         }
 

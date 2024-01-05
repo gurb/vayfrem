@@ -9,7 +9,7 @@
 			 x:Class="draftio.views.sections.ToolOptionsView">
 	<Grid RowDefinitions="30, *, 30">
 		<StackPanel Grid.Row="0" x:Name="toolOptionHeader">
-			<TextBlock Margin="5">Page Objects</TextBlock>
+			<TextBlock Margin="5" Text="{Binding ToolNameTitle}"/>
 		</StackPanel>
 		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" Background="White">
 			<StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">

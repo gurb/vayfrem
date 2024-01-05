@@ -13,9 +13,9 @@ namespace draftio.models.objects
         double Y { get; set; }
         double Width { get; set; }
         double Height { get; set; }
-        ColorS BackgroundColor { get; set; }
-        ColorS BorderColor { get; set; }
-        float BorderSize { get; set; }
+        Avalonia.Media.Color BackgroundColor { get; set; }
+        Avalonia.Media.Color BorderColor { get; set; }
+        double BorderThickness { get; set; }
 
         [JsonIgnore]
         IObject? Parent { get; set; }

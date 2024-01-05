@@ -19,9 +19,11 @@ namespace draftio.models.objects.@base
         public double Width { get; set; }
         public double Height { get; set; }
         public int ZIndex { get; set; } = 1;
-        public ColorS BackgroundColor { get; set; } = new ColorS(255, 255, 255, 255);
-        public ColorS BorderColor { get; set; } = new ColorS(0, 0, 0, 255);
-        public float BorderSize { get; set; }
+        public double Opacity { get; set; }
+        public Avalonia.Media.Color BackgroundColor { get; set; } = new Avalonia.Media.Color(255, 255, 255, 255);
+        public Avalonia.Media.Color BorderColor { get; set; } = new Avalonia.Media.Color(0, 0, 0, 255);
+        public double BorderThickness { get; set; }
+        public double BorderRadius { get; set; }
         public ObjectType ObjectType { get; set; }
 
         [JsonIgnore]

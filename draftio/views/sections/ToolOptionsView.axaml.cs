@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using draftio.models.enums;
 using draftio.viewmodels;
+using draftio.views.components;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,13 @@ public partial class ToolOptionsView : UserControl
     public double ParentSize;
 
     List<double> rect_heights = new List<double>();
+    List<double> text_heights = new List<double>();
 
-
+    components.ColorPicker backgroundColorPicker;
+    components.ColorPicker borderColorPicker;
+    TextBlock rectOpacityValueText;
     TextBlock borderRadiusValueText;
+    TextBlock borderThicknessValueText;
 
     bool isLoaded;
     public ToolOptionsView()
@@ -99,17 +104,27 @@ public partial class ToolOptionsView : UserControl
         var row_background_canvas = GetCanvas(rect_heights[0], row_background, Brushes.Gray);
         Options["Rect"].Add(row_background_canvas);
 
-        var row_background_width = RowOption("Color", null, null, rect_heights[1]);
+        backgroundColorPicker = new components.ColorPicker();
+        backgroundColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.Background);
+        backgroundColorPicker.ValueChanged += RectBackgroundColor_ValueChanged;
+        backgroundColorPicker.Margin = new Thickness(10, 5, 10, 5);
+        var row_background_width = RowOption("Color", backgroundColorPicker, null, rect_heights[1]);
         var row_background_width_canvas = GetCanvas(rect_heights[1], row_background_width, Brushes.Gray);
         Options["Rect"].Add(row_background_width_canvas);
 
 
         Slider opacitySlider = new Slider();
         opacitySlider.Margin = new Thickness(5, 0, 10, 0);
-        var row_background_opacity = RowOption("Opacity", opacitySlider, null, rect_heights[2]);
+        opacitySlider.Value = ViewModel.RectToolDTO.BorderThickness;
+        opacitySlider.ValueChanged += OpacitySlider_ValueChanged;
+
+        rectOpacityValueText = new TextBlock();
+        rectOpacityValueText.Text = ViewModel.RectToolDTO.BorderRadius.ToString();
+        rectOpacityValueText.Margin = new Thickness(5);
+        rectOpacityValueText.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+        var row_background_opacity = RowOption("Opacity", opacitySlider, rectOpacityValueText, rect_heights[2]);
         var row_background_opacity_canvas = GetCanvas(rect_heights[2], row_background_opacity, Brushes.Gray);
         Options["Rect"].Add(row_background_opacity_canvas);
-
 
 
         // Border
@@ -117,10 +132,13 @@ public partial class ToolOptionsView : UserControl
         var row_border_canvas = GetCanvas(rect_heights[3], row_border, Brushes.Gray);
         Options["Rect"].Add(row_border_canvas);
 
-        var row_border_color = RowOption("Color", null, null, rect_heights[4]);
+        borderColorPicker = new components.ColorPicker();
+        borderColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.BorderColor);
+        borderColorPicker.ValueChanged += RectBorderColor_ValueChanged;
+        borderColorPicker.Margin = new Thickness(10, 5, 10, 5);
+        var row_border_color = RowOption("Color", borderColorPicker, null, rect_heights[4]);
         var row_border_color_canvas = GetCanvas(rect_heights[4], row_border_color, Brushes.Gray);
         Options["Rect"].Add(row_border_color_canvas);
-
 
         Slider radiusSlider = new Slider();
         radiusSlider.Margin = new Thickness(5, 0, 10, 0);
@@ -137,9 +155,32 @@ public partial class ToolOptionsView : UserControl
 
         Slider thicknessSlider = new Slider();
         thicknessSlider.Margin = new Thickness(5, 0, 10, 0);
-        var row_border_thickness = RowOption("Thickness", thicknessSlider, null, rect_heights[6]);
+        thicknessSlider.Value = ViewModel.RectToolDTO.BorderThickness;
+        thicknessSlider.ValueChanged += ThicknessSlider_ValueChanged;
+
+        borderThicknessValueText = new TextBlock();
+        borderThicknessValueText.Text = ViewModel.RectToolDTO.BorderRadius.ToString();
+        borderThicknessValueText.Margin = new Thickness(5);
+        borderThicknessValueText.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+        var row_border_thickness = RowOption("Thickness", thicknessSlider, borderThicknessValueText, rect_heights[6]);
         var row_border_radius_thickness = GetCanvas(rect_heights[6], row_border_thickness, Brushes.Gray);
         Options["Rect"].Add(row_border_radius_thickness);
+    }
+
+    private void OpacitySlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        Slider slider = sender as Slider;
+
+        ViewModel.RectToolDTO.Opacity = (int)slider.Value;
+        rectOpacityValueText.Text = ViewModel.RectToolDTO.Opacity.ToString();
+    }
+
+    private void ThicknessSlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        Slider slider = sender as Slider;
+
+        ViewModel.RectToolDTO.BorderThickness = (int)slider.Value;
+        borderThicknessValueText.Text = ViewModel.RectToolDTO.BorderThickness.ToString();
     }
 
     private void RadiusSlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
@@ -150,9 +191,49 @@ public partial class ToolOptionsView : UserControl
         borderRadiusValueText.Text = ViewModel.RectToolDTO.BorderRadius.ToString();
     }
 
+    private void RectBackgroundColor_ValueChanged()
+    {
+        ViewModel.RectToolDTO.Background = backgroundColorPicker.SelectedColor;
+    }
+
+    private void RectBorderColor_ValueChanged()
+    {
+        ViewModel.RectToolDTO.BorderColor = borderColorPicker.SelectedColor;
+    }
+
     private void SetTextOption()
     {
         Options.Add("Text", new List<Control>());
+
+        text_heights = new List<double>
+        {
+            26,
+            26,
+            50,
+
+            26,
+            26,
+            50,
+            50,
+        };
+
+        // Background
+        var row_font = RowOption("Font", null, null, text_heights[0], true);
+        var row_font_canvas = GetCanvas(rect_heights[0], row_font, Brushes.Gray);
+        Options["Text"].Add(row_font_canvas);
+
+        var fontFamilyComboBox = new ComboBox();
+        //fontFamilyComboBox.Items = FontManager.Current.GetInstalledFontFamilyNames()
+        //        .Select(x => new FontFamily(x))
+        //        .OrderBy(x => x.Name);
+
+        backgroundColorPicker = new components.ColorPicker();
+        backgroundColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.Background);
+        backgroundColorPicker.ValueChanged += RectBackgroundColor_ValueChanged;
+        backgroundColorPicker.Margin = new Thickness(10, 5, 10, 5);
+        var row_background_width = RowOption("Color", backgroundColorPicker, null, rect_heights[1]);
+        var row_background_width_canvas = GetCanvas(rect_heights[1], row_background_width, Brushes.Gray);
+        Options["Text"].Add(row_background_width_canvas);
     }
 
     private void DrawRectOption()

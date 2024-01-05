@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using draftio.models;
 using draftio.models.commands;
@@ -20,6 +21,7 @@ namespace draftio.viewmodels
         private readonly ShortsViewModel shortsViewModel;
         private readonly UndoRedoManager undoRedoManager;
         private readonly PageTreeViewModel pageTreeViewModel;
+        private readonly ToolOptionsViewModel toolOptionsViewModel;
 
         [ObservableProperty]
         List<GObject> objects = new();
@@ -61,6 +63,7 @@ namespace draftio.viewmodels
             undoRedoManager = App.GetService<UndoRedoManager>();
             pageTreeViewModel = App.GetService<PageTreeViewModel>();
             pageTreeViewModel.drawDelegate += Draw;
+            toolOptionsViewModel = App.GetService<ToolOptionsViewModel>();
         }
 
         [RelayCommand]
@@ -90,12 +93,19 @@ namespace draftio.viewmodels
         {
             CanvasObj canvasObj = new CanvasObj();
             canvasObj.Guid = Guid.NewGuid().ToString();
+
+            canvasObj.BorderRadius = toolOptionsViewModel.RectToolDTO.BorderRadius;
+            canvasObj.BorderThickness = toolOptionsViewModel.RectToolDTO.BorderThickness;
+            canvasObj.BackgroundColor = toolOptionsViewModel.RectToolDTO.Background;
+            canvasObj.BorderColor = toolOptionsViewModel.RectToolDTO.BorderColor;
+            canvasObj.Opacity = toolOptionsViewModel.RectToolDTO.Opacity;
+
             canvasObj.X = passData.X;
             canvasObj.Y = passData.Y;
             canvasObj.Width = passData.Width;
             canvasObj.Height = passData.Height;
 
-            if(SelectedObject != null)
+            if (SelectedObject != null)
             {
                 if(SelectedObject.ObjectType == models.enums.ObjectType.Canvas)
                 {
