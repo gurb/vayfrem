@@ -12,8 +12,14 @@ namespace draftio.viewmodels
 
         [ObservableProperty]
         ObservableCollection<Property> properties = new();
+        [ObservableProperty]
+        GObject? activeObj;
 
-        GObject? activeObj; 
+        public delegate void SetPropertyDelegate();
+        public SetPropertyDelegate? setProperty;
+
+        public delegate void DrawDelegate();
+        public DrawDelegate? drawDelegate;
 
         public PropertyViewModel()
         {
@@ -26,9 +32,10 @@ namespace draftio.viewmodels
         public void SetActiveObject (GObject? obj)
         {
             activeObj = obj;
-            if (obj != null)
+            
+            if (setProperty != null)
             {
-                SetProperties();
+                setProperty.Invoke();
             }
         }
 
@@ -36,42 +43,21 @@ namespace draftio.viewmodels
         {
             if (activeObj == obj)
             {
-                SetProperties();
+                if(setProperty != null)
+                {
+                    setProperty.Invoke();
+                }
             }
         }
 
-        private void SetProperties()
+
+        public void RefreshDraw()
         {
-            if(activeObj!.ObjectType == models.enums.ObjectType.Canvas)
+            if (drawDelegate != null)
             {
-                Properties = new ObservableCollection<Property>()
-                {
-                    new Property("Name", activeObj.ObjectType.ToString()),
-                    new Property("X", activeObj.X),
-                    new Property("Y", activeObj.Y),
-                    new Property("Width", activeObj.Width),
-                    new Property("Height", activeObj.Height),
-                    new Property("Background", activeObj.BackgroundColor),
-                    new Property("Opacity", activeObj.Opacity),
-                    new Property("Border Color", activeObj.BorderColor),
-                    new Property("Border Radius", activeObj.BorderRadius),
-                    new Property("Border Thickness", activeObj.BorderThickness),
-                };
+                drawDelegate.Invoke();
             }
-
-            if (activeObj!.ObjectType == models.enums.ObjectType.Text)
-            {
-                Properties = new ObservableCollection<Property>()
-                {
-                    new Property("Name", activeObj.ObjectType.ToString()),
-                    new Property("X", activeObj.X),
-                    new Property("Y", activeObj.Y),
-                    new Property("Width", activeObj.Width),
-                    new Property("Height", activeObj.Height),
-                    new Property("Background", activeObj.BackgroundColor)
-                };
-            }
-
         }
+
     }
 }

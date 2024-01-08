@@ -66,6 +66,7 @@ namespace draftio.viewmodels
             pageTreeViewModel.drawDelegate += Draw;
             toolOptionsViewModel = App.GetService<ToolOptionsViewModel>();
             propertyViewModel = App.GetService<PropertyViewModel>();
+            propertyViewModel.drawDelegate += Draw;
         }
 
         [RelayCommand]
