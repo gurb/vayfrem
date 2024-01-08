@@ -20,6 +20,7 @@ namespace draftio.viewmodels
         private readonly DrawingViewModel drawingViewModel;
         private readonly ShortsViewModel shortsViewModel;
         private readonly PageTreeViewModel pageTreeViewModel;
+        private readonly PropertyViewModel propertyViewModel;
 
         [ObservableProperty]
         ObservableCollection<Node> nodes;
@@ -40,7 +41,8 @@ namespace draftio.viewmodels
             shortsViewModel = App.GetService<ShortsViewModel>();
             shortsViewModel.refreshProjectVM += Refresh;
             pageTreeViewModel = App.GetService<PageTreeViewModel>();
-
+            propertyViewModel = App.GetService<PropertyViewModel>();
+            
             if (projectManager.CurrentProject.RootFolder != null)
             {
                 Refresh();

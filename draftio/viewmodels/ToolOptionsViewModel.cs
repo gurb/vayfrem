@@ -21,6 +21,9 @@ namespace draftio.viewmodels
         RectToolDTO rectToolDTO;
 
         [ObservableProperty]
+        TextToolDTO textToolDTO;
+
+        [ObservableProperty]
         string? toolNameTitle;
 
         public delegate void DrawToolOptionDelegate();
@@ -32,6 +35,7 @@ namespace draftio.viewmodels
         public ToolOptionsViewModel() 
         {
             rectToolDTO = new RectToolDTO();
+            textToolDTO = new TextToolDTO();
         }
 
         public void SetToolOption(ToolOption toolOption)

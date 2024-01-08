@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
+using draftio.models;
 using draftio.models.dtos;
 using draftio.models.enums;
 using draftio.models.objects.@base;
@@ -31,6 +32,7 @@ public partial class DrawingView : UserControl
     private bool isDraw;
     private bool isMove;
     
+    private Avalonia.Point oldCurrentPosition;
     private Avalonia.Point currentPosition;
     private Avalonia.Point firstPosition;
     private Avalonia.Point lastPosition;
@@ -44,6 +46,11 @@ public partial class DrawingView : UserControl
     private Avalonia.Point origin;
     private Avalonia.Point start;
     ScaleTransform xform;
+
+    TimeSpan lastClickTime = new TimeSpan();
+    Node? lastClickNode;
+
+
 
     public DrawingView()
     {
@@ -171,12 +178,15 @@ public partial class DrawingView : UserControl
     {
         var point = e.GetCurrentPoint(sender as Control);
         var position = point.Position;
+        oldCurrentPosition = currentPosition;
         currentPosition = position;
+
 
 
         if (point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && !ViewModel.IsOverScalePoint && !ViewModel.IsScale)
         {
             ViewModel.IsSelect = true;
+            
             firstPosition = position;
             ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
             handleSelection();
@@ -187,19 +197,35 @@ public partial class DrawingView : UserControl
             ViewModel.IsScale = true;
         }
 
+        
+
 
         if (point.Properties.IsLeftButtonPressed 
-            && 
-            (
-                toolManager.SelectedToolOption == ToolOption.Rect ||
-                toolManager.SelectedToolOption == ToolOption.Text
-            ))
+        && 
+        (
+            toolManager.SelectedToolOption == ToolOption.Rect ||
+            toolManager.SelectedToolOption == ToolOption.Text
+        ))
         {
             isDraw = true;
             firstPosition = position;
             ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
         }
-        
+
+        TimeSpan timeSinceLastClick = DateTime.Now.TimeOfDay - lastClickTime;
+        if (point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Text && oldCurrentPosition == currentPosition && timeSinceLastClick.TotalMilliseconds < 300)
+        {
+            if (ViewModel.SelectedObject != null && ViewModel.SelectedObject.ObjectType == ObjectType.Text)
+            {
+                ViewModel.ActiveEditText(ViewModel.SelectedObject);
+            }
+        }
+
+        if(point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Text)
+        {
+            lastClickTime = DateTime.Now.TimeOfDay;
+        }
+
 
         if (point.Properties.IsRightButtonPressed)
         {
@@ -255,6 +281,7 @@ public partial class DrawingView : UserControl
 
             ViewModel.SelectedObject.X = lastPosition.X - moveOffset.X;
             ViewModel.SelectedObject.Y = lastPosition.Y - moveOffset.Y;
+            ViewModel.RefreshState();
         }
     }
 
@@ -414,6 +441,8 @@ public partial class DrawingView : UserControl
                     obj.Width = Math.Abs(currentPos.X - obj.X);
                     obj.Height = Math.Abs(currentPos.Y - obj.Y);
                 }
+
+                ViewModel.RefreshState();
 
                 if (obj.Width <= 50)
                 {

@@ -13,6 +13,11 @@ namespace draftio.models.objects
 
         public string? Text { get; set; }
 
+        public string? FontFamily { get; set; } = "Arial";
+        public Avalonia.Media.Color FontColor { get; set; } = new Avalonia.Media.Color(255, 0, 0, 0);
+        public int FontSize { get; set; } = 14;
+
+
         public TextObj()
         {
             InitializeObject();

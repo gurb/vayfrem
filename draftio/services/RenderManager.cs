@@ -71,7 +71,6 @@ namespace draftio.services
             panel.Width = obj.Width;
             panel.Height = obj.Height;
             
-
             Canvas canvas = new Canvas();
             Canvas.SetLeft(canvas, obj.X);
             Canvas.SetTop(canvas, obj.Y);
@@ -133,11 +132,13 @@ namespace draftio.services
                 Canvas.SetTop(textBox, 0);
                 textBox.Width = obj.Width;
                 textBox.Height = obj.Height;
+                textBox.FontFamily = new FontFamily(obj.FontFamily!);
+                textBox.FontSize = obj.FontSize;
+                textBox.Foreground = new SolidColorBrush(obj.FontColor);
                 textBox.TextWrapping = TextWrapping.Wrap;
                 textBox.Background = Brushes.Gray;
                 textBox.Text = obj.Text;
                 textBox.TextChanged += obj.TextBox_TextChanged;
-
 
                 canvas.Children.Add(textBox);
                 panel.Children.Add(canvas);
@@ -154,9 +155,7 @@ namespace draftio.services
                 border.Child = panel;
 
                 Display.Children.Add(border);
-
-                //Display.Children.Add(stackPanel);
-            } 
+            }
             else
             {
                 Canvas canvas = new Canvas();
@@ -172,6 +171,9 @@ namespace draftio.services
                 textBlock.Width = obj.Width;
                 textBlock.Height = obj.Height;
                 textBlock.Text = obj.Text;
+                textBlock.FontSize = obj.FontSize;
+                textBlock.FontFamily = new FontFamily(obj.FontFamily);
+                textBlock.Foreground = new SolidColorBrush(obj.FontColor);
                 textBlock.TextWrapping = TextWrapping.Wrap;
                 canvas.Children.Add(textBlock);
                 Display.Children.Add(canvas);

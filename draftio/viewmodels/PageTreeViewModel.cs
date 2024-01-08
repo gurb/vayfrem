@@ -13,6 +13,8 @@ namespace draftio.viewmodels
 {
     public partial class PageTreeViewModel: ObservableObject
     {
+        private readonly PropertyViewModel propertyViewModel;
+
         [ObservableProperty]
         ObservableCollection<GObject> nodes;
 
@@ -35,6 +37,7 @@ namespace draftio.viewmodels
 
         public PageTreeViewModel()
         {
+            propertyViewModel = App.GetService<PropertyViewModel>();
             nodes = new ObservableCollection<GObject>();
         }
 
@@ -57,7 +60,7 @@ namespace draftio.viewmodels
             }
 
             CurrentFile.Selection!.SelectedObject = obj;
-
+            propertyViewModel.SetActiveObject(obj);
 
             if (setSelect != null)
             {

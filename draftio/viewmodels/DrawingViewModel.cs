@@ -22,6 +22,7 @@ namespace draftio.viewmodels
         private readonly UndoRedoManager undoRedoManager;
         private readonly PageTreeViewModel pageTreeViewModel;
         private readonly ToolOptionsViewModel toolOptionsViewModel;
+        private readonly PropertyViewModel propertyViewModel;
 
         [ObservableProperty]
         List<GObject> objects = new();
@@ -64,6 +65,7 @@ namespace draftio.viewmodels
             pageTreeViewModel = App.GetService<PageTreeViewModel>();
             pageTreeViewModel.drawDelegate += Draw;
             toolOptionsViewModel = App.GetService<ToolOptionsViewModel>();
+            propertyViewModel = App.GetService<PropertyViewModel>();
         }
 
         [RelayCommand]
@@ -142,7 +144,7 @@ namespace draftio.viewmodels
             }
 
             CurrentFile.Selection!.SelectedObject = obj;
-
+            propertyViewModel.SetActiveObject(obj);
             // if this function called from pageview menu
             IsSelect = true;
 
@@ -170,10 +172,35 @@ namespace draftio.viewmodels
             }
         }
 
+
+        public void ActiveEditText(GObject? obj)
+        {
+            SetSelectedObject(obj);
+
+            if(obj.ObjectType == ObjectType.Text)
+            {
+                TextObj textObj = (TextObj)obj;
+                if(textObj.IsEditMode)
+                {
+                    return;
+                }
+
+                textObj.IsEditMode = true;
+                ActiveTextObject = textObj;
+            }
+
+        }
+
+
         private void AddText(PassData passData)
         {
             CloseEditMode();
             TextObj textObj = new TextObj();
+
+            textObj.FontColor = toolOptionsViewModel.TextToolDTO.FontColor;
+            textObj.FontSize = toolOptionsViewModel.TextToolDTO.FontSize;
+            textObj.FontFamily = toolOptionsViewModel.TextToolDTO.FontFamily;
+
             textObj.Guid = Guid.NewGuid().ToString();
             textObj.X = passData.X;
             textObj.Y = passData.Y;
@@ -181,7 +208,6 @@ namespace draftio.viewmodels
             textObj.Height = passData.Height;
             textObj.IsEditMode = true;
             ActiveTextObject = textObj;
-
 
             if (SelectedObject != null)
             {
@@ -199,8 +225,6 @@ namespace draftio.viewmodels
             }
             Objects.Add(textObj);
         }
-
-
 
 
         public void CollisionDetectPoint(Vector2 mousePosition, CanvasObj? canvas = null)
@@ -289,6 +313,11 @@ namespace draftio.viewmodels
                 obj.IsEditMode = false;
                 ActiveTextObject = null;
             }
+        }
+
+        public void RefreshState()
+        {
+            propertyViewModel.RefreshPropertyView(SelectedObject);
         }
 
         [RelayCommand]

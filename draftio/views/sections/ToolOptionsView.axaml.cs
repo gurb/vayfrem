@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Drawing.Text;
+using draftio.models.lists;
 
 namespace draftio.views.sections;
 
@@ -25,6 +27,8 @@ public partial class ToolOptionsView : UserControl
 
     components.ColorPicker backgroundColorPicker;
     components.ColorPicker borderColorPicker;
+    components.ColorPicker fontColorPicker;
+
     TextBlock rectOpacityValueText;
     TextBlock borderRadiusValueText;
     TextBlock borderThicknessValueText;
@@ -219,22 +223,59 @@ public partial class ToolOptionsView : UserControl
 
         // Background
         var row_font = RowOption("Font", null, null, text_heights[0], true);
-        var row_font_canvas = GetCanvas(rect_heights[0], row_font, Brushes.Gray);
+        var row_font_canvas = GetCanvas(text_heights[0], row_font, Brushes.Gray);
         Options["Text"].Add(row_font_canvas);
 
-        var fontFamilyComboBox = new ComboBox();
-        //fontFamilyComboBox.Items = FontManager.Current.GetInstalledFontFamilyNames()
-        //        .Select(x => new FontFamily(x))
-        //        .OrderBy(x => x.Name);
+        
+        fontColorPicker = new components.ColorPicker();
+        fontColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.Background);
+        fontColorPicker.ValueChanged += TextFontColor_ValueChanged;
+        fontColorPicker.Margin = new Thickness(10, 5, 10, 5);
+        var row_font_color = RowOption("Color", fontColorPicker, null, text_heights[1]);
+        var row_font_color_canvas = GetCanvas(text_heights[1], row_font_color, Brushes.Gray);
+        Options["Text"].Add(row_font_color_canvas);
 
-        backgroundColorPicker = new components.ColorPicker();
-        backgroundColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.Background);
-        backgroundColorPicker.ValueChanged += RectBackgroundColor_ValueChanged;
-        backgroundColorPicker.Margin = new Thickness(10, 5, 10, 5);
-        var row_background_width = RowOption("Color", backgroundColorPicker, null, rect_heights[1]);
-        var row_background_width_canvas = GetCanvas(rect_heights[1], row_background_width, Brushes.Gray);
-        Options["Text"].Add(row_background_width_canvas);
+        var fontFamilyComboBox = new ComboBox();
+        // just for windows
+        fontFamilyComboBox.ItemsSource = ListStorage.FontFamilies;
+        fontFamilyComboBox.SelectionChanged += FontFamilyComboBox_SelectionChanged;
+        fontFamilyComboBox.SelectedIndex = ViewModel.TextToolDTO.FontFamily != null ? ViewModel.TextToolDTO.SelectedFontFamilyIndex : 0;
+        fontFamilyComboBox.Margin = new Thickness(10, 5, 10, 5);
+        var row_font_family = RowOption("Font Family", fontFamilyComboBox, null, text_heights[1]);
+        var row_font_family_canvas = GetCanvas(text_heights[1], row_font_family, Brushes.Gray);
+        Options["Text"].Add(row_font_family_canvas);
+
+        var fontSizeComboBox = new ComboBox();
+        fontSizeComboBox.ItemsSource = ListStorage.FontSizes;
+        fontSizeComboBox.SelectionChanged += FontSizeComboBox_SelectionChanged;
+        fontSizeComboBox.SelectedIndex = ViewModel.TextToolDTO != null ? ViewModel.TextToolDTO.SelectedFontSizeIndex : 8;
+        fontSizeComboBox.Margin = new Thickness(10, 5, 10, 5);
+        var row_font_size = RowOption("Size", fontSizeComboBox, null, text_heights[1]);
+        var row_font_size_canvas = GetCanvas(text_heights[1], row_font_size, Brushes.Gray);
+        Options["Text"].Add(row_font_size_canvas);
     }
+
+    private void FontFamilyComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        var fontFamilyComboBox = sender as ComboBox;
+
+        ViewModel.TextToolDTO.FontFamily = (fontFamilyComboBox.SelectedValue as FontFamily).Name;
+        ViewModel.TextToolDTO.SelectedFontFamilyIndex = fontFamilyComboBox.SelectedIndex;
+    }
+
+    private void FontSizeComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        var fontSizeComboBox = sender as ComboBox;
+
+        ViewModel.TextToolDTO.FontSize = (int)fontSizeComboBox.SelectedValue;
+        ViewModel.TextToolDTO.SelectedFontSizeIndex = fontSizeComboBox.SelectedIndex;
+    }
+
+    private void TextFontColor_ValueChanged()
+    {
+        ViewModel.TextToolDTO.FontColor = fontColorPicker.SelectedColor;
+    }
+
 
     private void DrawRectOption()
     {
@@ -255,16 +296,26 @@ public partial class ToolOptionsView : UserControl
             ToolOptionCanvas.Children.Add(item);
             counter++;
         }
-
     }
 
     private void DrawTextOption()
     {
+        if(!Options.ContainsKey("Text"))
+            return;
+
         ToolOptionCanvas.Children.Clear();
 
-        foreach (var item in Options)
-        {
+        int counter = 0;
 
+        foreach (var item in Options["Text"])
+        {
+            var height = rect_heights.GetRange(0, counter).Sum();
+
+            Canvas.SetLeft(item, 0);
+            Canvas.SetTop(item, height);
+
+            ToolOptionCanvas.Children.Add(item);
+            counter++;
         }
     }
 
@@ -298,6 +349,7 @@ public partial class ToolOptionsView : UserControl
         
         grid.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         grid.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+
         grid.Height = height;
         grid.Background = isHeader == true  ? Avalonia.Media.Brushes.LightGray : Avalonia.Media.Brushes.Transparent;
         grid.Width = ToolOptionCanvas.Bounds.Width;
@@ -322,6 +374,7 @@ public partial class ToolOptionsView : UserControl
 
         if(control != null)
         {
+            control.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             grid.Children.Add(control);
             Grid.SetColumn(control, 1);
         }
@@ -334,7 +387,4 @@ public partial class ToolOptionsView : UserControl
 
         return grid;
     }
-
-
-
 }
