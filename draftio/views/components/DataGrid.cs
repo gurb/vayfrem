@@ -29,13 +29,16 @@ namespace draftio.views.components
         public DataGrid()
         {
             scrollViewer = new ScrollViewer();
+            scrollViewer.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
 
             HeaderGrid = new Grid();
             HeaderGrid.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            HeaderGrid.SizeChanged += HeaderGrid_SizeChanged;
             HeaderGrid.Height = 30;
 
             MainGrid = new Grid();
             MainGrid.Background = Brushes.White;
+            MainGrid.SizeChanged += MainGrid_SizeChanged;
             MainGrid.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             MainGrid.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             //MainGrid.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
@@ -49,7 +52,7 @@ namespace draftio.views.components
             MainGrid.ColumnDefinitions = new ColumnDefinitions("*,1,*");
 
             mainSplitter = new GridSplitter();
-            mainSplitter.DragDelta += MainSplitter_DragDelta; ;
+            mainSplitter.DragDelta += MainSplitter_DragDelta;
             headerSplitter = new GridSplitter();
             headerSplitter.DragDelta += HeaderSplitter_DragDelta;
 
@@ -64,14 +67,38 @@ namespace draftio.views.components
             this.Children.Add(scrollViewer);
         }
 
+        private void MainGrid_SizeChanged(object? sender, SizeChangedEventArgs e)
+        {
+            //HeaderGrid.ColumnDefinitions[0].Width = new GridLength(MainGrid.ColumnDefinitions[0].ActualWidth, GridUnitType.Pixel);
+            var sum = hcol1.Bounds.Width + hcol2.Bounds.Width;
+            if (sum <= 0)
+                return;
+
+
+            HeaderGrid.ColumnDefinitions[0].Width = new GridLength(MainGrid.ColumnDefinitions[0].ActualWidth / sum, GridUnitType.Star);
+            HeaderGrid.ColumnDefinitions[2].Width = new GridLength(MainGrid.ColumnDefinitions[2].ActualWidth / sum, GridUnitType.Star);
+        }
+
+        private void HeaderGrid_SizeChanged(object? sender, SizeChangedEventArgs e)
+        {
+            var sum = col1.Bounds.Width + col2.Bounds.Width;
+            if (sum <= 0)
+                return;
+
+            MainGrid.ColumnDefinitions[0].Width = new GridLength(HeaderGrid.ColumnDefinitions[0].ActualWidth / sum, GridUnitType.Star);
+            MainGrid.ColumnDefinitions[2].Width = new GridLength(HeaderGrid.ColumnDefinitions[2].ActualWidth / sum, GridUnitType.Star);
+        }
+
         private void HeaderSplitter_DragDelta(object? sender, Avalonia.Input.VectorEventArgs e)
         {
-            MainGrid.ColumnDefinitions[0].Width = new GridLength(HeaderGrid.ColumnDefinitions[0].ActualWidth);
+            MainGrid.ColumnDefinitions[0].Width = new GridLength(HeaderGrid.ColumnDefinitions[0].ActualWidth, GridUnitType.Pixel);
+            MainGrid.ColumnDefinitions[2].Width = new GridLength(HeaderGrid.ColumnDefinitions[2].ActualWidth, GridUnitType.Pixel);
         }
 
         private void MainSplitter_DragDelta(object? sender, Avalonia.Input.VectorEventArgs e)
         {
-            HeaderGrid.ColumnDefinitions[0].Width = new GridLength(MainGrid.ColumnDefinitions[0].ActualWidth);
+            HeaderGrid.ColumnDefinitions[0].Width = new GridLength(MainGrid.ColumnDefinitions[0].ActualWidth, GridUnitType.Pixel);
+            HeaderGrid.ColumnDefinitions[2].Width = new GridLength(MainGrid.ColumnDefinitions[2].ActualWidth, GridUnitType.Pixel);
         }
 
         private void SetHeaderGrid()
@@ -121,10 +148,8 @@ namespace draftio.views.components
             col1 = new StackPanel();
             col1.Orientation = Avalonia.Layout.Orientation.Vertical;
 
-
             col2 = new StackPanel();
             col2.Orientation = Avalonia.Layout.Orientation.Vertical;
-
 
             mainSplitter.Background = Brushes.LightGray;
             mainSplitter.Width = 1;
