@@ -5,38 +5,13 @@
              mc:Ignorable="d"
              xmlns:vm="using:draftio.viewmodels"
              x:DataType="vm:PropertyViewModel"
+			 xmlns:components="using:draftio.views.components"
 			 x:CompileBindings="True"
+			 xmlns:local="clr-namespace:draftio.views.sections"
 			 x:Class="draftio.views.sections.PropertyView">
 
 
-	
-	
-		<DataGrid x:Name="datagrid" ItemsSource="{Binding Properties}"
-			IsReadOnly="False"
-			CanUserReorderColumns="True"
-			CanUserResizeColumns="True"
-			CanUserSortColumns="False"
-			
-			GridLinesVisibility="All"
-			HorizontalAlignment="Stretch"
-			ColumnWidth="*"
-			BorderThickness="1" BorderBrush="Gray">
-			<DataGrid.Styles>
-				<Style Selector="DataGridCell:current">
-					<!--<Setter Property="Background" Value="Yellow"/>
-					<Setter Property="Foreground" Value="Black"/>-->
-					<Setter Property="FontSize" Value="13"/>
-				</Style>
-				<Style Selector="DataGridCell">
-					<!--<Setter Property="Background" Value="Yellow"/>
-					<Setter Property="Foreground" Value="Black"/>-->
-					<Setter Property="FontSize" Value="13"/>
-				</Style>
-			</DataGrid.Styles>
-			<DataGrid.Columns>
-				<DataGridTextColumn IsReadOnly="True" Header="Property" Width="*"  Binding="{Binding Name}"/>
-				<DataGridTextColumn IsReadOnly="False" Header="Values" Width="*" Binding="{Binding Value}" />
-			</DataGrid.Columns>
-		</DataGrid>
+
+
 	
 </UserControl>

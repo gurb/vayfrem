@@ -1,8 +1,14 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia.Controls.Templates;
+using Avalonia.Metadata;
 using draftio.models.structs;
 using draftio.viewmodels;
+using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
+using draftio.views.components;
+using Avalonia.Controls;
 
 namespace draftio.views.sections
 {
@@ -10,7 +16,7 @@ namespace draftio.views.sections
     {
         PropertyViewModel ViewModel { get; set; }
 
-
+        draftio.views.components.DataGrid grid; 
 
         public PropertyView()
         {
@@ -21,27 +27,36 @@ namespace draftio.views.sections
 
             InitializeComponent();
 
+            grid = new components.DataGrid();
+            grid.SetProperties(ViewModel.Properties.ToList());
+
+
+
+
+            this.Content = grid;
+
             SetStyles();
+
         }
 
         private void SetStyles()
         {
-            datagrid.CellPointerPressed += DataGrid_CellPointerPressed;
-            datagrid.CellEditEnded += Datagrid_CellEditEnded;
+            //datagrid.CellPointerPressed += DataGrid_CellPointerPressed;
+            //datagrid.CellEditEnded += Datagrid_CellEditEnded;
         }
 
         private void Datagrid_CellEditEnded(object? sender, DataGridCellEditEndedEventArgs e)
         {
 
-            DataGridRow row = e.Row;
-            var property = datagrid.ItemsSource.Cast<Property>().ElementAt(row.GetIndex());
+            //DataGridRow row = e.Row;
+            //var property = datagrid.ItemsSource.Cast<Property>().ElementAt(row.GetIndex());
 
-            if(property.Name == "X")
-            {
-                ViewModel.ActiveObj.X = System.Int32.Parse(property.Value.ToString());
-            }
+            //if(property.Name == "X")
+            //{
+            //    ViewModel.ActiveObj.X = System.Int32.Parse(property.Value.ToString());
+            //}
 
-            ViewModel.RefreshDraw();
+            //ViewModel.RefreshDraw();
         }
 
         private void DataGrid_CellPointerPressed(object? sender, DataGridCellPointerPressedEventArgs e)
@@ -49,7 +64,7 @@ namespace draftio.views.sections
             var cellValue = e.Cell.Content;
             DataGridRow row = e.Row;
 
-            var property = datagrid.ItemsSource.Cast<Property>().ElementAt(row.GetIndex());
+            //var property = datagrid.ItemsSource.Cast<Property>().ElementAt(row.GetIndex());
         }
 
         private void SetProperties()
@@ -60,6 +75,7 @@ namespace draftio.views.sections
                 {
                     
                 };
+                grid.SetProperties(ViewModel.Properties.ToList());
                 return;
             }
 
@@ -67,34 +83,58 @@ namespace draftio.views.sections
             {
                 ViewModel.Properties = new ObservableCollection<Property>()
                 {
-                    new Property("Name", ViewModel.ActiveObj.ObjectType.ToString()),
-                    new Property("X", ViewModel.ActiveObj.X),
-                    new Property("Y", ViewModel.ActiveObj.Y),
-                    new Property("Width", ViewModel.ActiveObj.Width),
-                    new Property("Height", ViewModel.ActiveObj.Height),
-                    new Property("Background", ViewModel.ActiveObj.BackgroundColor),
-                    new Property("Opacity", ViewModel.ActiveObj.Opacity),
-                    new Property("Border Color", ViewModel.ActiveObj.BorderColor),
-                    new Property("Border Radius", ViewModel.ActiveObj.BorderRadius),
-                    new Property("Border Thickness", ViewModel.ActiveObj.BorderThickness),
+                    new Property(ValueType.Name, ViewModel.ActiveObj.ObjectType.ToString()),
+                    new Property(ValueType.X, ViewModel.ActiveObj.X),
+                    new Property(ValueType.Y, ViewModel.ActiveObj.Y),
+                    new Property(ValueType.Width, ViewModel.ActiveObj.Width),
+                    new Property(ValueType.Height, ViewModel.ActiveObj.Height),
+                    new Property(ValueType.Background, ViewModel.ActiveObj.BackgroundColor),
+                    new Property(ValueType.Opacity, ViewModel.ActiveObj.Opacity),
+                    new Property(ValueType.BorderColor, ViewModel.ActiveObj.BorderColor),
+                    new Property(ValueType.BorderRadius, ViewModel.ActiveObj.BorderRadius),
+                    new Property(ValueType.BorderThickness, ViewModel.ActiveObj.BorderThickness),
+                    new Property(ValueType.Name, ViewModel.ActiveObj.ObjectType.ToString()),
+                    new Property(ValueType.X, ViewModel.ActiveObj.X),
+                    new Property(ValueType.Y, ViewModel.ActiveObj.Y),
+                    new Property(ValueType.Width, ViewModel.ActiveObj.Width),
+                    new Property(ValueType.Height, ViewModel.ActiveObj.Height),
+                    new Property(ValueType.Background, ViewModel.ActiveObj.BackgroundColor),
+                    new Property(ValueType.Opacity, ViewModel.ActiveObj.Opacity),
+                    new Property(ValueType.BorderColor, ViewModel.ActiveObj.BorderColor),
+                    new Property(ValueType.BorderRadius, ViewModel.ActiveObj.BorderRadius),
+                    new Property(ValueType.BorderThickness, ViewModel.ActiveObj.BorderThickness),
                 };
+                grid.SetProperties(ViewModel.Properties.ToList());
             }
 
             if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Text)
             {
                 ViewModel.Properties = new ObservableCollection<Property>()
                 {
-                    new Property("Name", ViewModel.ActiveObj.ObjectType.ToString()),
-                    new Property("X", ViewModel.ActiveObj.X),
-                    new Property("Y", ViewModel.ActiveObj.Y),
-                    new Property("Width", ViewModel.ActiveObj.Width),
-                    new Property("Height", ViewModel.ActiveObj.Height),
-                    new Property("Background", ViewModel.ActiveObj.BackgroundColor)
+                    new Property(ValueType.Name, ViewModel.ActiveObj.ObjectType.ToString()),
+                    new Property(ValueType.X, ViewModel.ActiveObj.X),
+                    new Property(ValueType.Y, ViewModel.ActiveObj.Y),
+                    new Property(ValueType.Width, ViewModel.ActiveObj.Width),
+                    new Property(ValueType.Height, ViewModel.ActiveObj.Height),
+                    new Property(ValueType.Background, ViewModel.ActiveObj.BackgroundColor)
                 };
+                grid.SetProperties(ViewModel.Properties.ToList());
             }
         }
+    }
 
 
-
+    public enum ValueType
+    {
+        Name,
+        X,
+        Y,
+        Width,
+        Height,
+        Background,
+        Opacity,
+        BorderColor,
+        BorderRadius,
+        BorderThickness,
     }
 }
