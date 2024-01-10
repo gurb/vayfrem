@@ -32,7 +32,8 @@ namespace draftio.views.sections
         components.ColorPicker border_color_property;
 
         components.Slider bg_opacity_property;
-        
+        components.Slider border_radius_property;
+        components.Slider border_thickness_property;
 
         public PropertyView()
         {
@@ -97,6 +98,16 @@ namespace draftio.views.sections
             bg_opacity_property.ValueChanged += RectOpacityChanged_ValueChanged;
             bg_opacity_property.Maximum = 255;
             bg_opacity_property.Minimum = 0;
+
+            border_radius_property = new components.Slider();
+            border_radius_property.ValueChanged += BorderRadiusChanged_ValueChanged;
+            border_radius_property.Maximum = 100;
+            border_radius_property.Minimum = 0;
+
+            border_thickness_property = new components.Slider();
+            border_thickness_property.ValueChanged += BorderThicknessChanged_ValueChanged;
+            border_thickness_property.Maximum = 100;
+            border_thickness_property.Minimum = 0;
             //bg_opacity_property.Margin = new Thickness(0);
         }
 
@@ -198,6 +209,19 @@ namespace draftio.views.sections
             ViewModel.RefreshDraw();
         }
 
+        private void BorderRadiusChanged_ValueChanged()
+        {
+            ViewModel.ActiveObj!.BorderRadius = border_radius_property.Value;
+            ViewModel.RefreshDraw();
+        }
+
+        private void BorderThicknessChanged_ValueChanged()
+        {
+            ViewModel.ActiveObj!.BorderThickness = border_thickness_property.Value;
+            ViewModel.RefreshDraw();
+        }
+
+
         private void SetStyles()
         {
             //datagrid.CellPointerPressed += DataGrid_CellPointerPressed;
@@ -238,6 +262,10 @@ namespace draftio.views.sections
 
                 bg_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BackgroundColor);
                 border_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BorderColor);
+
+                bg_opacity_property.Value = (int)ViewModel.ActiveObj.Opacity;
+                border_radius_property.Value = (int)ViewModel.ActiveObj.BorderRadius;
+                border_thickness_property.Value = (int)ViewModel.ActiveObj.BorderThickness;
             }
         }
 
@@ -266,8 +294,8 @@ namespace draftio.views.sections
                     new Property(ValueType.Background, bg_color_property),
                     new Property(ValueType.Opacity, bg_opacity_property),
                     new Property(ValueType.BorderColor, border_color_property),
-                    new Property(ValueType.BorderRadius, new TextBlock()),
-                    new Property(ValueType.BorderThickness, new TextBlock()),
+                    new Property(ValueType.BorderRadius, border_radius_property),
+                    new Property(ValueType.BorderThickness, border_thickness_property),
                 };
                 grid.SetProperties(ViewModel.Properties.ToList());
             }

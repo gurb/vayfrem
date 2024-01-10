@@ -22,7 +22,20 @@ namespace draftio.views.components
 
         public int Minimum { get; set; } = 0;
         public int Maximum { get; set; } = 100;
-        public int Value { get; set; } = 0;
+
+        private int pvalue = 0;
+        public int Value 
+        {
+            get 
+            { 
+                return pvalue;  
+            } 
+            set 
+            {
+                pvalue = value;
+                ApplyChanges();
+            } 
+        }
 
 
         private double percentage;
@@ -63,8 +76,6 @@ namespace draftio.views.components
             this.PointerPressed += Slider_PointerPressed;
             this.PointerReleased += Slider_PointerReleased;
             this.PointerMoved += Slider_PointerMoved;
-            //this.MainCanvas.SizeChanged += Slider_SizeChanged;
-
 
 
             SetBehind();
@@ -76,7 +87,6 @@ namespace draftio.views.components
         {
             Avalonia.Point point = e.GetPosition(sender as Control);
 
-            // the 5 is margin offset which is came from MainCanvas Margin
             int x = (int)point.X;
             int y = (int)point.Y;
 
@@ -111,6 +121,26 @@ namespace draftio.views.components
 
         private void Slider_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
         {
+        }
+
+        private void ApplyChanges()
+        {
+            percentage = (double)Value / (double)Maximum;
+            int x = (int)(percentage * (MainCanvas.Bounds.Width - 20));
+
+            valueDisplay.Text = Value.ToString();
+
+            if (ValueChanged != null)
+            {
+                ValueChanged.Invoke();
+            }
+
+            Canvas.SetLeft(thumb, x);
+            Canvas.SetTop(thumb, 5);
+
+            bar.Width = (int)(percentage * MainCanvas.Bounds.Width);
+
+            Draw();
         }
 
         private void Slider_SizeChanged(object? sender, SizeChangedEventArgs e)
@@ -202,6 +232,7 @@ namespace draftio.views.components
             Draw();
 
         }
+
 
         private void SetThumb()
         {
