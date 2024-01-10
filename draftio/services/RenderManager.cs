@@ -188,10 +188,10 @@ namespace draftio.services
             if (drawActive)
             {
                 Rectangle overlayActive = new Rectangle();
-                Canvas.SetLeft(overlayActive, System.Math.Min(first.X, last.X));
-                Canvas.SetTop(overlayActive, System.Math.Min(first.Y, last.Y));
-                overlayActive.Width = Math.Abs(first.X - last.X);
-                overlayActive.Height = Math.Abs(first.Y - last.Y);
+                Canvas.SetLeft(overlayActive, (int)System.Math.Min(first.X, last.X));
+                Canvas.SetTop(overlayActive, (int)System.Math.Min(first.Y, last.Y));
+                overlayActive.Width = (int)Math.Abs(first.X - last.X);
+                overlayActive.Height = (int)Math.Abs(first.Y - last.Y);
                 overlayActive.Fill = Brushes.Transparent;
                 overlayActive.Stroke = Brushes.Black;
                 overlayActive.StrokeThickness = 1;

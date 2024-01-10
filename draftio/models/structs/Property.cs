@@ -1,4 +1,5 @@
-﻿using draftio.views.sections;
+﻿using Avalonia.Controls;
+using draftio.views.sections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,11 +13,14 @@ namespace draftio.models.structs
         public string? Name { get; set; }
         public object? Value { get; set; }
 
-        public Property(ValueType type, object? value)
+        public Control? Control { get; set; }
+
+        public Property(ValueType type, Control control)
         {
             ValueType = type;
             Name = type.ToString();
-            Value = value;
+            //Value = value;
+            Control = control;
         }
     }
 }

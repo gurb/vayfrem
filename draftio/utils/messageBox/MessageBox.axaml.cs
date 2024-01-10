@@ -35,7 +35,7 @@ public partial class MessageBox : Window
         this.Height = 360;
     }
 
-    public static Task<MessageBoxResult> Show(UserControl userControl, string text, string title, MessageBoxButtons buttons)
+    public static Task<MessageBoxResult> Show(UserControl userControl, string title, string text, MessageBoxButtons buttons)
     {
         Window? parent = (Window?)userControl.GetVisualRoot();
 

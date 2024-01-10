@@ -117,7 +117,7 @@ public partial class ToolOptionsView : UserControl
         Options["Rect"].Add(row_background_width_canvas);
 
 
-        Slider opacitySlider = new Slider();
+        Avalonia.Controls.Slider opacitySlider = new Avalonia.Controls.Slider();
         opacitySlider.Margin = new Thickness(5, 0, 10, 0);
         opacitySlider.Value = ViewModel.RectToolDTO.BorderThickness;
         opacitySlider.ValueChanged += OpacitySlider_ValueChanged;
@@ -144,7 +144,7 @@ public partial class ToolOptionsView : UserControl
         var row_border_color_canvas = GetCanvas(rect_heights[4], row_border_color, Brushes.Gray);
         Options["Rect"].Add(row_border_color_canvas);
 
-        Slider radiusSlider = new Slider();
+        Avalonia.Controls.Slider radiusSlider = new Avalonia.Controls.Slider();
         radiusSlider.Margin = new Thickness(5, 0, 10, 0);
         radiusSlider.Value = ViewModel.RectToolDTO.BorderRadius;
         radiusSlider.ValueChanged += RadiusSlider_ValueChanged;
@@ -157,7 +157,7 @@ public partial class ToolOptionsView : UserControl
         var row_border_radius_canvas = GetCanvas(rect_heights[5], row_border_radius, Brushes.Gray);
         Options["Rect"].Add(row_border_radius_canvas);
 
-        Slider thicknessSlider = new Slider();
+        Avalonia.Controls.Slider thicknessSlider = new Avalonia.Controls.Slider();
         thicknessSlider.Margin = new Thickness(5, 0, 10, 0);
         thicknessSlider.Value = ViewModel.RectToolDTO.BorderThickness;
         thicknessSlider.ValueChanged += ThicknessSlider_ValueChanged;
@@ -173,7 +173,7 @@ public partial class ToolOptionsView : UserControl
 
     private void OpacitySlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
-        Slider slider = sender as Slider;
+        Avalonia.Controls.Slider slider = sender as Avalonia.Controls.Slider;
 
         ViewModel.RectToolDTO.Opacity = (int)slider.Value;
         rectOpacityValueText.Text = ViewModel.RectToolDTO.Opacity.ToString();
@@ -181,7 +181,7 @@ public partial class ToolOptionsView : UserControl
 
     private void ThicknessSlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
-        Slider slider = sender as Slider;
+        Avalonia.Controls.Slider slider = sender as Avalonia.Controls.Slider;
 
         ViewModel.RectToolDTO.BorderThickness = (int)slider.Value;
         borderThicknessValueText.Text = ViewModel.RectToolDTO.BorderThickness.ToString();
@@ -189,7 +189,7 @@ public partial class ToolOptionsView : UserControl
 
     private void RadiusSlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
-        Slider slider = sender as Slider;
+        Avalonia.Controls.Slider slider = sender as Avalonia.Controls.Slider;
 
         ViewModel.RectToolDTO.BorderRadius = (int)slider.Value;
         borderRadiusValueText.Text = ViewModel.RectToolDTO.BorderRadius.ToString();

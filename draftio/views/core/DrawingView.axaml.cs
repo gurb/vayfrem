@@ -108,6 +108,7 @@ public partial class DrawingView : UserControl
     {
         var point = e.GetCurrentPoint(sender as Control);
         currentPosition = e.GetPosition(sender as Control);
+        currentPosition = new Avalonia.Point((int)currentPosition.X, (int)currentPosition.Y);
 
         renderManager.Zoom = ZoomBorder.ZoomX;
 
@@ -123,6 +124,7 @@ public partial class DrawingView : UserControl
     {
         var point = e.GetCurrentPoint(sender as Control);
         currentPosition = e.GetPosition(sender as Control);
+        currentPosition = new Avalonia.Point((int)currentPosition.X, (int)currentPosition.Y);
 
         if (Display.IsPointerOver)
         {
@@ -153,7 +155,7 @@ public partial class DrawingView : UserControl
         if (isDraw)
         {
             isDraw = false;
-            lastPosition = point.Position;
+            lastPosition = new Avalonia.Point((int)point.Position.X, (int)point.Position.Y);
 
             handleDraw();
             draw();
@@ -161,7 +163,7 @@ public partial class DrawingView : UserControl
         if (isMove)
         {
             isMove = false;
-            lastPosition = point.Position;
+            lastPosition = new Avalonia.Point((int)point.Position.X, (int)point.Position.Y); ;
 
             handleTranslate();
             draw();
@@ -177,7 +179,7 @@ public partial class DrawingView : UserControl
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         var point = e.GetCurrentPoint(sender as Control);
-        var position = point.Position;
+        var position = new Avalonia.Point((int)point.Position.X, (int)point.Position.Y);
         oldCurrentPosition = currentPosition;
         currentPosition = position;
 
@@ -279,8 +281,8 @@ public partial class DrawingView : UserControl
         {
             moveOffset = new Vector2(firstPosition.X - ViewModel.SelectedObject.X, firstPosition.Y - ViewModel.SelectedObject.Y);
 
-            ViewModel.SelectedObject.X = lastPosition.X - moveOffset.X;
-            ViewModel.SelectedObject.Y = lastPosition.Y - moveOffset.Y;
+            ViewModel.SelectedObject.X = (int)(lastPosition.X - moveOffset.X);
+            ViewModel.SelectedObject.Y = (int)(lastPosition.Y - moveOffset.Y);
             ViewModel.RefreshState();
         }
     }
@@ -306,8 +308,8 @@ public partial class DrawingView : UserControl
 
             Avalonia.Point currentPos = currentPosition;
 
-            double old_X = obj.X;
-            double old_Y = obj.Y;
+            double old_X = (int)obj.X;
+            double old_Y = (int)obj.Y;
 
             if(obj.Parent != null)
             {
@@ -330,83 +332,83 @@ public partial class DrawingView : UserControl
                 {
                     if (currentPos.X > obj.X)
                     {
-                        obj.Width = obj.Width - (currentPos.X - obj.X);
+                        obj.Width = (int)(obj.Width - (currentPos.X - obj.X));
                     }
                     else
                     {
-                        obj.Width = obj.Width + (obj.X - currentPos.X);
+                        obj.Width = (int)(obj.Width + (obj.X - currentPos.X));
                     }
                     if (currentPos.Y > obj.Y)
                     {
-                        obj.Height = obj.Height - (currentPos.Y - obj.Y);
+                        obj.Height = (int)(obj.Height - (currentPos.Y - obj.Y));
                     }
                     else
                     {
-                        obj.Height = obj.Height + (obj.Y - currentPos.Y);
+                        obj.Height = (int)(obj.Height + (obj.Y - currentPos.Y));
                     }
                     
-                    obj.X = currentPos.X;
-                    obj.Y = currentPos.Y;
+                    obj.X = (int)currentPos.X;
+                    obj.Y = (int)currentPos.Y;
                 }
                 
                 if(scalePointType == "TopCenter")
                 {
                     if (currentPos.Y > obj.Y)
                     {
-                        obj.Height = obj.Height - (currentPos.Y - obj.Y);
+                        obj.Height = (int)(obj.Height - (currentPos.Y - obj.Y));
                     }
                     else
                     {
-                        obj.Height = obj.Height + (obj.Y - currentPos.Y);
+                        obj.Height = (int)(obj.Height + (obj.Y - currentPos.Y));
                     }
                     
-                    obj.Y = currentPos.Y;
+                    obj.Y = (int)currentPos.Y;
                 }
                 if(scalePointType == "TopRight")
                 {
                     if (currentPos.X > obj.X + obj.Width)
                     {
-                        obj.Width = Math.Abs(currentPos.X - obj.X);
+                        obj.Width = (int)Math.Abs(currentPos.X - obj.X);
                     }
                     else
                     {
-                        obj.Width = Math.Abs(currentPos.X - obj.X);
+                        obj.Width = (int)Math.Abs(currentPos.X - obj.X);
                     }
                     if (currentPos.Y > obj.Y)
                     {
-                        obj.Height = obj.Height + (obj.Y - currentPos.Y);
+                        obj.Height = (int)(obj.Height + (obj.Y - currentPos.Y));
                     }
                     else
                     {
-                        obj.Height = obj.Height + (obj.Y - currentPos.Y);
+                        obj.Height = (int)(obj.Height + (obj.Y - currentPos.Y));
                     }
                     
-                    obj.Y = currentPos.Y;
+                    obj.Y = (int)currentPos.Y;
                 }
 
                 if(scalePointType == "MiddleLeft")
                 {
                     if (currentPos.X > obj.X)
                     {
-                        obj.Width = obj.Width - (currentPos.X - obj.X);
+                        obj.Width = (int)(obj.Width - (currentPos.X - obj.X));
                     }
                     else
                     {
-                        obj.Width = obj.Width + (obj.X - currentPos.X);
+                        obj.Width = (int)(obj.Width + (obj.X - currentPos.X));
                     }
 
-                    obj.X = currentPos.X;
+                    obj.X = (int)currentPos.X;
                 }
 
                 if (scalePointType == "MiddleRight")
                 {
                     if (currentPos.X > obj.X + Width)
                     {
-                        obj.Width = Math.Abs(currentPos.X - obj.X);
+                        obj.Width = (int)Math.Abs(currentPos.X - obj.X);
                     }
                     else
                     {
-                        obj.Width = Math.Abs(currentPos.X - obj.X);
+                        obj.Width = (int)Math.Abs(currentPos.X - obj.X);
                     }
                 }
 
@@ -414,45 +416,45 @@ public partial class DrawingView : UserControl
                 {
                     if (currentPos.X > obj.X)
                     {
-                        obj.Width = obj.Width - (currentPos.X - obj.X);
+                        obj.Width = (int)(obj.Width - (currentPos.X - obj.X));
                     }
                     else
                     {
-                        obj.Width = obj.Width + (obj.X - currentPos.X);
+                        obj.Width = (int)(obj.Width + (obj.X - currentPos.X));
                     }
                     if (currentPos.Y > obj.Y)
                     {
-                        obj.Height = Math.Abs(currentPos.Y - obj.Y);
+                        obj.Height = (int)Math.Abs(currentPos.Y - obj.Y);
                     }
                     else
                     {
-                        obj.Height = Math.Abs(obj.Y - currentPos.Y);
+                        obj.Height = (int)Math.Abs(obj.Y - currentPos.Y);
                     }
-                    obj.X = currentPos.X;
+                    obj.X = (int)currentPos.X;
                 }
 
                 if(scalePointType == "BottomCenter")
                 {
-                    obj.Height = Math.Abs(currentPos.Y - obj.Y);
+                    obj.Height = (int)Math.Abs(currentPos.Y - obj.Y);
                 }
 
                 if(scalePointType == "BottomRight")
                 {
-                    obj.Width = Math.Abs(currentPos.X - obj.X);
-                    obj.Height = Math.Abs(currentPos.Y - obj.Y);
+                    obj.Width = (int)Math.Abs(currentPos.X - obj.X);
+                    obj.Height = (int)Math.Abs(currentPos.Y - obj.Y);
                 }
 
                 ViewModel.RefreshState();
 
                 if (obj.Width <= 50)
                 {
-                    obj.X = old_X;
+                    obj.X = (int)old_X;
                     obj.Width = 51;
                     return;
                 }
                 if (obj.Height <= 50)
                 {
-                    obj.Y = old_Y;
+                    obj.Y = (int)old_Y;
                     obj.Height = 51;
                     return;
                 }

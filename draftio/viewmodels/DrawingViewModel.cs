@@ -103,10 +103,10 @@ namespace draftio.viewmodels
             canvasObj.BorderColor = toolOptionsViewModel.RectToolDTO.BorderColor;
             canvasObj.Opacity = toolOptionsViewModel.RectToolDTO.Opacity;
 
-            canvasObj.X = passData.X;
-            canvasObj.Y = passData.Y;
-            canvasObj.Width = passData.Width;
-            canvasObj.Height = passData.Height;
+            canvasObj.X = (int)passData.X;
+            canvasObj.Y = (int)passData.Y;
+            canvasObj.Width = (int)passData.Width;
+            canvasObj.Height = (int)passData.Height;
 
             if (SelectedObject != null)
             {

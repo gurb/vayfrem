@@ -171,6 +171,8 @@ namespace draftio.views.components
         public void SetProperties(List<Property>? properties)
         {
             this.MainGrid.Children.Clear();
+            col1.Children.Clear();
+            col2.Children.Clear();
             this.MainGrid.Height = properties.Count * 30 + properties.Count * 1;
             SetMainGrid();
 
@@ -179,6 +181,11 @@ namespace draftio.views.components
             {
                 col1.Children.Add(PropertyTextBlock(property.Name));
                 col1.Children.Add(GridSeparator());
+
+                property.Control.Height = 30;
+                property.Control.MinHeight = 30;
+                col2.Children.Add(property.Control);
+                col2.Children.Add(GridSeparator());
             }
         }
 
