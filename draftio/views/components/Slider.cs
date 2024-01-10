@@ -8,11 +8,15 @@ using System.Threading.Tasks;
 
 namespace draftio.views.components
 {
-    public class Slider: Canvas
+    public class Slider: Grid
     {
+        Canvas MainCanvas;
         Canvas bar;
         Canvas behind;
         Canvas thumb;
+
+        TextBlock valueDisplay;
+
         bool isDrag = false;
         Avalonia.Point CurrentPoint;
 
@@ -23,17 +27,45 @@ namespace draftio.views.components
 
         private double percentage;
 
+        public delegate void ValueChangeDelegate();
+        public ValueChangeDelegate? ValueChanged;
 
         public Slider()
         {
+            ColumnDefinitions = new ColumnDefinitions("*, 50");
+
+            Margin = new Avalonia.Thickness(5, 0, 5, 0);
+
+            MainCanvas = new Canvas();
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             Height = 30;
             Background = Brushes.White;
+
+            valueDisplay = new TextBlock();
+            valueDisplay.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            valueDisplay.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            valueDisplay.Width = 50;
+            valueDisplay.FontSize = 14;
+            valueDisplay.Padding = new Avalonia.Thickness(10, 0, 10, 0);
+            valueDisplay.Text = Value.ToString();
+
+            MainCanvas.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            MainCanvas.Height = 30;
+            MainCanvas.Background = Brushes.White;
+
+            Grid.SetColumn(MainCanvas, 0);
+            Children.Add(MainCanvas);
+
+            Grid.SetColumn(valueDisplay, 1);
+            Children.Add(valueDisplay);
 
             this.SizeChanged += Slider_SizeChanged;
             this.PointerPressed += Slider_PointerPressed;
             this.PointerReleased += Slider_PointerReleased;
             this.PointerMoved += Slider_PointerMoved;
+            //this.MainCanvas.SizeChanged += Slider_SizeChanged;
+
+
 
             SetBehind();
             SetBar();
@@ -44,6 +76,7 @@ namespace draftio.views.components
         {
             Avalonia.Point point = e.GetPosition(sender as Control);
 
+            // the 5 is margin offset which is came from MainCanvas Margin
             int x = (int)point.X;
             int y = (int)point.Y;
 
@@ -51,14 +84,21 @@ namespace draftio.views.components
             {
 
                 if (x <= 0) x = 0;
-                if (x >= this.Bounds.Width - 20) x = (int)this.Bounds.Width - 20;
+                if (x >= MainCanvas.Bounds.Width - 20) x = (int)MainCanvas.Bounds.Width - 20;
 
-                percentage = (double)x / (this.Bounds.Width - 20);
+                percentage = (double)x / (MainCanvas.Bounds.Width - 20);
+                Value = ((int)(percentage * Maximum));
+                valueDisplay.Text = Value.ToString();
+
+                if (ValueChanged != null)
+                {
+                    ValueChanged.Invoke();
+                }
 
                 Canvas.SetLeft(thumb, x);
                 Canvas.SetTop(thumb, 5);
 
-                bar.Width = (int)(percentage * this.Bounds.Width);
+                bar.Width = (int)(percentage * MainCanvas.Bounds.Width);
 
                 Draw();
             }
@@ -75,30 +115,37 @@ namespace draftio.views.components
 
         private void Slider_SizeChanged(object? sender, SizeChangedEventArgs e)
         {
-            if(this.Bounds.Width <= 0)
+            Children.Clear(); 
+            Grid.SetColumn(MainCanvas, 0);
+            Children.Add(MainCanvas);
+
+            Grid.SetColumn(valueDisplay, 1);
+            Children.Add(valueDisplay);
+
+            if (MainCanvas.Bounds.Width <= 0)
             {
                 return;
             }
 
-            int x = (int)(percentage * this.Bounds.Width);
+            int x = (int)(percentage * (MainCanvas.Bounds.Width - 20));
 
             Canvas.SetLeft(thumb, x);
             Canvas.SetTop(thumb, 5);
 
-            bar.Width = (int)(percentage * this.Bounds.Width);
-            behind.Width = this.Bounds.Width;
+            bar.Width = (int)(percentage * (MainCanvas.Bounds.Width - 20));
+            behind.Width = MainCanvas.Bounds.Width;
 
             Draw();
         }
 
         private void Draw()
         {
-            Children.Clear();
-            
-            Children.Add(behind);
-            Children.Add(bar);
+            MainCanvas.Children.Clear();
 
-            Children.Add(thumb);
+            MainCanvas.Children.Add(behind);
+            MainCanvas.Children.Add(bar);
+
+            MainCanvas.Children.Add(thumb);
         }
 
         private void SetBar()
@@ -107,11 +154,12 @@ namespace draftio.views.components
             bar.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             bar.Height = 5;
             bar.Background = Brushes.Green;
+            bar.IsEnabled = false;
 
             Canvas.SetLeft(bar, 0);
             Canvas.SetTop(bar, 12.5);
-            Children.Add(bar);
 
+            MainCanvas.Children.Add(bar);
         }
 
         private void SetBehind()
@@ -120,10 +168,39 @@ namespace draftio.views.components
             behind.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             behind.Height = 5;
             behind.Background = Brushes.LightGray;
+            behind.PointerPressed += Behind_PointerPressed; ;
 
             Canvas.SetLeft(behind, 0);
             Canvas.SetTop(behind, 12.5);
-            Children.Add(behind);
+            MainCanvas.Children.Add(behind);
+        }
+
+        private void Behind_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+        {
+            Avalonia.Point point = e.GetPosition(sender as Control);
+
+            int x = (int)point.X;
+            int y = (int)point.Y;
+
+            if (x <= 0) x = 0;
+            if (x >= MainCanvas.Bounds.Width - 20) x = (int)MainCanvas.Bounds.Width - 20;
+
+            percentage = (double)x / (MainCanvas.Bounds.Width - 20);
+            Value = ((int)(percentage * Maximum));
+            valueDisplay.Text = Value.ToString();
+
+            if (ValueChanged != null)
+            {
+                ValueChanged.Invoke();
+            }
+
+            Canvas.SetLeft(thumb, x);
+            Canvas.SetTop(thumb, 5);
+
+            bar.Width = (int)(percentage * MainCanvas.Bounds.Width);
+
+            Draw();
+
         }
 
         private void SetThumb()
@@ -139,7 +216,7 @@ namespace draftio.views.components
 
             Canvas.SetLeft(thumb, 0);
             Canvas.SetTop(thumb, 5);
-            Children.Add(thumb);
+            MainCanvas.Children.Add(thumb);
         }
 
 

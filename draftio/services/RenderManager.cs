@@ -89,7 +89,7 @@ namespace draftio.services
             //panel.Children.Add(canvas);
 
             Border border = new Border();
-            border.Background = new SolidColorBrush(obj.BackgroundColor, obj.Opacity);
+            border.Background = new SolidColorBrush(obj.BackgroundColor, obj.Opacity / 255.0);
             border.BorderBrush = new SolidColorBrush(obj.BorderColor);
             border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderThickness.ToString());
             border.CornerRadius = new CornerRadius(obj.BorderRadius);

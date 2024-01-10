@@ -94,7 +94,9 @@ namespace draftio.views.sections
             border_color_property.Margin = new Thickness(0);
 
             bg_opacity_property = new components.Slider();
-            //bg_opacity_property.ValueChanged += 
+            bg_opacity_property.ValueChanged += RectOpacityChanged_ValueChanged;
+            bg_opacity_property.Maximum = 255;
+            bg_opacity_property.Minimum = 0;
             //bg_opacity_property.Margin = new Thickness(0);
         }
 
@@ -187,6 +189,12 @@ namespace draftio.views.sections
         private void RectBorderColor_ValueChanged()
         {
             ViewModel.ActiveObj!.BorderColor = border_color_property.SelectedColor;
+            ViewModel.RefreshDraw();
+        }
+
+        private void RectOpacityChanged_ValueChanged()
+        {
+            ViewModel.ActiveObj!.Opacity = bg_opacity_property.Value;
             ViewModel.RefreshDraw();
         }
 
