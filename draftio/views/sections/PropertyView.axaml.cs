@@ -13,6 +13,8 @@ using draftio.models.dtos;
 using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia;
+using draftio.models.lists;
+using draftio.models.objects;
 
 namespace draftio.views.sections
 {
@@ -34,6 +36,11 @@ namespace draftio.views.sections
         components.Slider bg_opacity_property;
         components.Slider border_radius_property;
         components.Slider border_thickness_property;
+
+        components.ColorPicker font_color_property;
+        ComboBox font_family_property;
+        ComboBox font_size_property;
+
 
         public PropertyView()
         {
@@ -108,7 +115,21 @@ namespace draftio.views.sections
             border_thickness_property.ValueChanged += BorderThicknessChanged_ValueChanged;
             border_thickness_property.Maximum = 100;
             border_thickness_property.Minimum = 0;
-            //bg_opacity_property.Margin = new Thickness(0);
+
+            font_color_property = new components.ColorPicker();
+            font_color_property.ValueChanged += FontColor_ValueChanged;
+
+            font_family_property = new ComboBox();
+            font_family_property.ItemsSource = ListStorage.FontFamilies;
+            font_family_property.SelectionChanged += FontFamilyComboBox_SelectionChanged;
+            font_family_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            font_family_property.BorderThickness = new Thickness(0);
+
+            font_size_property = new ComboBox();
+            font_size_property.ItemsSource = ListStorage.FontSizes;
+            font_size_property.SelectionChanged += FontSizeComboBox_SelectionChanged;
+            font_size_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            font_size_property.BorderThickness = new Thickness(0);
         }
 
         private async void X_property_TextChanged(object? sender, TextChangedEventArgs e)
@@ -220,6 +241,39 @@ namespace draftio.views.sections
             ViewModel.ActiveObj!.BorderThickness = border_thickness_property.Value;
             ViewModel.RefreshDraw();
         }
+        private void FontColor_ValueChanged()
+        {
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Text)
+            {
+                TextObj textObj = (TextObj)ViewModel.ActiveObj;
+                textObj.FontColor = font_color_property.SelectedColor;
+            }
+            ViewModel.RefreshDraw();
+        }
+
+        private void FontFamilyComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            var fontFamilyComboBox = sender as ComboBox;
+
+            if(ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Text)
+            {
+                TextObj textObj = (TextObj)ViewModel.ActiveObj;
+                textObj.FontFamily = (fontFamilyComboBox.SelectedValue as FontFamily).Name;
+            }
+            ViewModel.RefreshDraw();
+        }
+
+        private void FontSizeComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            var fontSizeComboBox = sender as ComboBox;
+
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Text)
+            {
+                TextObj textObj = (TextObj)ViewModel.ActiveObj;
+                textObj.FontSize = (int)fontSizeComboBox.SelectedValue;
+            }
+            ViewModel.RefreshDraw();
+        }
 
 
         private void SetStyles()
@@ -252,20 +306,40 @@ namespace draftio.views.sections
 
         private void SetValues()
         {
-            if(ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Canvas)
-            {
-                name_property.Text = ViewModel.ActiveObj.ObjectType.ToString();
-                x_property.Text = ViewModel.ActiveObj.X.ToString();
-                y_property.Text = ViewModel.ActiveObj.Y.ToString();
-                width_property.Text = ViewModel.ActiveObj.Width.ToString();
-                height_property.Text = ViewModel.ActiveObj.Height.ToString();
+            // general properties
+            name_property.Text = ViewModel.ActiveObj.ObjectType.ToString();
+            x_property.Text = ViewModel.ActiveObj.X.ToString();
+            y_property.Text = ViewModel.ActiveObj.Y.ToString();
+            width_property.Text = ViewModel.ActiveObj.Width.ToString();
+            height_property.Text = ViewModel.ActiveObj.Height.ToString();
 
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Canvas)
+            {
                 bg_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BackgroundColor);
                 border_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BorderColor);
 
                 bg_opacity_property.Value = (int)ViewModel.ActiveObj.Opacity;
                 border_radius_property.Value = (int)ViewModel.ActiveObj.BorderRadius;
                 border_thickness_property.Value = (int)ViewModel.ActiveObj.BorderThickness;
+            }
+
+            if(ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Text)
+            {
+                TextObj textObj = (TextObj)ViewModel.ActiveObj;
+
+                font_color_property.Background = new SolidColorBrush(textObj.FontColor);
+
+                var fontFamily = ListStorage.FontFamilies.FirstOrDefault(x => x.Name == textObj.FontFamily);
+                if(fontFamily != null)
+                {
+                    font_family_property.SelectedIndex = ListStorage.FontFamilies.IndexOf(fontFamily);
+                }
+
+                int? fontSize = ListStorage.FontSizes.FirstOrDefault(x => x == textObj.FontSize);
+                if (fontSize != null)
+                {
+                    font_size_property.SelectedIndex = ListStorage.FontSizes.IndexOf(fontSize.Value);
+                }
             }
         }
 
@@ -302,14 +376,17 @@ namespace draftio.views.sections
 
             if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Text)
             {
+                SetValues();
                 ViewModel.Properties = new ObservableCollection<Property>()
                 {
-                    new Property(ValueType.Name, new TextBlock()),
-                    new Property(ValueType.X, new TextBlock()),
-                    new Property(ValueType.Y, new TextBlock()),
-                    new Property(ValueType.Width, new TextBlock()),
-                    new Property(ValueType.Height, new TextBlock()),
-                    new Property(ValueType.Background, new TextBlock())
+                    new Property(ValueType.Name, name_property),
+                    new Property(ValueType.X, x_property),
+                    new Property(ValueType.Y, y_property),
+                    new Property(ValueType.Width, width_property),
+                    new Property(ValueType.Height, height_property),
+                    new Property(ValueType.FontColor, font_color_property),
+                    new Property(ValueType.FontFamily, font_family_property),
+                    new Property(ValueType.FontSize, font_size_property),
                 };
                 grid.SetProperties(ViewModel.Properties.ToList());
             }
@@ -329,5 +406,8 @@ namespace draftio.views.sections
         BorderColor,
         BorderRadius,
         BorderThickness,
+        FontColor,
+        FontFamily,
+        FontSize,
     }
 }

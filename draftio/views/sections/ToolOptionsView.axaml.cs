@@ -33,6 +33,11 @@ public partial class ToolOptionsView : UserControl
     TextBlock borderRadiusValueText;
     TextBlock borderThicknessValueText;
 
+
+    components.Slider bgOpacitySlider;
+    components.Slider borderRadiusSlider;
+    components.Slider borderThicknessSlider;
+
     bool isLoaded;
     public ToolOptionsView()
     {
@@ -93,13 +98,13 @@ public partial class ToolOptionsView : UserControl
         rect_heights = new List<double>
         {
             26,
-            26,
-            50,
+            40,
+            40,
 
             26,
-            26,
-            50,
-            50,
+            40,
+            40,
+            40,
         };
 
 
@@ -117,16 +122,12 @@ public partial class ToolOptionsView : UserControl
         Options["Rect"].Add(row_background_width_canvas);
 
 
-        Avalonia.Controls.Slider opacitySlider = new Avalonia.Controls.Slider();
-        opacitySlider.Margin = new Thickness(5, 0, 10, 0);
-        opacitySlider.Value = ViewModel.RectToolDTO.BorderThickness;
-        opacitySlider.ValueChanged += OpacitySlider_ValueChanged;
+        bgOpacitySlider = new components.Slider();
+        bgOpacitySlider.ValueChanged += BgOpactiyChanged_ValueChanged;
+        bgOpacitySlider.Maximum = 255;
+        bgOpacitySlider.Minimum = 0;
 
-        rectOpacityValueText = new TextBlock();
-        rectOpacityValueText.Text = ViewModel.RectToolDTO.BorderRadius.ToString();
-        rectOpacityValueText.Margin = new Thickness(5);
-        rectOpacityValueText.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
-        var row_background_opacity = RowOption("Opacity", opacitySlider, rectOpacityValueText, rect_heights[2]);
+        var row_background_opacity = RowOption("Opacity", bgOpacitySlider, null, rect_heights[2]);
         var row_background_opacity_canvas = GetCanvas(rect_heights[2], row_background_opacity, Brushes.Gray);
         Options["Rect"].Add(row_background_opacity_canvas);
 
@@ -144,48 +145,43 @@ public partial class ToolOptionsView : UserControl
         var row_border_color_canvas = GetCanvas(rect_heights[4], row_border_color, Brushes.Gray);
         Options["Rect"].Add(row_border_color_canvas);
 
-        Avalonia.Controls.Slider radiusSlider = new Avalonia.Controls.Slider();
-        radiusSlider.Margin = new Thickness(5, 0, 10, 0);
-        radiusSlider.Value = ViewModel.RectToolDTO.BorderRadius;
-        radiusSlider.ValueChanged += RadiusSlider_ValueChanged;
-
-        borderRadiusValueText = new TextBlock();
-        borderRadiusValueText.Text = ViewModel.RectToolDTO.BorderRadius.ToString();
-        borderRadiusValueText.Margin = new Thickness(5);
-        borderRadiusValueText.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
-        var row_border_radius = RowOption("Radius", radiusSlider, borderRadiusValueText, rect_heights[5]);
+        
+        borderRadiusSlider = new components.Slider();
+        borderRadiusSlider.ValueChanged += BorderRadiusChanged_ValueChanged;
+        borderRadiusSlider.Value = (int)ViewModel.RectToolDTO.BorderRadius;
+        borderRadiusSlider.Maximum = 100;
+        borderRadiusSlider.Minimum = 0;
+        var row_border_radius = RowOption("Radius", borderRadiusSlider, null, rect_heights[5]);
         var row_border_radius_canvas = GetCanvas(rect_heights[5], row_border_radius, Brushes.Gray);
         Options["Rect"].Add(row_border_radius_canvas);
 
-        Avalonia.Controls.Slider thicknessSlider = new Avalonia.Controls.Slider();
-        thicknessSlider.Margin = new Thickness(5, 0, 10, 0);
-        thicknessSlider.Value = ViewModel.RectToolDTO.BorderThickness;
-        thicknessSlider.ValueChanged += ThicknessSlider_ValueChanged;
 
-        borderThicknessValueText = new TextBlock();
-        borderThicknessValueText.Text = ViewModel.RectToolDTO.BorderRadius.ToString();
-        borderThicknessValueText.Margin = new Thickness(5);
-        borderThicknessValueText.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
-        var row_border_thickness = RowOption("Thickness", thicknessSlider, borderThicknessValueText, rect_heights[6]);
+        borderThicknessSlider = new components.Slider();
+        borderThicknessSlider.ValueChanged += BorderThicknessChanged_ValueChanged;
+        borderThicknessSlider.Value = (int)ViewModel.RectToolDTO.BorderThickness;
+        borderThicknessSlider.Maximum = 100;
+        borderThicknessSlider.Minimum = 0;
+
+        var row_border_thickness = RowOption("Thickness", borderThicknessSlider, null, rect_heights[6]);
         var row_border_radius_thickness = GetCanvas(rect_heights[6], row_border_thickness, Brushes.Gray);
         Options["Rect"].Add(row_border_radius_thickness);
     }
 
-    private void OpacitySlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    private void BgOpactiyChanged_ValueChanged()
     {
-        Avalonia.Controls.Slider slider = sender as Avalonia.Controls.Slider;
-
-        ViewModel.RectToolDTO.Opacity = (int)slider.Value;
-        rectOpacityValueText.Text = ViewModel.RectToolDTO.Opacity.ToString();
+        ViewModel.RectToolDTO.Opacity = bgOpacitySlider.Value;
     }
 
-    private void ThicknessSlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    private void BorderRadiusChanged_ValueChanged()
     {
-        Avalonia.Controls.Slider slider = sender as Avalonia.Controls.Slider;
-
-        ViewModel.RectToolDTO.BorderThickness = (int)slider.Value;
-        borderThicknessValueText.Text = ViewModel.RectToolDTO.BorderThickness.ToString();
+        ViewModel.RectToolDTO.BorderRadius = borderRadiusSlider.Value;
     }
+
+    private void BorderThicknessChanged_ValueChanged()
+    {
+        ViewModel.RectToolDTO.BorderThickness = borderThicknessSlider.Value;
+    }
+
 
     private void RadiusSlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
@@ -212,10 +208,10 @@ public partial class ToolOptionsView : UserControl
         text_heights = new List<double>
         {
             26,
-            26,
-            50,
+            40,
+            40,
 
-            26,
+            40,
             26,
             50,
             50,
@@ -241,7 +237,7 @@ public partial class ToolOptionsView : UserControl
         fontFamilyComboBox.SelectionChanged += FontFamilyComboBox_SelectionChanged;
         fontFamilyComboBox.SelectedIndex = ViewModel.TextToolDTO.FontFamily != null ? ViewModel.TextToolDTO.SelectedFontFamilyIndex : 0;
         fontFamilyComboBox.Margin = new Thickness(10, 5, 10, 5);
-        var row_font_family = RowOption("Font Family", fontFamilyComboBox, null, text_heights[1]);
+        var row_font_family = RowOption("Font Family", fontFamilyComboBox, null, text_heights[2]);
         var row_font_family_canvas = GetCanvas(text_heights[1], row_font_family, Brushes.Gray);
         Options["Text"].Add(row_font_family_canvas);
 
@@ -250,7 +246,7 @@ public partial class ToolOptionsView : UserControl
         fontSizeComboBox.SelectionChanged += FontSizeComboBox_SelectionChanged;
         fontSizeComboBox.SelectedIndex = ViewModel.TextToolDTO != null ? ViewModel.TextToolDTO.SelectedFontSizeIndex : 8;
         fontSizeComboBox.Margin = new Thickness(10, 5, 10, 5);
-        var row_font_size = RowOption("Size", fontSizeComboBox, null, text_heights[1]);
+        var row_font_size = RowOption("Size", fontSizeComboBox, null, text_heights[3]);
         var row_font_size_canvas = GetCanvas(text_heights[1], row_font_size, Brushes.Gray);
         Options["Text"].Add(row_font_size_canvas);
     }
@@ -275,7 +271,6 @@ public partial class ToolOptionsView : UserControl
     {
         ViewModel.TextToolDTO.FontColor = fontColorPicker.SelectedColor;
     }
-
 
     private void DrawRectOption()
     {
