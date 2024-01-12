@@ -92,6 +92,20 @@ namespace draftio.viewmodels
             }
         }
 
+        [RelayCommand]
+        public void AddDirectObject(GObject? gobject)
+        {
+            if(gobject != null)
+            {
+                Objects.Add(gobject);
+
+                if (drawDelegate != null)
+                {
+                    drawDelegate.Invoke();
+                }
+            }
+        }
+
         private void AddCanvas(PassData passData)
         {
             CanvasObj canvasObj = new CanvasObj();

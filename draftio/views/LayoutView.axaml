@@ -6,22 +6,28 @@
 			 xmlns:views="using:draftio"
              x:Class="draftio.LayoutView">
 
-	<Grid Background="" RowDefinitions="30 45 *">
-		<!-- header 1 area-->
-		<Grid Grid.Row="0" Background="DarkGray">
-			<views:TopbarView/>
-		</Grid>	
-		
-		<!-- header 2 area -->
-		<Grid Grid.Row="1" Background="LightGray">
-			<views:ShortsView/>
-		</Grid>
+	<Grid>
+		<Grid Background="" RowDefinitions="30 45 *" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
-		
-		
-		<!-- body area-->
-		<Grid Grid.Row="3" Background="WhiteSmoke">
-			<views:BodyView/>
+			<!-- header 1 area-->
+			<Grid Grid.Row="0" Background="DarkGray">
+				<views:TopbarView/>
+			</Grid>
+
+			<!-- header 2 area -->
+			<Grid Grid.Row="1" Background="LightGray">
+				<views:ShortsView/>
+			</Grid>
+
+
+			<!-- body area-->
+			<Grid Grid.Row="3" Background="WhiteSmoke">
+				<views:BodyView/>
+			</Grid>
 		</Grid>
+		<Canvas x:Name="OverlayLayout" IsEnabled="false" Background="Aqua" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></Canvas>
 	</Grid>
+
+
+
 </UserControl>

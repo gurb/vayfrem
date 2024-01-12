@@ -24,6 +24,7 @@ namespace draftio;
 public partial class DrawingView : UserControl
 {
     public DrawingViewModel ViewModel { get; private set; }
+    public LayoutViewModel layoutViewModel { get; private set; }
     private readonly RenderManager renderManager;
     private readonly ToolManager toolManager;
 
@@ -58,6 +59,8 @@ public partial class DrawingView : UserControl
         ViewModel.drawDelegate += draw;
         DataContext = ViewModel;
 
+        layoutViewModel = App.GetService<LayoutViewModel>();
+
         renderManager = App.GetService<RenderManager>();
         toolManager = App.GetService<ToolManager>();
 
@@ -66,6 +69,8 @@ public partial class DrawingView : UserControl
         Display.PointerReleased += OnPointerReleased;
         Display.PointerMoved += OnPointerMoved;
         Display.PointerWheelChanged += Display_PointerWheelChanged;
+
+        this.PointerReleased += DrawingView_PointerReleased;
 
         Overlay = new Canvas();
         Overlay.Width = 1920;
@@ -104,6 +109,11 @@ public partial class DrawingView : UserControl
         renderManager.SetMainDisplay(Display);
     }
 
+    private void DrawingView_PointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        var test = 0;
+    }
+
     private void Display_PointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
         var point = e.GetCurrentPoint(sender as Control);
@@ -125,6 +135,19 @@ public partial class DrawingView : UserControl
         var point = e.GetCurrentPoint(sender as Control);
         currentPosition = e.GetPosition(sender as Control);
         currentPosition = new Avalonia.Point((int)currentPosition.X, (int)currentPosition.Y);
+
+
+        if (!layoutViewModel.IsDragCompleted)
+        {
+            if (layoutViewModel.DragObject != null)
+            {
+                layoutViewModel.DragObject.X = (int)point.Position.X;
+                layoutViewModel.DragObject.Y = (int)point.Position.Y;
+                ViewModel.AddDirectObject(layoutViewModel.DragObject);
+                layoutViewModel.DragObject = null;
+            }
+            layoutViewModel.IsDragCompleted = true;
+        }
 
         if (Display.IsPointerOver)
         {
@@ -150,6 +173,8 @@ public partial class DrawingView : UserControl
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         var point = e.GetCurrentPoint(sender as Control);
+
+        
 
 
         if (isDraw)

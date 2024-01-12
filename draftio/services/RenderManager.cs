@@ -4,6 +4,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using draftio.models.objects;
 using draftio.models.objects.@base;
+using draftio.models.objects.components;
 using draftio.models.structs;
 using draftio.viewmodels;
 using draftio.views.components;
@@ -60,6 +61,12 @@ namespace draftio.services
 
                     DrawText(Display, textObj);
                 }
+                if (obj.ObjectType == models.enums.ObjectType.Button)
+                {
+                    ButtonObj textObj = (ButtonObj)obj;
+
+                    DrawButton(Display, textObj);
+                }
             }
         }
 
@@ -108,6 +115,81 @@ namespace draftio.services
         private void DrawText(Panel Display, TextObj obj)
         {
             if(obj.IsEditMode)
+            {
+                RelativePanel panel = new RelativePanel();
+                Canvas.SetLeft(panel, obj.X);
+                Canvas.SetTop(panel, obj.Y);
+                panel.Width = obj.Width;
+                panel.Height = obj.Height;
+
+                Canvas canvas = new Canvas();
+                Canvas.SetLeft(canvas, obj.X);
+                Canvas.SetTop(canvas, obj.Y);
+                canvas.Width = obj.Width;
+                canvas.Height = obj.Height;
+
+                //RelativePanel stackPanel = new RelativePanel();
+                //Canvas.SetLeft(stackPanel, obj.X);
+                //Canvas.SetTop(stackPanel, obj.Y);
+                //stackPanel.Width = obj.Width;
+                //stackPanel.Height = obj.Height;
+
+                TextBox textBox = new TextBox();
+                Canvas.SetLeft(textBox, 0);
+                Canvas.SetTop(textBox, 0);
+                textBox.Width = obj.Width;
+                textBox.Height = obj.Height;
+                textBox.FontFamily = new FontFamily(obj.FontFamily!);
+                textBox.FontSize = obj.FontSize;
+                textBox.Foreground = new SolidColorBrush(obj.FontColor);
+                textBox.TextWrapping = TextWrapping.Wrap;
+                textBox.Background = Brushes.Gray;
+                textBox.Text = obj.Text;
+                textBox.TextChanged += obj.TextBox_TextChanged;
+
+                canvas.Children.Add(textBox);
+                panel.Children.Add(canvas);
+                //stackPanel.Children.Add(textBox);
+
+                Border border = new Border();
+                border.Background = Brushes.Black;
+                border.BorderThickness = Avalonia.Thickness.Parse("2");
+
+                border.Padding = Avalonia.Thickness.Parse("0");
+                border.Margin = Avalonia.Thickness.Parse("0");
+                Canvas.SetLeft(border, obj.X - 2);
+                Canvas.SetTop(border, obj.Y - 2);
+                border.Child = panel;
+
+                Display.Children.Add(border);
+            }
+            else
+            {
+                Canvas canvas = new Canvas();
+                Canvas.SetLeft(canvas, obj.X);
+                Canvas.SetTop(canvas, obj.Y);
+                canvas.Width = obj.Width;
+                canvas.Height = obj.Height;
+
+                TextBlock textBlock = new TextBlock();
+                Canvas.SetLeft(textBlock, 0);
+                Canvas.SetTop(textBlock, 0);
+                textBlock.Margin = Avalonia.Thickness.Parse("0 5");
+                textBlock.Width = obj.Width;
+                textBlock.Height = obj.Height;
+                textBlock.Text = obj.Text;
+                textBlock.FontSize = obj.FontSize;
+                textBlock.FontFamily = new FontFamily(obj.FontFamily);
+                textBlock.Foreground = new SolidColorBrush(obj.FontColor);
+                textBlock.TextWrapping = TextWrapping.Wrap;
+                canvas.Children.Add(textBlock);
+                Display.Children.Add(canvas);
+            }
+        }
+
+        private void DrawButton(Panel Display, ButtonObj obj)
+        {
+            if (obj.IsEditMode)
             {
                 RelativePanel panel = new RelativePanel();
                 Canvas.SetLeft(panel, obj.X);
