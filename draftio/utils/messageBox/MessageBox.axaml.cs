@@ -1,10 +1,6 @@
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace draftio;
 

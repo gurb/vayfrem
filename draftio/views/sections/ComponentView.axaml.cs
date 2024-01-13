@@ -42,22 +42,20 @@ public partial class ComponentView : UserControl
         
 
         Init();
-        
+        setStyle();
 
 
+    }
+
+    private void setStyle()
+    {
+        componentsMenuHeader.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 204, 208, 209));
+        componentsMenuFooter.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 204, 208, 209));
     }
 
   
     private void Init()
     {
-        scrollViewer = new ScrollViewer();
-        scrollViewer.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-
-        stackPanel = new StackPanel();
-        stackPanel.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-
-        scrollViewer.Content = stackPanel;
-        Content = scrollViewer;
 
 
         SetComponents();
@@ -83,7 +81,7 @@ public partial class ComponentView : UserControl
 
         button.Child = text;
 
-        stackPanel.Children.Add(button);
+        ComponentMenu.Children.Add(button);
     }
 
     private async void Button_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)

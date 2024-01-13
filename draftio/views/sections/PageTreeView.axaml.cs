@@ -19,6 +19,11 @@ public partial class PageTreeView : UserControl
 {
     PageTreeViewModel ViewModel { get; set; }
 
+    ImageBrush caretOn;
+    ImageBrush caretOff;
+    Avalonia.Media.Imaging.Bitmap text;
+    Avalonia.Media.Imaging.Bitmap rect;
+
     public PageTreeView()
     {
         ViewModel = App.GetService<PageTreeViewModel>();
@@ -28,8 +33,13 @@ public partial class PageTreeView : UserControl
         InitializeComponent();
         PageMenu.SizeChanged += PageMenu_SizeChanged;
 
-
+        Init();
         setStyle();
+    }
+
+    private void Init()
+    {
+        setImages();
     }
 
     private void setStyle()
@@ -144,11 +154,11 @@ public partial class PageTreeView : UserControl
                 node.CaretControl = caret;
                 if (node.IsVisible)
                 {
-                    caret.Fill = new ImageBrush(new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/careton.png"))));
+                    caret.Fill = caretOn;
                 }
                 else
                 {
-                    caret.Fill = new ImageBrush(new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/caret.png"))));
+                    caret.Fill = caretOff;
                 }
 
                 Grid.SetColumn(caret, 0);
@@ -160,11 +170,11 @@ public partial class PageTreeView : UserControl
             icon.Height = 20;
             if (node.ObjectType == ObjectType.Text)
             {
-                icon.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/text.png")));
+                icon.Source = text;
             }
             if (node.ObjectType == ObjectType.Canvas)
             {
-                icon.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/rect.png")));
+                icon.Source = rect;
             }
             Grid.SetColumn(icon, 1);
             grid.Children.Add(icon);
@@ -290,5 +300,13 @@ public partial class PageTreeView : UserControl
             }
 
         }
+    }
+
+    private void setImages()
+    {
+        caretOn = new ImageBrush(new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/careton.png"))));
+        caretOff = new ImageBrush(new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/caret.png"))));
+        text = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/text.png")));
+        rect = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/rect.png")));
     }
 }

@@ -20,6 +20,12 @@ namespace draftio.views.sections
         TimeSpan lastClickTime = new TimeSpan();
         Node? lastClickNode;
         
+        ImageBrush caretOn;
+        ImageBrush caretOff;
+        Avalonia.Media.Imaging.Bitmap file;
+        Avalonia.Media.Imaging.Bitmap folder;
+
+
         public ProjectTreeView()
         {
             ViewModel = App.GetService<ProjectTreeViewModel>();
@@ -32,7 +38,13 @@ namespace draftio.views.sections
             AddFolderButton.Click += AddFolderButton_Click;
             ProjectMenu.SizeChanged += ProjectMenu_SizeChanged;
 
+            Init();
             setStyle();
+        }
+
+        private void Init()
+        {
+            setImages();
         }
 
         private void setStyle ()
@@ -197,11 +209,11 @@ namespace draftio.views.sections
                     node.CaretControl = caret;
                     if (node.IsVisible)
                     {
-                        caret.Fill = new ImageBrush(new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/careton.png"))));
+                        caret.Fill = caretOn;
                     }
                     else
                     {
-                        caret.Fill = new ImageBrush(new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/caret.png"))));
+                        caret.Fill = caretOff;
                     }
 
                     Grid.SetColumn(caret, 0);
@@ -213,11 +225,11 @@ namespace draftio.views.sections
                 icon.Height = 20;
                 if (node.Type == NodeType.File)
                 {
-                    icon.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/file.png")));
+                    icon.Source = file;
                 }
                 if (node.Type == NodeType.Folder)
                 {
-                    icon.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/folder.png")));
+                    icon.Source = folder;
                 }
                 Grid.SetColumn(icon, 1);
                 grid.Children.Add(icon);
@@ -280,6 +292,15 @@ namespace draftio.views.sections
 
             return parentCounter;
 
+        }
+
+
+        private void setImages()
+        {
+            caretOn = new ImageBrush(new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/careton.png"))));
+            caretOff = new ImageBrush(new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/caret.png"))));
+            file = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/file.png")));
+            folder = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://draftio/assets/folder.png")));
         }
     }
 }

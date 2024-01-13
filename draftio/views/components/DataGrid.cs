@@ -198,7 +198,6 @@ namespace draftio.views.components
             separator.Margin = new Avalonia.Thickness(0);
 
             return separator;
-
         }
 
 

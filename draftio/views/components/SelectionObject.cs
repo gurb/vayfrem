@@ -98,6 +98,7 @@ namespace draftio.views.components
             {
                 rect.Width = Sample.Width;
                 rect.Height = Sample.Height;
+                rect.Fill = Brushes.White;
                 rect.StrokeThickness = Sample.StrokeThickness;
                 rect.Stroke = Sample.Stroke;
             }
