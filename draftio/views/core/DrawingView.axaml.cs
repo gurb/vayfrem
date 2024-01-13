@@ -25,6 +25,7 @@ public partial class DrawingView : UserControl
 {
     public DrawingViewModel ViewModel { get; private set; }
     public LayoutViewModel layoutViewModel { get; private set; }
+    private readonly ProjectManager projectManager;
     private readonly RenderManager renderManager;
     private readonly ToolManager toolManager;
 
@@ -60,11 +61,16 @@ public partial class DrawingView : UserControl
         DataContext = ViewModel;
 
         layoutViewModel = App.GetService<LayoutViewModel>();
-
+        
+        projectManager = App.GetService<ProjectManager>();
+        projectManager.setDimensionDelegate += SetDimension;
         renderManager = App.GetService<RenderManager>();
         toolManager = App.GetService<ToolManager>();
 
         InitializeComponent();
+
+        
+
         Display.PointerPressed += OnPointerPressed;
         Display.PointerReleased += OnPointerReleased;
         Display.PointerMoved += OnPointerMoved;
@@ -109,9 +115,17 @@ public partial class DrawingView : UserControl
         renderManager.SetMainDisplay(Display);
     }
 
+
+
     private void DrawingView_PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         var test = 0;
+    }
+
+    private void SetDimension()
+    {
+        Display.Width = projectManager.CurrentProject.Width;
+        Display.Height = projectManager.CurrentProject.Height;
     }
 
     private void Display_PointerWheelChanged(object? sender, PointerWheelEventArgs e)

@@ -2,9 +2,14 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.VisualTree;
 using draftio.models.dtos;
+using draftio.models.lists;
+using draftio.services;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace draftio;
@@ -12,6 +17,8 @@ namespace draftio;
 public partial class NewProjectWindow : Window
 {
     Window? parent;
+
+    private readonly ProjectManager projectManager;
 
     Grid grid;
     StackPanel stackPanelInput;
@@ -29,13 +36,16 @@ public partial class NewProjectWindow : Window
     Button createButton;
     Button closeButton;
 
-    int width_window = 400;
+    int width_window = 500;
     int height_window = 330;
 
     double height = 32;
 
     public NewProjectWindow()
     {
+        projectManager = App.GetService<ProjectManager>();
+
+
         InitializeComponent();
         SetWindow();
     }
@@ -52,6 +62,8 @@ public partial class NewProjectWindow : Window
         this.CanResize = false;
         this.ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.NoChrome;
         this.ExtendClientAreaToDecorationsHint = false;
+
+
 
         SetPanel();
         SetInputElements();
@@ -107,13 +119,17 @@ public partial class NewProjectWindow : Window
 
         dimensionComboBox = new ComboBox();
         dimensionComboBox.Height = height - 2;
+        dimensionComboBox.ItemsSource = ListStorage.Dimensions.Select(x => x.Name);
+        dimensionComboBox.SelectedIndex = 0;
+        dimensionComboBox.SelectionChanged += DimensionComboBox_SelectionChanged;
         dimensionComboBox.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
 
         createButton = new Button();
         createButton.Padding = new Thickness(10);
         createButton.Height = height + 10;
-        createButton.Background = Brushes.DarkBlue;
+        createButton.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 34, 113, 255)); ;
         createButton.Foreground = Brushes.White;
+        createButton.Click += CreateButton_Click;
         createButton.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         createButton.Content = "Create";
 
@@ -127,6 +143,42 @@ public partial class NewProjectWindow : Window
         stackPanelInput.Children.Add(NPSeparator());
         stackPanelInput.Children.Add(createButton);
 
+    }
+
+    private void CreateButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        projectManager.CurrentProject.Width = Int32.Parse(widthTextBox.Text);
+        projectManager.CurrentProject.Height = Int32.Parse(heightTextBox.Text);
+        
+        if(projectManager.setDimensionDelegate != null)
+        {
+            projectManager.setDimensionDelegate.Invoke();
+        }
+        this.CloseWindow();
+    }
+
+    private void DimensionComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        ComboBox comboBox = (ComboBox)sender;
+
+        var selected = ListStorage.Dimensions.Where(x => x.Name == comboBox!.SelectedValue!.ToString()).FirstOrDefault();
+
+        if(selected != null)
+        {
+            widthTextBox.Text = selected.Width.ToString();
+            heightTextBox.Text = selected.Height.ToString();
+
+            if(selected.Type != models.structs.DimensionType.Custom)
+            {
+                widthTextBox.IsEnabled = false;
+                heightTextBox.IsEnabled = false;
+            } 
+            else
+            {
+                widthTextBox.IsEnabled = true;
+                heightTextBox.IsEnabled = true;
+            }
+        }
     }
 
     private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -157,7 +209,7 @@ public partial class NewProjectWindow : Window
         heightLabel.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
 
         dimensionLabel = new TextBlock();
-        dimensionLabel.Text = "Dimensions";
+        dimensionLabel.Text = "Dimension Type";
         dimensionLabel.Padding = new Thickness(5);
         dimensionLabel.Height = height;
         dimensionLabel.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;

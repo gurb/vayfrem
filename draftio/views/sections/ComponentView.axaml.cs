@@ -56,8 +56,6 @@ public partial class ComponentView : UserControl
   
     private void Init()
     {
-
-
         SetComponents();
     }
 

@@ -19,12 +19,14 @@ namespace draftio.services
 
         public Project? CurrentProject { get; set; }
 
+        public delegate void SetDimensionDelegate();
+        public SetDimensionDelegate? setDimensionDelegate;
+
 
         public ProjectManager()
         {
             fileManager = App.GetService<FileManager>();
             ioManager = App.GetService<IOManager>();
-
         }
 
         public async Task<VMResponse> InitializeProject()

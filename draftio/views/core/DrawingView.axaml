@@ -10,7 +10,7 @@
 			<paz:ZoomBorder Name="ZoomBorder" Stretch="None" ZoomSpeed="1.2"
                             Background="Gray" ClipToBounds="True" Focusable="True"
                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-			<Canvas Width="1920" Height="1080" x:Name="Display" Background="White" ZIndex="2" ClipToBounds="True">
+			<Canvas x:Name="Display" Background="White" ZIndex="2" ClipToBounds="True">
 				
 			</Canvas>
 				</paz:ZoomBorder>
