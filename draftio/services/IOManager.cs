@@ -93,8 +93,6 @@ namespace draftio.services
                     {
                         models.File file = (models.File)node;
 
-                        
-                        
                         foreach(var obj in file.Objects)
                         {
                             if (obj.ObjectType == models.enums.ObjectType.Canvas)

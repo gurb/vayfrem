@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using draftio.models.dtos;
 using draftio.models.enums;
 using draftio.models.structs;
 using System;
@@ -20,8 +21,8 @@ namespace draftio.models.objects.@base
         public double Height { get; set; }
         public int ZIndex { get; set; } = 1;
         public double Opacity { get; set; }
-        public Avalonia.Media.Color BackgroundColor { get; set; } = new Avalonia.Media.Color(255, 255, 255, 255);
-        public Avalonia.Media.Color BorderColor { get; set; } = new Avalonia.Media.Color(0, 0, 0, 255);
+        public ColorDTO BackgroundColor { get; set; } = new ColorDTO(255, 255, 255, 255);
+        public ColorDTO BorderColor { get; set; } = new ColorDTO(0, 0, 0, 255);
         public double BorderThickness { get; set; }
         public double BorderRadius { get; set; }
         public ObjectType ObjectType { get; set; }

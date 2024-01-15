@@ -9,10 +9,10 @@ namespace draftio.models.dtos
 {
     public class RectToolDTO
     {
-        public Color Background { get; set; } = new Color(255, 0, 0, 0);
+        public ColorDTO Background { get; set; } = new ColorDTO(255, 0, 0, 0);
         public double Opacity { get; set; }
         public double BorderThickness { get; set; } = 1;
-        public Color BorderColor { get; set; } = new Color(255, 0, 0, 0);
+        public ColorDTO BorderColor { get; set; } = new ColorDTO(255, 0, 0, 0);
         public int BorderRadius { get; set; } = 0;
     }
 }

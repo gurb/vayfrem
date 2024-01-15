@@ -315,8 +315,8 @@ namespace draftio.views.sections
 
             if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Canvas)
             {
-                bg_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BackgroundColor);
-                border_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BorderColor);
+                bg_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BackgroundColor.ToColor());
+                border_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BorderColor.ToColor());
 
                 bg_opacity_property.Value = (int)ViewModel.ActiveObj.Opacity;
                 border_radius_property.Value = (int)ViewModel.ActiveObj.BorderRadius;
@@ -327,7 +327,7 @@ namespace draftio.views.sections
             {
                 TextObj textObj = (TextObj)ViewModel.ActiveObj;
 
-                font_color_property.Background = new SolidColorBrush(textObj.FontColor);
+                font_color_property.Background = new SolidColorBrush(textObj.FontColor.ToColor());
 
                 var fontFamily = ListStorage.FontFamilies.FirstOrDefault(x => x.Name == textObj.FontFamily);
                 if(fontFamily != null)

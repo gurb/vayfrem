@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using draftio.models.dtos;
 using SkiaSharp;
 using System;
 using System.Drawing;
@@ -23,7 +24,7 @@ namespace draftio.views.components
         public delegate void ValueChangeDelegate();
         public ValueChangeDelegate? ValueChanged;
 
-        public Avalonia.Media.Color SelectedColor { get; set; }
+        public ColorDTO SelectedColor { get; set; }
 
         public ColorPicker()
         {
@@ -70,7 +71,7 @@ namespace draftio.views.components
 
             Avalonia.Media.Color pixelColor = GetPixelColor(x, y);
 
-            SelectedColor = pixelColor;
+            SelectedColor = new ColorDTO(pixelColor);
 
             if(ValueChanged != null)
             {

@@ -13,6 +13,6 @@ namespace draftio.models.dtos
         public string? FontFamily { get; set; } = "Arial";
         public int SelectedFontSizeIndex { get; set; } = 8;
         public int FontSize { get; set; } = 14;
-        public Color FontColor { get; set; } = new Color(255, 0, 0, 0);
+        public ColorDTO FontColor { get; set; } = new ColorDTO(255, 0, 0, 0);
     }
 }

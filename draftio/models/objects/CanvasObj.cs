@@ -31,6 +31,7 @@ namespace draftio.models.objects
         {
             this.ObjectType = enums.ObjectType.Canvas;
 
+            base.InitializeObject();
             //Properties = new List<Property> 
             //{ 
             //    new Property(Value, Brushes.Transparent),

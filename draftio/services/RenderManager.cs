@@ -96,8 +96,8 @@ namespace draftio.services
             //panel.Children.Add(canvas);
 
             Border border = new Border();
-            border.Background = new SolidColorBrush(obj.BackgroundColor, obj.Opacity / 255.0);
-            border.BorderBrush = new SolidColorBrush(obj.BorderColor);
+            border.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
+            border.BorderBrush = new SolidColorBrush(obj.BorderColor.ToColor());
             border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderThickness.ToString());
             border.CornerRadius = new CornerRadius(obj.BorderRadius);
 
@@ -141,7 +141,7 @@ namespace draftio.services
                 textBox.Height = obj.Height;
                 textBox.FontFamily = new FontFamily(obj.FontFamily!);
                 textBox.FontSize = obj.FontSize;
-                textBox.Foreground = new SolidColorBrush(obj.FontColor);
+                textBox.Foreground = new SolidColorBrush(obj.FontColor.ToColor());
                 textBox.TextWrapping = TextWrapping.Wrap;
                 textBox.Background = Brushes.Gray;
                 textBox.Text = obj.Text;
@@ -180,7 +180,7 @@ namespace draftio.services
                 textBlock.Text = obj.Text;
                 textBlock.FontSize = obj.FontSize;
                 textBlock.FontFamily = new FontFamily(obj.FontFamily);
-                textBlock.Foreground = new SolidColorBrush(obj.FontColor);
+                textBlock.Foreground = new SolidColorBrush(obj.FontColor.ToColor());
                 textBlock.TextWrapping = TextWrapping.Wrap;
                 canvas.Children.Add(textBlock);
                 Display.Children.Add(canvas);
