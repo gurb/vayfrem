@@ -70,22 +70,17 @@ public partial class TabsView : UserControl
 
         double tabMenuWidth = CalcTabMenuWidth();
 
-        if(TabMenuScrollParent.Bounds.Width < tabMenuWidth)
-        {
-            TabMenu.Width = tabMenuWidth;
-        } 
-        else
-        {
-            TabMenu.Width = TabMenuScrollParent.Bounds.Width;
-        }
+        
 
+
+        double start_pos = 10;
 
         foreach (var node in ViewModel.Nodes)
         {
 
             Border? button = TabButton(node);
 
-            Canvas.SetLeft(button, (counter * button.Width) + counter * 4);
+            Canvas.SetLeft(button, start_pos);
             Canvas.SetTop(button, 5);
             node.ConnectedTabControl = button;
             button.PointerPressed += Button_PointerPressed;
@@ -101,6 +96,17 @@ public partial class TabsView : UserControl
             TabMenu.Children.Add(button);
 
             counter++;
+
+            start_pos += button.Width + 10;
+        }
+
+        if (TabMenuScrollParent.Bounds.Width < start_pos)
+        {
+            TabMenu.Width = start_pos;
+        }
+        else
+        {
+            TabMenu.Width = TabMenuScrollParent.Bounds.Width;
         }
     }
 

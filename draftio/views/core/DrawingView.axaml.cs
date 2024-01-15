@@ -53,17 +53,17 @@ public partial class DrawingView : UserControl
     Node? lastClickNode;
 
 
-
     public DrawingView()
     {
         ViewModel = App.GetService<DrawingViewModel>();
         ViewModel.drawDelegate += draw;
+        ViewModel.setDimensionDelegate += SetDimension;
         DataContext = ViewModel;
 
         layoutViewModel = App.GetService<LayoutViewModel>();
         
         projectManager = App.GetService<ProjectManager>();
-        projectManager.setDimensionDelegate += SetDimension;
+        //projectManager.setDimensionDelegate += SetDimension;
         renderManager = App.GetService<RenderManager>();
         toolManager = App.GetService<ToolManager>();
 
@@ -124,8 +124,8 @@ public partial class DrawingView : UserControl
 
     private void SetDimension()
     {
-        Display.Width = projectManager.CurrentProject.Width;
-        Display.Height = projectManager.CurrentProject.Height;
+        Display.Width = ViewModel.CurrentFile.PageWidth;
+        Display.Height = ViewModel.CurrentFile.PageHeight;
     }
 
     private void Display_PointerWheelChanged(object? sender, PointerWheelEventArgs e)

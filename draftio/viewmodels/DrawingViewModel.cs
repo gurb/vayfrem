@@ -57,6 +57,9 @@ namespace draftio.viewmodels
 
         public delegate void DrawOverlayDelegate();
 
+        public delegate void SetDimensionDelegate();
+        public SetDimensionDelegate? setDimensionDelegate;
+
         public DrawingViewModel() 
         {
             shortsViewModel = App.GetService<ShortsViewModel>();
@@ -163,6 +166,11 @@ namespace draftio.viewmodels
             // if this function called from pageview menu
             IsSelect = true;
 
+            pageTreeViewModel.SetSelected(obj);
+            if(pageTreeViewModel.drawPageView != null)
+            {
+                pageTreeViewModel.drawPageView.Invoke();
+            }
             
             if(obj != null)
             {
@@ -203,7 +211,6 @@ namespace draftio.viewmodels
                 textObj.IsEditMode = true;
                 ActiveTextObject = textObj;
             }
-
         }
 
 
@@ -305,6 +312,11 @@ namespace draftio.viewmodels
                 SetSelectedObject(file.Selection.SelectedObject);
             }
 
+            if(setDimensionDelegate != null)
+            {
+                setDimensionDelegate.Invoke();
+            }
+
             if(drawDelegate != null)
             {
                 drawDelegate.Invoke();
@@ -314,6 +326,7 @@ namespace draftio.viewmodels
 
         public void Draw()
         {
+
             if (drawDelegate != null)
             {
                 drawDelegate.Invoke();
@@ -332,7 +345,10 @@ namespace draftio.viewmodels
 
         public void RefreshState()
         {
-            propertyViewModel.RefreshPropertyView(SelectedObject);
+            if(CurrentFile != null)
+            {
+                propertyViewModel.RefreshPropertyView(CurrentFile.Selection.SelectedObject);
+            }
         }
 
         [RelayCommand]

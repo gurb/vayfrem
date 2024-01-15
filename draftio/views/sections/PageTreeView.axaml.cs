@@ -32,9 +32,16 @@ public partial class PageTreeView : UserControl
 
         InitializeComponent();
         PageMenu.SizeChanged += PageMenu_SizeChanged;
+        DeleteNodeButton.Click += DeleteNodeButton_Click; ;
 
         Init();
         setStyle();
+    }
+
+    private void DeleteNodeButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        ViewModel.DeleteNode();
+        DrawCanvas();
     }
 
     private void Init()

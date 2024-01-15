@@ -36,12 +36,14 @@ namespace draftio.views.sections
 
             AddFileButton.Click += AddFileButton_Click;
             AddFolderButton.Click += AddFolderButton_Click;
+            DeleteNodeButton.Click += DeleteNodeButton_Click;
             ProjectMenu.SizeChanged += ProjectMenu_SizeChanged;
 
             Init();
             setStyle();
         }
 
+        
         private void Init()
         {
             setImages();
@@ -60,7 +62,7 @@ namespace draftio.views.sections
 
         private void AddFileButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            ViewModel.AddPage();
+            ViewModel.AddPage("Page", 1920, 1080);
             DrawCanvas();
         }
         private void AddFolderButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -68,6 +70,13 @@ namespace draftio.views.sections
             ViewModel.AddFolder();
             DrawCanvas();
         }
+
+        private void DeleteNodeButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            ViewModel.DeleteNode();
+            DrawCanvas();
+        }
+
 
         private void RefreshDraw()
         {
@@ -142,9 +151,7 @@ namespace draftio.views.sections
 
                     if(node.Children.Count > 0)
                     {
-                       
                         counter = DrawCanvas(node.Children, counter);
-                        
                     }
                 }
             }

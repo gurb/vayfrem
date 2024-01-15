@@ -1,7 +1,9 @@
 ﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using draftio.models;
+using draftio.models.objects;
 using draftio.models.objects.@base;
+using draftio.services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,6 +32,7 @@ namespace draftio.viewmodels
         // drawviewmodel
         public delegate void DrawDelegate();
         public DrawDelegate? drawDelegate;
+
 
 
         public delegate void SetSelectToolDelegate();
@@ -73,10 +76,84 @@ namespace draftio.viewmodels
             }
         }
 
+
+        public void DeleteNode()
+        {
+            if (CurrentFile == null)
+                return;
+
+            if(SelectedObject == null)
+            {
+                return;
+            }
+
+            if(SelectedObject.ObjectType == models.enums.ObjectType.Canvas)
+            {
+                if (SelectedObject.ParentGuid != null)
+                {
+                    CanvasObj parentObj = (CanvasObj)SelectedObject.Parent!;
+                    
+                    List<GObject> DeletedObjects = GetRelatedObjects((CanvasObj)SelectedObject);
+
+                    foreach (var item in DeletedObjects)
+                    {
+                        parentObj.Children.Remove(item);
+                    }
+                }
+                else
+                {
+                    List<GObject> DeletedObjects = GetRelatedObjects((CanvasObj)SelectedObject);
+
+                    foreach (var item in DeletedObjects)
+                    {
+                        CurrentFile.Objects.Remove(item);
+                    }
+                }
+            }
+            else
+            {
+                if(SelectedObject.ParentGuid != null)
+                {
+                    CanvasObj parentObj = (CanvasObj)SelectedObject.Parent!;
+                    parentObj.Children.Remove(SelectedObject);
+                }
+                else
+                {
+                    CurrentFile.Objects.Remove(SelectedObject);
+                }
+            }
+
+            Nodes = new ObservableCollection<GObject>(CurrentFile.Objects);
+
+            Refresh(CurrentFile);
+            SetSelected(null);
+            propertyViewModel.SetActiveObject(null);
+        }
+
+        private List<GObject> GetRelatedObjects(CanvasObj obj)
+        {
+            List<GObject> objects = new List<GObject>();
+            objects.Add(obj);
+
+            foreach (var item in obj.Children)
+            {
+                if (item.ObjectType == models.enums.ObjectType.Canvas)
+                    objects.AddRange(GetRelatedObjects((CanvasObj)item));
+                else
+                    objects.Add(item);
+            }
+
+            return objects;
+        }
+
         public void SetSelected(GObject? obj)
         {
             SelectedObject = obj;
-            if(drawDelegate != null)
+            if(CurrentFile != null)
+            {
+                CurrentFile.Selection!.SelectedObject = obj;
+            }
+            if (drawDelegate != null)
             {
                 drawDelegate.Invoke();
             }
@@ -86,12 +163,12 @@ namespace draftio.viewmodels
         {
             if (file != null)
             {
-                nodes = new ObservableCollection<GObject>(file.Objects);
+                Nodes = new ObservableCollection<GObject>(file.Objects);
                 SelectedObject = file.Selection!.SelectedObject;
             }
             else
             {
-                nodes = new ObservableCollection<GObject>();
+                Nodes = new ObservableCollection<GObject>();
             }
 
             if (drawPageView != null)

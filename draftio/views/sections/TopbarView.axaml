@@ -7,7 +7,7 @@
 	<StackPanel Orientation="Horizontal">
 		<Menu>
 			<MenuItem Header="File">
-				<MenuItem x:Name="NewProjectBtn" Header="New Project"></MenuItem>
+				<MenuItem x:Name="NewPageBtn" Header="New Page"></MenuItem>
 				<MenuItem x:Name="OpenProjectBtn" Header="Open Project"></MenuItem>
 				<MenuItem x:Name="ExitBtn" Header="Exit"></MenuItem>
 			</MenuItem>

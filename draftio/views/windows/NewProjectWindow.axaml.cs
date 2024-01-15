@@ -7,6 +7,7 @@ using Avalonia.VisualTree;
 using draftio.models.dtos;
 using draftio.models.lists;
 using draftio.services;
+using draftio.viewmodels;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Linq;
@@ -19,6 +20,7 @@ public partial class NewProjectWindow : Window
     Window? parent;
 
     private readonly ProjectManager projectManager;
+    ProjectTreeViewModel projectTreeViewModel { get; set; }
 
     Grid grid;
     StackPanel stackPanelInput;
@@ -44,7 +46,7 @@ public partial class NewProjectWindow : Window
     public NewProjectWindow()
     {
         projectManager = App.GetService<ProjectManager>();
-
+        projectTreeViewModel = App.GetService<ProjectTreeViewModel>();
 
         InitializeComponent();
         SetWindow();
@@ -52,7 +54,7 @@ public partial class NewProjectWindow : Window
 
     public void SetWindow()
     {
-        Title = "Create New Project";
+        Title = "Create New Page";
         this.Width = width_window;
         this.Height = height_window;
         this.MinWidth = width_window;
@@ -145,15 +147,49 @@ public partial class NewProjectWindow : Window
 
     }
 
-    private void CreateButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private async void CreateButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        projectManager.CurrentProject.Width = Int32.Parse(widthTextBox.Text);
-        projectManager.CurrentProject.Height = Int32.Parse(heightTextBox.Text);
-        
-        if(projectManager.setDimensionDelegate != null)
+        if (String.IsNullOrEmpty(widthTextBox.Text)) 
         {
-            projectManager.setDimensionDelegate.Invoke();
+            await MessageBox.Show(this, "Error", $"Width cannot be empty", MessageBox.MessageBoxButtons.Ok);
+            return;
         }
+        if (String.IsNullOrEmpty(heightTextBox.Text)) 
+        {
+            await MessageBox.Show(this, "Error", $"Height cannot be empty", MessageBox.MessageBoxButtons.Ok);
+            return;
+        }
+
+        if (!widthTextBox.Text.All(char.IsDigit))
+        {
+            await MessageBox.Show(this, "Error", $"Input cannot be {widthTextBox.Text}", MessageBox.MessageBoxButtons.Ok);
+            return;
+        }
+
+        if (!heightTextBox.Text.All(char.IsDigit))
+        {
+            await MessageBox.Show(this, "Error", $"Input cannot be {heightTextBox.Text}", MessageBox.MessageBoxButtons.Ok);
+            return;
+        }
+
+
+        int width = Int32.Parse(widthTextBox.Text);
+        int height = Int32.Parse(heightTextBox.Text);
+
+        projectTreeViewModel.AddPage(projectNameTextBox.Text, width, height);
+        
+        if(projectTreeViewModel.drawProjectView != null)
+        {
+            projectTreeViewModel.drawProjectView.Invoke();
+        }
+        
+        ////projectManager.CurrentProject.Width = Int32.Parse(widthTextBox.Text);
+        ////projectManager.CurrentProject.Height = Int32.Parse(heightTextBox.Text);
+        
+        //if(projectManager.setDimensionDelegate != null)
+        //{
+        //    projectManager.setDimensionDelegate.Invoke();
+        //}
         this.CloseWindow();
     }
 

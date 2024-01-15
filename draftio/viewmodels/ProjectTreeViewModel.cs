@@ -65,12 +65,15 @@ namespace draftio.viewmodels
             }
         }
 
-        [RelayCommand]
-        public void AddPage()
+        
+        public void AddPage(string fileName, int width, int height)
         {
             File file = new File();
-            file.Name = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+            //file.Name = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+            file.Name = fileName;
             file.Guid = Guid.NewGuid().ToString();
+            file.PageWidth = width;
+            file.PageHeight = height;
             if (SelectedFolder != null)
             {
                 file.ParentNode = SelectedFolder;
@@ -84,8 +87,80 @@ namespace draftio.viewmodels
 
                 shortsViewModel.ChangeSaveState(false);
                 shortsViewModel.SetCurrentFile(file);
+            } 
+            else
+            {
+                file.ParentNode = projectManager.CurrentProject.RootFolder;
+                file.ParentGuid = projectManager.CurrentProject.RootFolder.Guid;
+
+                projectManager.CurrentProject.RootFolder.Children.Add(file);
+
+                projectManager.CurrentProject.Nodes.Add(file);
+                Nodes = projectManager.CurrentProject.Nodes;
+                tabViewModel.AddTab(file);
+
+                shortsViewModel.ChangeSaveState(false);
+                shortsViewModel.SetCurrentFile(file);
             }
         }
+
+        public void DeleteNode()
+        {
+            if (SelectedNode == null)
+                return;
+
+            if(SelectedNode == projectManager.CurrentProject!.RootFolder)
+            {
+                return;
+            }
+
+            if(SelectedNode.Type == models.enums.NodeType.File)
+            {
+                tabViewModel.RemoveNode(SelectedNode);
+
+                projectManager.CurrentProject.Nodes.Remove(SelectedNode);
+                Nodes = projectManager.CurrentProject.Nodes;
+
+                shortsViewModel.ChangeSaveState(false);
+                //shortsViewModel.SetCurrentFile(file);
+                
+                return;
+            }
+
+            if(SelectedNode.Type == models.enums.NodeType.Folder)
+            {
+                List<Node> DeletedNodes = GetRelatedNodes(SelectedNode);
+
+                foreach (var item in DeletedNodes)
+                {
+                    tabViewModel.RemoveNode(item);
+                    projectManager.CurrentProject.Nodes.Remove(item);
+                }
+
+                Nodes = projectManager.CurrentProject.Nodes;
+                shortsViewModel.ChangeSaveState(false);
+
+                return;
+            }
+        }
+
+
+        private List<Node> GetRelatedNodes(Node node)
+        {
+            List<Node> nodes = new List<Node>();
+            nodes.Add(node);
+
+            foreach (var item in node.Children)
+            {
+                if (item.Type == models.enums.NodeType.File)
+                    nodes.Add(item);
+                else 
+                    nodes.AddRange(GetRelatedNodes(item));
+            }
+
+            return nodes;
+        }
+
 
         [RelayCommand]
         public void AddFolder()

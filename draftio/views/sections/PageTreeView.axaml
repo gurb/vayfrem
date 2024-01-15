@@ -17,7 +17,7 @@
 			</StackPanel>
 		</ScrollViewer>
 		<StackPanel Grid.Row="2" x:Name="pageMenuFooter">
-			<Grid ColumnDefinitions="35, 35, *">
+			<Grid ColumnDefinitions="35, 35, *, 35">
 				<!--<Button Width="30" Grid.Column="0" Padding="0" Margin="5" x:Name="AddFileButton" HorizontalContentAlignment="Center">
 					<Image Source="avares://draftio/assets/file-plus.png" Width="20" Height="20">
 					</Image>
@@ -26,6 +26,10 @@
 					<Image Source="avares://draftio/assets/folder-plus.png" Width="20" Height="20">
 					</Image>
 				</Button>-->
+				<Button Width="30" Grid.Column="3" Padding="0" Margin="5" x:Name="DeleteNodeButton" HorizontalContentAlignment="Center">
+					<Image Source="avares://draftio/assets/trash.png" Width="20" Height="20">
+					</Image>
+				</Button>
 			</Grid>
 		</StackPanel>
 	</Grid>

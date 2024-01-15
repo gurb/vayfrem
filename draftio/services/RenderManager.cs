@@ -308,7 +308,7 @@ namespace draftio.services
             if(drawingViewModel.CurrentFile != null && drawingViewModel.CurrentFile.Selection!.SelectedObject != null)
             {
                 GObject selected = drawingViewModel.CurrentFile.Selection!.SelectedObject;
-
+                selectionObject.IsVisible = true;
                 selectionObject.Width = selected.Width;
                 selectionObject.Height = selected.Height;
                 Canvas.SetLeft(selectionObject, selected.WorldX);
@@ -320,6 +320,9 @@ namespace draftio.services
                 selectionObject.Draw();
 
                 Overlay.Children.Add(selectionObject);
+            } else
+            {
+                selectionObject.IsVisible = false;
             }
         } 
     }

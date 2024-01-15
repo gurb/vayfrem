@@ -21,10 +21,10 @@ public partial class TopbarView : UserControl
 
     private void SetNewProjectBtn()
     {
-        NewProjectBtn.Click += NewProjectBtn_Click;
+        NewPageBtn.Click += NewPageBtn_Click;
     }
 
-    private void NewProjectBtn_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void NewPageBtn_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         NewProjectWindow window = new NewProjectWindow();
         window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
