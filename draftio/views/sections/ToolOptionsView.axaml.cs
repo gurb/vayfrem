@@ -113,7 +113,7 @@ public partial class ToolOptionsView : UserControl
         var row_background_canvas = GetCanvas(rect_heights[0], row_background, Brushes.Gray);
         Options["Rect"].Add(row_background_canvas);
 
-        backgroundColorPicker = new components.ColorPicker();
+        backgroundColorPicker = new components.ColorPicker("bg");
         backgroundColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.Background.ToColor());
         backgroundColorPicker.ValueChanged += RectBackgroundColor_ValueChanged;
         backgroundColorPicker.Margin = new Thickness(10, 5, 10, 5);
@@ -137,7 +137,7 @@ public partial class ToolOptionsView : UserControl
         var row_border_canvas = GetCanvas(rect_heights[3], row_border, Brushes.Gray);
         Options["Rect"].Add(row_border_canvas);
 
-        borderColorPicker = new components.ColorPicker();
+        borderColorPicker = new components.ColorPicker("borderColor");
         borderColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.BorderColor.ToColor());
         borderColorPicker.ValueChanged += RectBorderColor_ValueChanged;
         borderColorPicker.Margin = new Thickness(10, 5, 10, 5);
@@ -223,7 +223,7 @@ public partial class ToolOptionsView : UserControl
         Options["Text"].Add(row_font_canvas);
 
         
-        fontColorPicker = new components.ColorPicker();
+        fontColorPicker = new components.ColorPicker("fontColor");
         fontColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.Background.ToColor());
         fontColorPicker.ValueChanged += TextFontColor_ValueChanged;
         fontColorPicker.Margin = new Thickness(10, 5, 10, 5);

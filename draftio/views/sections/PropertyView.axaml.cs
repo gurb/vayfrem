@@ -93,11 +93,11 @@ namespace draftio.views.sections
             height_property.Margin = new Avalonia.Thickness(0);
             height_property.BorderThickness = new Avalonia.Thickness(0);
 
-            bg_color_property = new components.ColorPicker();
+            bg_color_property = new components.ColorPicker("bg");
             bg_color_property.ValueChanged += RectBackgroundColor_ValueChanged;
             bg_color_property.Margin = new Thickness(0);
 
-            border_color_property = new components.ColorPicker();
+            border_color_property = new components.ColorPicker("borderColor");
             border_color_property.ValueChanged += RectBorderColor_ValueChanged;
             border_color_property.Margin = new Thickness(0);
 
@@ -116,7 +116,7 @@ namespace draftio.views.sections
             border_thickness_property.Maximum = 100;
             border_thickness_property.Minimum = 0;
 
-            font_color_property = new components.ColorPicker();
+            font_color_property = new components.ColorPicker("fontColor");
             font_color_property.ValueChanged += FontColor_ValueChanged;
 
             font_family_property = new ComboBox();
