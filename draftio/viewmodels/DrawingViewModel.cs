@@ -17,7 +17,7 @@ namespace draftio.viewmodels
 {
     public partial class DrawingViewModel : ObservableObject
     {
-
+        private readonly ProjectManager projectManager;
         private readonly ShortsViewModel shortsViewModel;
         private readonly UndoRedoManager undoRedoManager;
         private readonly PageTreeViewModel pageTreeViewModel;
@@ -70,7 +70,23 @@ namespace draftio.viewmodels
             toolOptionsViewModel = App.GetService<ToolOptionsViewModel>();
             propertyViewModel = App.GetService<PropertyViewModel>();
             propertyViewModel.drawDelegate += Draw;
+
+            projectManager = App.GetService<ProjectManager>();
+            SetCurrentFileIfExist();
         }
+
+        private void SetCurrentFileIfExist()
+        {
+            foreach (var node in projectManager.CurrentProject.Nodes)
+            {
+                if (node.Type == models.enums.NodeType.File)
+                {
+                    CurrentFile = (File)node;
+                    return;
+                }
+            }
+        }
+
 
         [RelayCommand]
         public void AddObject(PassData passData)
@@ -326,6 +342,10 @@ namespace draftio.viewmodels
 
         public void Draw()
         {
+            if (setDimensionDelegate != null)
+            {
+                setDimensionDelegate.Invoke();
+            }
 
             if (drawDelegate != null)
             {

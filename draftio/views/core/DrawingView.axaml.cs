@@ -69,7 +69,7 @@ public partial class DrawingView : UserControl
 
         InitializeComponent();
 
-        
+        this.SizeChanged += DrawingView_SizeChanged;
 
         Display.PointerPressed += OnPointerPressed;
         Display.PointerReleased += OnPointerReleased;
@@ -115,7 +115,13 @@ public partial class DrawingView : UserControl
         renderManager.SetMainDisplay(Display);
     }
 
-
+    private void DrawingView_SizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        if (ViewModel.setDimensionDelegate != null)
+        {
+            ViewModel.setDimensionDelegate.Invoke();
+        }
+    }
 
     private void DrawingView_PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
@@ -124,9 +130,13 @@ public partial class DrawingView : UserControl
 
     private void SetDimension()
     {
-        Display.Width = ViewModel.CurrentFile.PageWidth;
-        Display.Height = ViewModel.CurrentFile.PageHeight;
+        if(ViewModel.CurrentFile != null)
+        {
+            Display.Width = ViewModel.CurrentFile.PageWidth;
+            Display.Height = ViewModel.CurrentFile.PageHeight;
+        }
     }
+
 
     private void Display_PointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
