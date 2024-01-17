@@ -4,6 +4,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using draftio.models.dtos;
 using draftio.services;
 using SFML.Graphics;
@@ -13,8 +14,10 @@ using SkiaSharp;
 using System;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 
@@ -26,7 +29,13 @@ namespace draftio.views.components
 
         ColorPickerManager colorPickerManager;
 
+        TextBlock hexBlock = new TextBlock();
+
+        StackPanel stack;
         Grid layout { get; set; }
+        Grid labelrgb { get; set; }
+        Grid inputrgb { get; set; }
+        Grid inputhex { get; set; }
 
         Flyout flyout = new Flyout();
 
@@ -45,13 +54,39 @@ namespace draftio.views.components
         public delegate void ValueChangeDelegate();
         public ValueChangeDelegate? ValueChanged;
 
-
         Rectangle barSelector { get; set; } = new Rectangle();
-
 
         Avalonia.Controls.Image palette = new Avalonia.Controls.Image();
         Avalonia.Controls.Image colorBar = new Avalonia.Controls.Image();
 
+        byte R = 0;
+        byte G = 0;
+        byte B = 0;
+        private string hex;
+        public string Hex {
+            get
+            {
+                return hex;
+            }
+            set
+            {
+                hex = value;
+                UpdateHexState();
+            }
+        }
+        string oldHex;
+
+        // TextBox
+        TextBox R_txt { get; set; } = new TextBox();
+        TextBox G_txt { get; set; } = new TextBox();
+        TextBox B_txt { get; set; } = new TextBox();
+        TextBox A_txt { get; set; } = new TextBox();
+        TextBox Hex_txt { get; set; } = new TextBox();
+
+        TextBlock R_Block = new TextBlock();
+        TextBlock G_Block = new TextBlock();
+        TextBlock B_Block = new TextBlock();
+        TextBlock Hex_Block = new TextBlock();
 
         Vertex[] vertices = new Vertex[]
         {
@@ -61,18 +96,48 @@ namespace draftio.views.components
             new Vertex(new Vector2f(0, 200), SFML.Graphics.Color.Black)
         };
 
-
-
-        public ColorDTO SelectedColor { get; set; }
+        public ColorDTO SelectedColor { get; set; } = new ColorDTO(255, 0, 0, 0);
         public ColorDTO SelectedBarColor { get; set; }
-
 
         public ColorPicker(string name)
         {
             Name = name;
 
+            hexBlock.Text = "#" + hex;
+            this.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
+            this.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            hexBlock.Foreground = Brushes.White;
+            hexBlock.Background = Brushes.Black;
+            hexBlock.Opacity = 0.5;
+            hexBlock.Padding = new Thickness(2);
+
+            this.SizeChanged += ColorPicker_SizeChanged;
+
+            Canvas.SetTop(hexBlock, 0);
+            Canvas.SetLeft(hexBlock, 0);
+            this.Children.Add(hexBlock);
+
+            stack = new StackPanel();
+
             layout = new Grid();
             layout.ColumnDefinitions = new ColumnDefinitions("200, 5, 25");
+            //layout.RowDefinitions = new RowDefinitions("200, 5, 50");
+            stack.Children.Add(layout);
+
+            labelrgb = new Grid();
+            labelrgb.ColumnDefinitions = new ColumnDefinitions("70, 10, 70, 10, 70");
+            labelrgb.Margin = new Thickness(0, 5, 0, 5);
+            stack.Children.Add(labelrgb);
+
+            inputrgb = new Grid();
+            inputrgb.ColumnDefinitions = new ColumnDefinitions("70, 10, 70, 10, 70");
+            inputrgb.Margin = new Thickness(0, 5, 0, 5);
+            stack.Children.Add(inputrgb);
+
+            inputhex = new Grid();
+            inputhex.ColumnDefinitions = new ColumnDefinitions("25, *");
+            inputhex.Margin = new Thickness(0, 5, 0, 5);
+            stack.Children.Add(inputhex);
 
             colorPickerManager = App.GetService<ColorPickerManager>();
 
@@ -84,9 +149,11 @@ namespace draftio.views.components
 
             ColorArea.Width = 200;
             ColorArea.Height = 200;
+            ColorArea.Focusable = true;
 
             ColorBar.Width = 25;
             ColorBar.Height = 200;
+            ColorBar.Focusable = true;
 
 
             colorPickerManager.GetTexture(name).Draw(vertices, PrimitiveType.Quads);
@@ -105,7 +172,9 @@ namespace draftio.views.components
             Canvas.SetLeft(colorBar, 0);
 
             Grid.SetColumn(BorderColorArea, 0);
+            Grid.SetRow(BorderColorArea, 0);
             Grid.SetColumn(BorderColorBar, 2);
+            Grid.SetRow(BorderColorBar, 0);
 
             BorderColorArea.Child = ColorArea;
             BorderColorBar.Child = ColorBar;
@@ -116,10 +185,235 @@ namespace draftio.views.components
             setBarSelector();
             setBarBrush();
 
-            flyout.Content = layout;
+            flyout.Content = stack;
+            flyout.ShowMode = FlyoutShowMode.Transient;
 
             this.ContextFlyout = flyout;
 
+
+            setTextBoxes();
+        }
+
+        private void ColorPicker_SizeChanged(object? sender, SizeChangedEventArgs e)
+        {
+            double canvasWidth = this.Bounds.Width;
+            double canvasHeight = this.Bounds.Height;
+
+            // TextBlock'ın boyutlarını al
+            double textBlockWidth = hexBlock.Bounds.Width;
+            double textBlockHeight = hexBlock.Bounds.Height;
+
+            // TextBlock'ı yatay ve dikey olarak ortala
+            Canvas.SetLeft(hexBlock, (canvasWidth - textBlockWidth) / 2);
+            Canvas.SetTop(hexBlock, (canvasHeight - textBlockHeight) / 2);
+
+            hexBlock.Text = "#" + hex;
+
+            UpdateHexState();
+        }
+
+        private void UpdateHexState()
+        {
+            hexBlock.Text = '#' + hex;
+
+            R = SelectedColor.R;
+            G = SelectedColor.G;
+            B = SelectedColor.B;
+
+            R_txt.Text = R.ToString();
+            G_txt.Text = G.ToString();
+            B_txt.Text = B.ToString();
+        }
+
+        private void setTextBoxes()
+        {
+            Grid.SetColumn(R_txt, 0);
+            Grid.SetRow(R_txt, 0);
+            inputrgb.Children.Add(R_txt);
+
+            Grid.SetColumn(G_txt, 2);
+            Grid.SetRow(G_txt, 0);
+            inputrgb.Children.Add(G_txt);
+
+            Grid.SetColumn(B_txt, 4);
+            Grid.SetRow(B_txt, 0);
+            inputrgb.Children.Add(B_txt);
+
+            Grid.SetColumn(Hex_txt, 1);
+            Grid.SetRow(Hex_txt, 0);
+            inputhex.Children.Add(Hex_txt);
+
+            //R_txt.TextChanged += R_TextChanged;
+            R_txt.Focusable = true;
+            R_txt.TextChanged += R_txt_TextChanged;
+            R_txt.Name = "r";
+            R_txt.Text = R.ToString();
+            G_txt.TextChanged += R_txt_TextChanged;
+            G_txt.Focusable = true;
+            G_txt.Name = "g";
+            G_txt.Text = G.ToString();
+            B_txt.TextChanged += R_txt_TextChanged;
+            B_txt.Focusable = true;
+            B_txt.Name = "b";
+            B_txt.Text = B.ToString();
+            Hex_txt.TextChanged += R_txt_TextChanged;
+            Hex_txt.Focusable = true;
+            Hex_txt.Name = "hex";
+
+            R_Block.Text = "Red";
+            G_Block.Text = "Green";
+            B_Block.Text = "Blue";
+            Hex_Block.Text = "#";
+            Hex_Block.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            Hex_Block.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
+
+            Grid.SetColumn(R_Block, 0);
+            Grid.SetRow(R_Block, 0);
+            labelrgb.Children.Add(R_Block);
+
+            Grid.SetColumn(G_Block, 2);
+            Grid.SetRow(G_Block, 0);
+            labelrgb.Children.Add(G_Block);
+
+            Grid.SetColumn(B_Block, 4);
+            Grid.SetRow(B_Block, 0);
+            labelrgb.Children.Add(B_Block);
+
+            Grid.SetColumn(Hex_Block, 0);
+            Grid.SetRow(Hex_Block, 0);
+            inputhex.Children.Add(Hex_Block);
+        }
+        
+        private void R_txt_TextChanged(object? sender, TextChangedEventArgs e)
+        {
+            var txtBox = sender as TextBox;
+
+            if(txtBox.Name == "r")
+            {
+                if (!String.IsNullOrEmpty(txtBox.Text))
+                {
+                    int v = CheckRGB(Int32.Parse(txtBox.Text));
+                    R = (byte)v;
+                    txtBox.Text = R.ToString();
+                    
+                    RgbToHex();
+                }
+            }
+
+            if (txtBox.Name == "g")
+            {
+                if (!String.IsNullOrEmpty(txtBox.Text))
+                {
+                    int v = CheckRGB(Int32.Parse(txtBox.Text));
+                    G = (byte)v;
+                    txtBox.Text = G.ToString();
+                    RgbToHex();
+                }
+            }
+
+            if (txtBox.Name == "b")
+            {
+                if (!String.IsNullOrEmpty(txtBox.Text))
+                {
+                    int v = CheckRGB(Int32.Parse(txtBox.Text));
+                    B = (byte)v;
+                    txtBox.Text = B.ToString();
+                    RgbToHex();
+                }
+            }
+
+            if (txtBox.Name == "hex")
+            {
+
+                if(IsHex(txtBox.Text))
+                {
+                    if (!String.IsNullOrEmpty(txtBox.Text))
+                    {
+                        oldHex = Hex;
+                        Hex = txtBox.Text;
+                        
+                        if(Hex.Length > 6)
+                        {
+                            Hex = Hex.Substring(0, 6);
+                            oldHex = Hex;
+                            txtBox.Text = Hex;
+                        }
+                        //if (Hex != txtBox.Text)
+                        //    txtBox.Text = R.ToString();
+
+                        HexToRgb();
+                    }
+                } else
+                {
+                    txtBox.Text = oldHex;
+                    Hex = oldHex;
+                }
+
+            }
+        }
+
+        public bool IsHex(string text)
+        {
+            return text.All(c => "0123456789abcdefABCDEF\n".Contains(c));
+        }
+
+        private void RgbToHex()
+        {
+            byte[] byteArray = { R, G, B };
+            Hex = string.Join("", byteArray.Select(b => b.ToString("X2")));
+            Hex_txt.Text = Hex;
+        }
+
+        private String RbgToHex(byte r, byte g, byte b)
+        {
+            byte[] byteArray = { r, b, g };
+            Hex = string.Join("", byteArray.Select(b => b.ToString("X2")));
+            return Hex;
+        }
+
+        private void HexToRgb()
+        {
+            int max = 6;
+            int len = Hex.Length;
+            int difference = 0;
+
+            if (Hex.Length < 6)
+            {
+                difference = max - len;
+                for (int i = 0; i < difference; i++)
+                {
+                    Hex += "0";
+                }
+            } 
+            else
+            {
+                Hex = Hex.Substring(0, Math.Min(Hex.Length, 6));
+            }
+
+            string rr = Hex.Substring(0, 2);
+            string gg = Hex.Substring(2, 2);
+            string bb = Hex.Substring(2 * 2, 2);
+
+            R = (byte)Convert.ToInt32(rr, 16);
+            G = (byte)Convert.ToInt32(gg, 16);
+            B = (byte)Convert.ToInt32(bb, 16);
+
+            R_txt.Text = R.ToString();
+            G_txt.Text = G.ToString();
+            B_txt.Text = B.ToString();
+        }
+
+        private int CheckRGB(int value)
+        {
+            if(value > 255)
+            {
+                return 255;
+            }
+            if(value < 0)
+            {
+                return 0;
+            }
+            return value;
         }
 
         private void ColorBar_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
@@ -142,8 +436,6 @@ namespace draftio.views.components
 
             setPaletteBrush();
             //ColorArea.Background = paletteBrush;
-
-
         }
 
         private void setBarSelector()
@@ -156,7 +448,6 @@ namespace draftio.views.components
             Canvas.SetLeft(barSelector, 0);
             Canvas.SetTop(barSelector, 0);
         }
-
 
         private void setPaletteBrush()
         {
@@ -208,9 +499,7 @@ namespace draftio.views.components
             Canvas.SetLeft(colorBar, 0);
             Canvas.SetTop(colorBar, 0);
             //paletteBrush = new LinearGradientBrush();
-
         }
-
 
         private void ColorPicker_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
         {
@@ -228,7 +517,10 @@ namespace draftio.views.components
 
             SelectedColor = new ColorDTO(pixelColor);
 
-            if(ValueChanged != null)
+            Hex_txt.Text = RbgToHex(SelectedColor.R, SelectedColor.G, SelectedColor.B);
+            hexBlock.Text = "#" + Hex;
+
+            if (ValueChanged != null)
             {
                 ValueChanged.Invoke();
             }
@@ -236,6 +528,7 @@ namespace draftio.views.components
             Background = new SolidColorBrush(pixelColor);
 
         }
+
         public static SKBitmap RenderTargetBitmapToSKBitmap(RenderTargetBitmap renderTargetBitmap)
         {
             using (MemoryStream stream = new MemoryStream())

@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace draftio.models.dtos
@@ -30,6 +31,13 @@ namespace draftio.models.dtos
         public Color ToColor()
         {
             return Color.FromArgb(A, R, G, B);
+        }
+
+        public string ToHex()
+        {
+            byte[] byteArray = { R, G, B };
+            string hex = string.Join("", byteArray.Select(b => b.ToString("X2")));
+            return hex;
         }
     }
 }
