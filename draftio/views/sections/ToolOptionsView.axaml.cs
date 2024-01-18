@@ -114,9 +114,10 @@ public partial class ToolOptionsView : UserControl
         Options["Rect"].Add(row_background_canvas);
 
         backgroundColorPicker = new components.ColorPicker("bg");
-        backgroundColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.Background.ToColor());
-        backgroundColorPicker.SelectedColor = ViewModel.RectToolDTO.Background;
-        backgroundColorPicker.Hex = ViewModel.RectToolDTO.Background.ToHex();
+        backgroundColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.BackgroundColorPicker.Color.ToColor());
+        backgroundColorPicker.SelectedColor = ViewModel.RectToolDTO.BackgroundColorPicker.Color;
+        backgroundColorPicker.Hex = ViewModel.RectToolDTO.BackgroundColorPicker.Color.ToHex();
+        backgroundColorPicker.SetColorPickerDTO(ViewModel.RectToolDTO.BackgroundColorPicker);
         backgroundColorPicker.ValueChanged += RectBackgroundColor_ValueChanged;
         backgroundColorPicker.Margin = new Thickness(10, 5, 10, 5);
         var row_background_width = RowOption("Color", backgroundColorPicker, null, rect_heights[1]);
@@ -140,8 +141,9 @@ public partial class ToolOptionsView : UserControl
         Options["Rect"].Add(row_border_canvas);
 
         borderColorPicker = new components.ColorPicker("borderColor");
-        borderColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.BorderColor.ToColor());
-        borderColorPicker.Hex = ViewModel.RectToolDTO.BorderColor.ToHex();
+        borderColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.BorderColorPicker.Color.ToColor());
+        borderColorPicker.SetColorPickerDTO(ViewModel.RectToolDTO.BorderColorPicker);
+        borderColorPicker.Hex = ViewModel.RectToolDTO.BorderColorPicker.Color.ToHex();
         borderColorPicker.ValueChanged += RectBorderColor_ValueChanged;
         borderColorPicker.Margin = new Thickness(10, 5, 10, 5);
         var row_border_color = RowOption("Color", borderColorPicker, null, rect_heights[4]);
@@ -196,12 +198,24 @@ public partial class ToolOptionsView : UserControl
 
     private void RectBackgroundColor_ValueChanged()
     {
-        ViewModel.RectToolDTO.Background = backgroundColorPicker.SelectedColor;
+        ViewModel.RectToolDTO.BackgroundColorPicker = new models.dtos.ColorPickerDTO
+        {
+            Color = backgroundColorPicker.SelectedColor,
+            BarColor = backgroundColorPicker.SelectedBarColor,
+            ColorSelectPosition = backgroundColorPicker.ColorSelectPosition,
+            BarPosition = backgroundColorPicker.BarPosition,
+        };
     }
 
     private void RectBorderColor_ValueChanged()
     {
-        ViewModel.RectToolDTO.BorderColor = borderColorPicker.SelectedColor;
+        ViewModel.RectToolDTO.BorderColorPicker = new models.dtos.ColorPickerDTO
+        {
+            Color = borderColorPicker.SelectedColor,
+            BarColor = borderColorPicker.SelectedBarColor,
+            ColorSelectPosition = borderColorPicker.ColorSelectPosition,
+            BarPosition = borderColorPicker.BarPosition,
+        };
     }
 
     private void SetTextOption()
@@ -227,8 +241,8 @@ public partial class ToolOptionsView : UserControl
 
         
         fontColorPicker = new components.ColorPicker("fontColor");
-        fontColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.Background.ToColor());
-        fontColorPicker.Hex = ViewModel.RectToolDTO.Background.ToHex();
+        fontColorPicker.Background = new SolidColorBrush(ViewModel.TextToolDTO.FontColor.ToColor());
+        fontColorPicker.Hex = ViewModel.TextToolDTO.FontColor.ToHex();
         fontColorPicker.ValueChanged += TextFontColor_ValueChanged;
         fontColorPicker.Margin = new Thickness(10, 5, 10, 5);
         var row_font_color = RowOption("Color", fontColorPicker, null, text_heights[1]);

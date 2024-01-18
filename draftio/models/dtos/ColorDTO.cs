@@ -36,7 +36,7 @@ namespace draftio.models.dtos
         public string ToHex()
         {
             byte[] byteArray = { R, G, B };
-            string hex = string.Join("", byteArray.Select(b => b.ToString("X2")));
+            string hex = string.Join("", byteArray.Select(x => x.ToString("X2")));
             return hex;
         }
     }

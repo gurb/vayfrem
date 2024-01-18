@@ -17,8 +17,8 @@ namespace draftio.services
 {
     public class ColorPickerManager
     {
-        uint width = 200;
-        uint height = 200;
+        uint width = 255;
+        uint height = 255;
 
         Dictionary<string, RenderTexture> renderTextures = new Dictionary<string, RenderTexture>();
 
@@ -32,34 +32,34 @@ namespace draftio.services
 
         Vertex[] vertices = new Vertex[]
         {
-            new Vertex(new Vector2f(0, 0), SFML.Graphics.Color.Red),
-            new Vertex(new Vector2f(25, 0), SFML.Graphics.Color.Red),
+            new Vertex(new Vector2f(0, 0), new SFML.Graphics.Color(255, 0, 0)),
+            new Vertex(new Vector2f(25, 0), new SFML.Graphics.Color(255, 0, 0)),
 
-            new Vertex(new Vector2f(0, 30), SFML.Graphics.Color.Yellow),
-            new Vertex(new Vector2f(25, 30), SFML.Graphics.Color.Yellow),
+            new Vertex(new Vector2f(0, 42.5f), new SFML.Graphics.Color(255, 255, 0)),
+            new Vertex(new Vector2f(25, 42.5f), new SFML.Graphics.Color(255, 255, 0)),
 
-            new Vertex(new Vector2f(0, 60), SFML.Graphics.Color.Green),
-            new Vertex(new Vector2f(25, 60), SFML.Graphics.Color.Green),
+            new Vertex(new Vector2f(0, 85f), new SFML.Graphics.Color(0, 255, 0)),
+            new Vertex(new Vector2f(25, 85), new SFML.Graphics.Color(0, 255, 0)),
 
-            new Vertex(new Vector2f(0, 90), SFML.Graphics.Color.Cyan),
-            new Vertex(new Vector2f(25, 90), SFML.Graphics.Color.Cyan),
+            new Vertex(new Vector2f(0, 127.5f), new SFML.Graphics.Color(0, 255, 255)),
+            new Vertex(new Vector2f(25, 127.5f), new SFML.Graphics.Color(0, 255, 255)),
 
-            new Vertex(new Vector2f(0, 120), SFML.Graphics.Color.Blue),
-            new Vertex(new Vector2f(25, 120), SFML.Graphics.Color.Blue),
+            new Vertex(new Vector2f(0, 170),  new SFML.Graphics.Color(0, 0, 255)),
+            new Vertex(new Vector2f(25, 170), new SFML.Graphics.Color(0, 0, 255)),
 
-            new Vertex(new Vector2f(0, 160), SFML.Graphics.Color.Magenta),
-            new Vertex(new Vector2f(25, 160), SFML.Graphics.Color.Magenta),
+            new Vertex(new Vector2f(0, 212.5f),  new SFML.Graphics.Color(255, 0, 255)),
+            new Vertex(new Vector2f(25, 212.5f),  new SFML.Graphics.Color(255, 0, 255)),
 
-            new Vertex(new Vector2f(0, 200), SFML.Graphics.Color.Red),
-            new Vertex(new Vector2f(25, 200), SFML.Graphics.Color.Red)
+            new Vertex(new Vector2f(0, 255), new SFML.Graphics.Color(255, 0, 0)),
+            new Vertex(new Vector2f(25, 255), new SFML.Graphics.Color(255, 0, 0)),
         };
 
         Vertex[] verticesPalette = new Vertex[]
         {
             new Vertex(new Vector2f(0, 0), SFML.Graphics.Color.Blue),
-            new Vertex(new Vector2f(200, 0), SFML.Graphics.Color.Red),
-            new Vertex(new Vector2f(200, 200), SFML.Graphics.Color.Green),
-            new Vertex(new Vector2f(0, 200), SFML.Graphics.Color.Yellow)
+            new Vertex(new Vector2f(255, 0), SFML.Graphics.Color.Red),
+            new Vertex(new Vector2f(255, 255), SFML.Graphics.Color.Green),
+            new Vertex(new Vector2f(0, 255), SFML.Graphics.Color.Yellow)
         };
 
         public ColorPickerManager() 
@@ -71,14 +71,14 @@ namespace draftio.services
         {
             ColorBar = new Avalonia.Controls.Image();
 
-            colorBarRt = new RenderTexture(25, 200);
+            colorBarRt = new RenderTexture(25, 255);
             colorBarRt.Clear(SFML.Graphics.Color.Yellow);
             colorBarRt.Draw(vertices, 0, (uint)vertices.Length, PrimitiveType.TriangleStrip);
             colorBarRt.Display();
 
             byte[] pixels = colorBarRt.Texture.CopyToImage().Pixels;
             colorBarPixels = pixels;
-            colorBarBitmap = new WriteableBitmap(new PixelSize(25, 200), new Vector(96, 96), PixelFormat.Rgba8888);
+            colorBarBitmap = new WriteableBitmap(new PixelSize(25, 255), new Vector(96, 96), PixelFormat.Rgba8888);
             using (var buffer = colorBarBitmap.Lock())
             {
                 // Copy pixel data from SFML to Avalonia
@@ -120,9 +120,6 @@ namespace draftio.services
             renderTextures[key].Display();
 
             return renderTextures[key];
-
         }
-
-
     }
 }

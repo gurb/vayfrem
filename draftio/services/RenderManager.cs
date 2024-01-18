@@ -289,8 +289,8 @@ namespace draftio.services
                 
                 if(moveObject.Parent != null)
                 {
-                    childMoveOffset.X = moveObject.Parent.WorldX;
-                    childMoveOffset.Y = moveObject.Parent.WorldY;
+                    childMoveOffset.X = (int)moveObject.Parent.WorldX;
+                    childMoveOffset.Y = (int)moveObject.Parent.WorldY;
                 }
 
                 Canvas.SetLeft(overlayActive, (childMoveOffset.X + last.X) - (moveOffset.X));
