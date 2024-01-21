@@ -30,6 +30,13 @@ namespace draftio.services
 
         LinearGradientBrush colorBarBrush;
 
+        Sprite pickerForeground;
+        Texture pickerTexture;
+
+
+        Sprite hueSprite;
+        Texture hueTexture;
+
         Vertex[] vertices = new Vertex[]
         {
             new Vertex(new Vector2f(0, 0), new SFML.Graphics.Color(255, 0, 0)),
@@ -56,15 +63,27 @@ namespace draftio.services
 
         Vertex[] verticesPalette = new Vertex[]
         {
-            new Vertex(new Vector2f(0, 0), SFML.Graphics.Color.Blue),
+            new Vertex(new Vector2f(0, 0), SFML.Graphics.Color.Red),
             new Vertex(new Vector2f(255, 0), SFML.Graphics.Color.Red),
-            new Vertex(new Vector2f(255, 255), SFML.Graphics.Color.Green),
-            new Vertex(new Vector2f(0, 255), SFML.Graphics.Color.Yellow)
+            new Vertex(new Vector2f(255, 255), SFML.Graphics.Color.Red),
+            new Vertex(new Vector2f(0, 255), SFML.Graphics.Color.Red)
         };
 
         public ColorPickerManager() 
         {
+            LoadTexture();
             SetColorBar();
+        }
+
+        private void LoadTexture()
+        {
+            pickerTexture = new Texture("assets/maphue.png", new IntRect(0,0,256,256));
+            pickerForeground = new Sprite(pickerTexture);
+            pickerForeground.Position = new Vector2f(0, 0);
+
+            hueTexture = new Texture("assets/bar-hue.png", new IntRect(0, 0, 20, 256));
+            hueSprite = new Sprite(hueTexture);
+            hueSprite.Position = new Vector2f(0, 0);
         }
 
         private void SetColorBar()
@@ -117,6 +136,7 @@ namespace draftio.services
 
             renderTextures[key].Clear(SFML.Graphics.Color.White);
             renderTextures[key].Draw(vertices, PrimitiveType.Quads);
+            renderTextures[key].Draw(pickerForeground);
             renderTextures[key].Display();
 
             return renderTextures[key];

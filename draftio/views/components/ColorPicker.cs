@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using draftio.models.dtos;
 using draftio.models.structs;
 using draftio.services;
@@ -11,6 +12,7 @@ using SFML.Graphics;
 using SFML.System;
 using SkiaSharp;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -18,7 +20,7 @@ using System.Runtime.InteropServices;
 
 namespace draftio.views.components
 {
-    public class ColorPicker: Canvas
+    public class ColorPicker : Canvas
     {
         public string Name { get; set; }
 
@@ -34,6 +36,8 @@ namespace draftio.views.components
         Grid inputhsv { get; set; }
         Grid inputhex { get; set; }
 
+        bool leftClick = false;
+
         Flyout flyout = new Flyout();
 
         Border BorderColorArea = new Border();
@@ -41,7 +45,6 @@ namespace draftio.views.components
 
         Canvas ColorArea = new Canvas();
         Canvas ColorBar = new Canvas();
-
 
         LinearGradientBrush paletteBrush;
 
@@ -64,14 +67,17 @@ namespace draftio.views.components
         byte G = 0;
         byte B = 0;
 
-        int H = 0;
-        int S = 0;
-        int V = 0;
+        double H = 0;
+        double S = 0;
+        double V = 0;
+
+        int X = 0;
+        int Y = 0;
 
         private string hex;
         public string Hex
         {
-            get { return hex;  }
+            get { return hex; }
             set { hex = value; UpdateHexState(); }
         }
         string oldHex;
@@ -97,16 +103,16 @@ namespace draftio.views.components
 
         Vertex[] vertices = new Vertex[]
         {
-            new Vertex(new Vector2f(0, 0), SFML.Graphics.Color.White),
+            new Vertex(new Vector2f(0, 0), SFML.Graphics.Color.Red),
             new Vertex(new Vector2f(255, 0), SFML.Graphics.Color.Red),
-            new Vertex(new Vector2f(255, 255), SFML.Graphics.Color.Black),
-            new Vertex(new Vector2f(0, 255), SFML.Graphics.Color.Black)
+            new Vertex(new Vector2f(255, 255), SFML.Graphics.Color.Red),
+            new Vertex(new Vector2f(0, 255), SFML.Graphics.Color.Red)
         };
 
-        public ColorDTO SelectedColor { get; set; } = new ColorDTO(255, 0, 0, 0);
+        public ColorDTO SelectedColor { get; set; } = new ColorDTO(255, 255, 0, 0);
         public ColorDTO SelectedBarColor { get; set; }
 
-        
+
         public ColorPicker(string name)
         {
             Name = name;
@@ -194,6 +200,9 @@ namespace draftio.views.components
             Grid.SetColumn(BorderColorBar, 2);
             Grid.SetRow(BorderColorBar, 0);
 
+            BorderColorArea.Margin = new Thickness(0);
+            BorderColorArea.Padding = new Thickness(0);
+            ColorArea.Margin = new Thickness(0);
             BorderColorArea.Child = ColorArea;
             BorderColorBar.Child = ColorBar;
 
@@ -233,14 +242,13 @@ namespace draftio.views.components
 
         private void setColorSelector()
         {
-            colorSelector.Background = Brushes.Transparent;
+            colorSelector.Background = Brushes.Gray;
+            colorSelector.Opacity = 0.5;
             colorSelector.Width = 10;
             colorSelector.CornerRadius = new CornerRadius(2);
             colorSelector.Height = 10;
             colorSelector.BorderBrush = Brushes.Black;
             colorSelector.BorderThickness = new Thickness(2);
-
-            
 
             Canvas.SetLeft(colorSelector, ColorSelectPosition.X);
             Canvas.SetTop(colorSelector, ColorSelectPosition.Y);
@@ -275,6 +283,8 @@ namespace draftio.views.components
             R_txt.Text = R.ToString();
             G_txt.Text = G.ToString();
             B_txt.Text = B.ToString();
+
+            HexToHsv();
         }
 
         private void setTextBoxes()
@@ -346,7 +356,6 @@ namespace draftio.views.components
             V_txt.Name = "v";
             V_txt.Text = V.ToString();
 
-
             Hex_Block.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
             Hex_Block.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
 
@@ -377,20 +386,22 @@ namespace draftio.views.components
             Grid.SetColumn(V_Block, 4);
             Grid.SetRow(V_Block, 0);
             labelhsv.Children.Add(V_Block);
+
+
         }
-        
+
         private void R_txt_TextChanged(object? sender, TextChangedEventArgs e)
         {
             var txtBox = sender as TextBox;
 
-            if(txtBox.Name == "r")
+            if (txtBox.Name == "r")
             {
                 if (!String.IsNullOrEmpty(txtBox.Text))
                 {
                     int v = CheckRGB(Int32.Parse(txtBox.Text));
                     R = (byte)v;
                     txtBox.Text = R.ToString();
-                    
+
                     RgbToHex();
                 }
             }
@@ -420,14 +431,14 @@ namespace draftio.views.components
             if (txtBox.Name == "hex")
             {
 
-                if(IsHex(txtBox.Text))
+                if (IsHex(txtBox.Text))
                 {
                     if (!String.IsNullOrEmpty(txtBox.Text))
                     {
                         oldHex = hex;
                         hex = txtBox.Text;
-                        
-                        if(hex.Length > 6)
+
+                        if (hex.Length > 6)
                         {
                             hex = hex.Substring(0, 6);
                             oldHex = hex;
@@ -435,8 +446,10 @@ namespace draftio.views.components
                         }
 
                         HexToRgb();
+                        ChangeColorBar();
                     }
-                } else
+                }
+                else
                 {
                     txtBox.Text = oldHex;
                     hex = oldHex;
@@ -447,11 +460,12 @@ namespace draftio.views.components
             {
                 if (!String.IsNullOrEmpty(txtBox.Text))
                 {
-                    int v = CheckHue(Int32.Parse(txtBox.Text));
-                    H = (short)v;
+                    double v = CheckHue(Double.Parse(txtBox.Text));
+                    H = v;
+                    H = double.NaN == H ? 0 : H;
                     txtBox.Text = H.ToString();
 
-                    //RgbToHex();
+                    RgbToHex();
                 }
             }
 
@@ -459,11 +473,11 @@ namespace draftio.views.components
             {
                 if (!String.IsNullOrEmpty(txtBox.Text))
                 {
-                    int v = CheckSV(Int32.Parse(txtBox.Text));
-                    S = (short)v;
+                    double v = CheckSV(Double.Parse(txtBox.Text));
+                    S = v;
                     txtBox.Text = S.ToString();
 
-                    //RgbToHex();
+                    RgbToHex();
                 }
             }
 
@@ -471,11 +485,11 @@ namespace draftio.views.components
             {
                 if (!String.IsNullOrEmpty(txtBox.Text))
                 {
-                    int v = CheckSV(Int32.Parse(txtBox.Text));
-                    V = (short)v;
+                    double v = CheckSV(Double.Parse(txtBox.Text));
+                    V = v;
                     txtBox.Text = V.ToString();
 
-                    //RgbToHex();
+                    RgbToHex();
                 }
             }
         }
@@ -512,7 +526,7 @@ namespace draftio.views.components
                 {
                     hex += "0";
                 }
-            } 
+            }
             else
             {
                 hex = hex.Substring(0, Math.Min(hex.Length, 6));
@@ -538,54 +552,182 @@ namespace draftio.views.components
             double maxColor = Math.Max(R, Math.Max(G, B));
             double minColor = Math.Min(R, Math.Min(G, B));
 
+            if(maxColor == minColor)
+            {
+                H = 0;
+            }
+            else if (maxColor == (double)(R))
+            {
+                H = (G - B) / (maxColor - minColor);
+
+            }
+            else if (maxColor == (double)(G))
+            {
+                H = 2f + (B - R) / (maxColor - minColor);
+            }
+            else
+            {
+                H = 4f + (R - G) / (maxColor - minColor);
+            }
+
+
+            H = (int)(H * 60.0);
+            if (H < 0) H = H + 360.0;
+
             double normR = R;
             double normG = G;
             double normB = B;
 
-            // Hue hesaplama
-
-            if (maxColor == minColor)
-            {
-                H = 0;
-            }
-            else if (maxColor == R)
-            {
-                H = (int)((60 * ((normG - normB) / (maxColor - minColor)) + 360) % 360);
-            }
-            else if (maxColor == G)
-            {
-                H = (int)((60 * ((normB - normR) / (maxColor - minColor)) + 120) % 360);
-            }
-            else
-            {
-                H = (int)((60 * ((normR - normG) / (maxColor - minColor)) + 240) % 360);
-            }
-
             // Saturation hesaplama
-            S = (int)((maxColor == 0) ? 0 : ((maxColor - minColor) / maxColor) * 100);
 
+            S = ((maxColor == 0) ? 0 : ((maxColor - minColor) / maxColor) * 100.0);
             // Value hesaplama
-            V = (int)(maxColor * 100) / 255;
+            V = (maxColor / 255.0) * 100.0;
 
             H_txt.Text = H.ToString();
             S_txt.Text = S.ToString();
             V_txt.Text = V.ToString();
+
+            SelectedColor.R = R; SelectedColor.G = G; SelectedColor.B = B;
+
+            //S = (x / 255.0) * 100.0;
+            //V = 100 - ((y / 255.0) * 100.0);
+            //HsvToHex();
+            
+            ColorSelectPosition.X = ((S / 100.0) * 255.0);
+            ColorSelectPosition.Y = (255.0 - ((V / 100.0) * 255.0));
+            Canvas.SetLeft(colorSelector, (int)ColorSelectPosition.X - 5);
+            Canvas.SetTop(colorSelector, (int)ColorSelectPosition.Y - 5);
+
+            Trace.WriteLine($"4 - {S},{V}");
         }
+
+        public void HsvToHex()
+        {
+            float v = (float)V / 100f;
+            float s = (float)S / 100f;
+
+
+            float c = v * s;
+            double x = c * (1 - Math.Abs((H / 60) % 2 - 1));
+            float m = v - c;
+
+            double r, g, b;
+
+            if (H < 60)
+            {
+                r = c;
+                g = x;
+                b = 0;
+            }
+            else if (H < 120)
+            {
+                r = x;
+                g = c;
+                b = 0;
+            }
+            else if (H < 180)
+            {
+                r = 0;
+                g = c;
+                b = x;
+            }
+            else if (H < 240)
+            {
+                r = 0;
+                g = x;
+                b = c;
+            }
+            else if (H < 300)
+            {
+                r = x;
+                g = 0;
+                b = c;
+            }
+            else
+            {
+                r = c;
+                g = 0;
+                b = x;
+            }
+
+            R = (byte)(((r + m) * 255f));
+            G = (byte)(((g + m) * 255f));
+            B = (byte)(((b + m) * 255f));
+
+
+            SelectedColor.R = R;
+            SelectedColor.G = G;
+            SelectedColor.B = B;
+
+            R_txt.Text = R.ToString();
+            G_txt.Text = G.ToString();
+            B_txt.Text = B.ToString();
+
+            RgbToHex();
+        }
+
+        //public void HsvToHex()
+        //{
+        //    double r, g, b;
+
+        //    r = 0.0;
+        //    g = 0.0;
+        //    b = 0.0;
+
+        //    double h = H / 360.0;
+
+        //    double s = S / 100.0;
+        //    double v = V / 100.0;
+
+        //    double i = Math.Floor(h * 6.0);
+        //    double f = h * 6.0 - i;
+        //    double p = v * (1.0 - s);
+        //    double q = v * (1.0 - f * s);
+        //    double t = v * (1.0 - (1.0 - f) * s);
+
+        //    int moduloResult = (int)i % 6;
+
+        //    switch (moduloResult)
+        //    {
+        //        case 0: r = v; g = t; b = p; break;
+        //        case 1: r = q; g = v; b = p; break;
+        //        case 2: r = p; g = v; b = t; break;
+        //        case 3: r = p; g = q; b = v; break;
+        //        case 4: r = t; g = p; b = v; break;
+        //        case 5: r = v; g = p; b = q; break;
+        //    }
+
+        //    R = (byte)(r * 255.0);
+        //    G = (byte)(g * 255.0);
+        //    B = (byte)(b * 255.0);
+
+
+        //    SelectedColor.R = R;
+        //    SelectedColor.G = G;
+        //    SelectedColor.B = B;
+
+        //    R_txt.Text = R.ToString();
+        //    G_txt.Text = G.ToString();
+        //    B_txt.Text = B.ToString();
+
+        //    RgbToHex();
+        //}
 
         private int CheckRGB(int value)
         {
-            if(value > 255)
+            if (value > 255)
             {
                 return 255;
             }
-            if(value < 0)
+            if (value < 0)
             {
                 return 0;
             }
             return value;
         }
 
-        private int CheckHue(int value)
+        private double CheckHue(double value)
         {
             if (value > 360)
             {
@@ -598,7 +740,7 @@ namespace draftio.views.components
             return value;
         }
 
-        private int CheckSV(int value)
+        private double CheckSV(double value)
         {
             if (value > 100)
             {
@@ -611,6 +753,44 @@ namespace draftio.views.components
             return value;
         }
 
+
+        private void ChangeColorBar()
+        {
+            int y = (int)((H / 360.0) * 255.0);
+
+            if(y < 0)
+            {
+                y = 0;
+            }
+
+            Avalonia.Media.Color pixelColor = GetPixelBarColor(0, y);
+            SelectedBarColor = new ColorDTO(pixelColor);
+
+            vertices[0] = new Vertex(new Vector2f(0, 0), new SFML.Graphics.Color(SelectedBarColor.R, SelectedBarColor.G, SelectedBarColor.B, 255));
+            vertices[1] = new Vertex(new Vector2f(255, 0), new SFML.Graphics.Color(SelectedBarColor.R, SelectedBarColor.G, SelectedBarColor.B, 255));
+            vertices[2] = new Vertex(new Vector2f(255, 255), new SFML.Graphics.Color(SelectedBarColor.R, SelectedBarColor.G, SelectedBarColor.B, 255));
+            vertices[3] = new Vertex(new Vector2f(0, 255), new SFML.Graphics.Color(SelectedBarColor.R, SelectedBarColor.G, SelectedBarColor.B, 255));
+            colorPickerManager.UpdateTexture(Name, vertices);
+            
+            Canvas.SetLeft(barSelector, 0);
+            Canvas.SetTop(barSelector, y);
+
+            BarPosition = new Vector2(0, (int)y);
+            setPaletteBrush();
+            HexToRgb();
+
+
+            //Hex_txt.Text = RbgToHex(SelectedColor.R, SelectedColor.G, SelectedColor.B);
+            hexBlock.Text = "#" + hex;
+            Background = new SolidColorBrush(SelectedColor.ToColor());
+
+            if (ValueChanged != null)
+            {
+                ValueChanged.Invoke();
+            }
+            
+        }
+
         private void ColorBar_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
         {
             Avalonia.Point point = e.GetPosition(sender as Control);
@@ -620,23 +800,30 @@ namespace draftio.views.components
 
             Avalonia.Media.Color pixelColor = GetPixelBarColor(x, y);
 
+            H = ((y) / 255.0) * 360.0;
+            H = double.NaN == H ? 0 : H;
+
             SelectedBarColor = new ColorDTO(pixelColor);
 
+            vertices[0] = new Vertex(new Vector2f(0, 0), new SFML.Graphics.Color(SelectedBarColor.R, SelectedBarColor.G, SelectedBarColor.B, 255));
             vertices[1] = new Vertex(new Vector2f(255, 0), new SFML.Graphics.Color(SelectedBarColor.R, SelectedBarColor.G, SelectedBarColor.B, 255));
+            vertices[2] = new Vertex(new Vector2f(255, 255), new SFML.Graphics.Color(SelectedBarColor.R, SelectedBarColor.G, SelectedBarColor.B, 255));
+            vertices[3] = new Vertex(new Vector2f(0, 255), new SFML.Graphics.Color(SelectedBarColor.R, SelectedBarColor.G, SelectedBarColor.B, 255));
             colorPickerManager.UpdateTexture(Name, vertices);
 
             Canvas.SetLeft(barSelector, 0);
             Canvas.SetTop(barSelector, y);
 
-            BarPosition = new Vector2(0, y);
-           
-            setPaletteBrush();
+            BarPosition = new Vector2(0, (int)y);
 
-            Avalonia.Media.Color pixelColorArea = GetPixelColor((int)ColorSelectPosition.X, (int)ColorSelectPosition.Y);
-            SelectedColor = new ColorDTO(pixelColorArea);
+            setPaletteBrush();
+            HsvToHex();
+
+            //Avalonia.Media.Color pixelColorArea = GetPixelColor((int)ColorSelectPosition.X, (int)ColorSelectPosition.Y);
+            //SelectedColor = new ColorDTO(SelectedColor.ToColor());
             Hex_txt.Text = RbgToHex(SelectedColor.R, SelectedColor.G, SelectedColor.B);
             hexBlock.Text = "#" + hex;
-            Background = new SolidColorBrush(pixelColorArea);
+            Background = new SolidColorBrush(SelectedColor.ToColor());
 
             if (ValueChanged != null)
             {
@@ -676,8 +863,8 @@ namespace draftio.views.components
             ColorArea.Children.Add(palette);
             ColorArea.Children.Add(colorSelector);
 
-            Canvas.SetLeft(colorSelector, ColorSelectPosition.X - 5);
-            Canvas.SetTop(colorSelector, ColorSelectPosition.Y - 5);
+            Canvas.SetLeft(colorSelector, (int)(ColorSelectPosition.X - 5));
+            Canvas.SetTop(colorSelector, (int)(ColorSelectPosition.Y - 5));
 
             Canvas.SetLeft(palette, 0);
             Canvas.SetTop(palette, 0);
@@ -718,9 +905,13 @@ namespace draftio.views.components
         {
             Avalonia.Point point = e.GetPosition(sender as Control);
 
+            leftClick = true;
+
+            Trace.WriteLine("Fare");
+            Trace.WriteLine(point.ToString());
             int x = (int)point.X;
             int y = (int)point.Y;
-
+            Trace.WriteLine($"{x},{y}");
             if (x > 255)
             {
                 x = 255;
@@ -739,23 +930,31 @@ namespace draftio.views.components
                 y = 0;
             }
 
-            Avalonia.Media.Color pixelColor = GetPixelColor(x, y);
+            //Avalonia.Media.Color pixelColor = GetPixelColor(x, y);
+            S = (int)((x / 255.0) * 100.0);
+            V = (int)(100 - ((y / 255.0) * 100.0));
+            Trace.WriteLine($"1 - {S},{V}");
+            HsvToHex();
+            Trace.WriteLine($"2 - {S},{V}");
 
-            Canvas.SetLeft(colorSelector, x - 5);
-            Canvas.SetTop(colorSelector, y - 5);
 
-            SelectedColor = new ColorDTO(pixelColor);
+            Canvas.SetLeft(colorSelector, (int)(x - 5));
+            Canvas.SetTop(colorSelector, (int)(y - 5));
+
+            //SelectedColor = new ColorDTO(pixelColor);
             ColorSelectPosition = new Vector2(x, y);
 
             Hex_txt.Text = RbgToHex(SelectedColor.R, SelectedColor.G, SelectedColor.B);
             hexBlock.Text = "#" + hex;
+            //HexToHsv(SelectedColor.R, SelectedColor.G, SelectedColor.B);
 
             if (ValueChanged != null)
             {
                 ValueChanged.Invoke();
             }
 
-            Background = new SolidColorBrush(pixelColor);
+            Background = new SolidColorBrush(SelectedColor.ToColor());
+            Trace.WriteLine($"3 - {S},{V}");
 
         }
 
@@ -771,29 +970,18 @@ namespace draftio.views.components
             }
         }
 
-        private Avalonia.Media.Color GetPixelColor(int x, int y)
-        {
-            
-
-            var renderTarget = new RenderTargetBitmap(new PixelSize((int)ColorArea.Bounds.Width, (int)ColorArea.Bounds.Height), new Vector(96, 96));
-            renderTarget.Render(ColorArea);
-
-            SKBitmap skBitmap = RenderTargetBitmapToSKBitmap(renderTarget);
-
-            SKColor color = skBitmap.GetPixel(x, y);
-
-            return Avalonia.Media.Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue);
-        }
-
         private Avalonia.Media.Color GetPixelBarColor(int x, int y)
         {
+            barSelector.IsVisible = false;
+
+
             var renderTarget = new RenderTargetBitmap(new PixelSize(25, 255), new Vector(96, 96));
             renderTarget.Render(ColorBar);
 
             SKBitmap skBitmap = RenderTargetBitmapToSKBitmap(renderTarget);
 
             SKColor color = skBitmap.GetPixel(x, y);
-
+            barSelector.IsVisible = true;
             return Avalonia.Media.Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue);
         }
 

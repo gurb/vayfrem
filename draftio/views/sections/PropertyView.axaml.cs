@@ -214,35 +214,54 @@ namespace draftio.views.sections
 
         private void RectBackgroundColor_ValueChanged()
         {
-            ViewModel.ActiveObj!.BackgroundColor = bg_color_property.SelectedColor;
-            ViewModel.RefreshDraw();
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BackgroundColor = bg_color_property.SelectedColor;
+                ViewModel.RefreshDraw();
+            }
         }
 
         private void RectBorderColor_ValueChanged()
         {
-            ViewModel.ActiveObj!.BorderColor = border_color_property.SelectedColor;
-            ViewModel.RefreshDraw();
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BorderColor = border_color_property.SelectedColor;
+                ViewModel.RefreshDraw();
+            }
         }
 
         private void RectOpacityChanged_ValueChanged()
         {
-            ViewModel.ActiveObj!.Opacity = bg_opacity_property.Value;
-            ViewModel.RefreshDraw();
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.Opacity = bg_opacity_property.Value;
+                ViewModel.RefreshDraw();
+            }
         }
 
         private void BorderRadiusChanged_ValueChanged()
         {
-            ViewModel.ActiveObj!.BorderRadius = border_radius_property.Value;
-            ViewModel.RefreshDraw();
+            if (ViewModel.ActiveObj != null)
+            { 
+                ViewModel.ActiveObj!.BorderRadius = border_radius_property.Value;
+                ViewModel.RefreshDraw();
+            }
         }
 
         private void BorderThicknessChanged_ValueChanged()
         {
-            ViewModel.ActiveObj!.BorderThickness = border_thickness_property.Value;
-            ViewModel.RefreshDraw();
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BorderThickness = border_thickness_property.Value;
+                ViewModel.RefreshDraw();
+            }
         }
         private void FontColor_ValueChanged()
         {
+            if(ViewModel.ActiveObj == null) {
+                return;
+            }
+
             if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Text)
             {
                 TextObj textObj = (TextObj)ViewModel.ActiveObj;
@@ -253,6 +272,11 @@ namespace draftio.views.sections
 
         private void FontFamilyComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
+            if (ViewModel.ActiveObj == null)
+            {
+                return;
+            }
+
             var fontFamilyComboBox = sender as ComboBox;
 
             if(ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Text)
