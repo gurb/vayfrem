@@ -48,6 +48,9 @@
 
 
   <ItemGroup>
+    <AvaloniaResource Update="assets\picker-foreground.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AvaloniaResource>
     <AvaloniaResource Update="assets\rect.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AvaloniaResource>
