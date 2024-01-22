@@ -93,7 +93,7 @@ namespace draftio.views.sections
             height_property.Margin = new Avalonia.Thickness(0);
             height_property.BorderThickness = new Avalonia.Thickness(0);
 
-            bg_color_property = new components.ColorPicker("bg");
+            bg_color_property = new components.ColorPicker("property-bg");
             bg_color_property.ValueChanged += RectBackgroundColor_ValueChanged;
             bg_color_property.Margin = new Thickness(0);
 
@@ -340,6 +340,14 @@ namespace draftio.views.sections
             if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Canvas)
             {
                 bg_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BackgroundColor.ToColor());
+                bg_color_property.Hex = ViewModel.ActiveObj.BackgroundColor.ToHex();
+                bg_color_property.SetColorPickerDTO(
+                    new ColorPickerDTO
+                    {
+                        Color = ViewModel.ActiveObj.BackgroundColor,
+                    }    
+                );
+
                 border_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BorderColor.ToColor());
 
                 bg_opacity_property.Value = (int)ViewModel.ActiveObj.Opacity;
@@ -416,7 +424,6 @@ namespace draftio.views.sections
             }
         }
     }
-
 
     public enum ValueType
     {

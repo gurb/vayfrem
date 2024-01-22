@@ -39,5 +39,10 @@ namespace draftio.models.dtos
             string hex = string.Join("", byteArray.Select(x => x.ToString("X2")));
             return hex;
         }
+
+        public ColorDTO toCopy()
+        {
+            return new ColorDTO(A, R, G, B);
+        }
     }
 }

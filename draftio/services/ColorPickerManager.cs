@@ -12,6 +12,8 @@ using Avalonia.Platform;
 using System.Runtime.InteropServices;
 using draftio.models.dtos;
 using Avalonia.Media;
+using System.Diagnostics;
+using draftio.models.lists;
 
 namespace draftio.services
 {
@@ -77,13 +79,26 @@ namespace draftio.services
 
         private void LoadTexture()
         {
-            pickerTexture = new Texture("assets/maphue.png", new IntRect(0,0,256,256));
-            pickerForeground = new Sprite(pickerTexture);
-            pickerForeground.Position = new Vector2f(0, 0);
+            try
+            {
+                byte[] pixels = Convert.FromBase64String(ListStorage.MapHueBase64);
+                Image image = new Image((uint)256, (uint)256, pixels);
+                pickerTexture = new Texture(image);
+                image.Dispose();
+                pickerForeground = new Sprite(pickerTexture);
+                //string base64 = Convert.ToBase64String(pickerTexture.CopyToImage().Pixels);
 
-            hueTexture = new Texture("assets/bar-hue.png", new IntRect(0, 0, 20, 256));
-            hueSprite = new Sprite(hueTexture);
-            hueSprite.Position = new Vector2f(0, 0);
+                pickerForeground.Position = new Vector2f(0, 0);
+                hueTexture = new Texture("assets\\bar-hue.png");
+                hueSprite = new Sprite(hueTexture);
+                hueSprite.Position = new Vector2f(0, 0);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message.ToString());
+                
+            }
+            
         }
 
         private void SetColorBar()
@@ -136,7 +151,10 @@ namespace draftio.services
 
             renderTextures[key].Clear(SFML.Graphics.Color.White);
             renderTextures[key].Draw(vertices, PrimitiveType.Quads);
-            renderTextures[key].Draw(pickerForeground);
+            if(pickerForeground != null)
+            {
+                renderTextures[key].Draw(pickerForeground);
+            }
             renderTextures[key].Display();
 
             return renderTextures[key];

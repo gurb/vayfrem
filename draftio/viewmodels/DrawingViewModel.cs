@@ -132,7 +132,7 @@ namespace draftio.viewmodels
 
             canvasObj.BorderRadius = toolOptionsViewModel.RectToolDTO.BorderRadius;
             canvasObj.BorderThickness = toolOptionsViewModel.RectToolDTO.BorderThickness;
-            canvasObj.BackgroundColor = toolOptionsViewModel.RectToolDTO.BackgroundColorPicker.Color;
+            canvasObj.BackgroundColor = toolOptionsViewModel.RectToolDTO.BackgroundColorPicker.Color.toCopy();
             canvasObj.BorderColor = toolOptionsViewModel.RectToolDTO.BorderColorPicker.Color;
             canvasObj.Opacity = toolOptionsViewModel.RectToolDTO.Opacity;
 

@@ -112,6 +112,7 @@ namespace draftio.views.components
         public ColorDTO SelectedColor { get; set; } = new ColorDTO(255, 255, 0, 0);
         public ColorDTO SelectedBarColor { get; set; }
 
+        
 
         public ColorPicker(string name)
         {
@@ -220,9 +221,16 @@ namespace draftio.views.components
             setTextBoxes();
             setColorSelector();
         }
+        public void setHex()
+        {
+        }
+
+        
+
 
         public void SetColorPickerDTO(ColorPickerDTO dto)
         {
+            Hex_txt.Text = RbgToHex(dto.Color.R, dto.Color.G, dto.Color.B);
             SelectedColor = dto.Color;
             SelectedBarColor = dto.BarColor;
             ColorSelectPosition = dto.ColorSelectPosition;
@@ -233,11 +241,11 @@ namespace draftio.views.components
 
             setPaletteBrush();
 
-            Canvas.SetLeft(colorSelector, ColorSelectPosition.X);
-            Canvas.SetTop(colorSelector, ColorSelectPosition.Y);
+            //Canvas.SetLeft(colorSelector, ColorSelectPosition.X);
+            //Canvas.SetTop(colorSelector, ColorSelectPosition.Y);
 
-            Canvas.SetLeft(barSelector, 0);
-            Canvas.SetTop(barSelector, BarPosition.Y);
+            //Canvas.SetLeft(barSelector, 0);
+            //Canvas.SetTop(barSelector, BarPosition.Y);
         }
 
         private void setColorSelector()
@@ -589,6 +597,8 @@ namespace draftio.views.components
             V_txt.Text = V.ToString();
 
             SelectedColor.R = R; SelectedColor.G = G; SelectedColor.B = B;
+
+            Background = new SolidColorBrush(SelectedColor.ToColor());
 
             //S = (x / 255.0) * 100.0;
             //V = 100 - ((y / 255.0) * 100.0);

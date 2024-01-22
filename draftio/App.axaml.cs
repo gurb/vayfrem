@@ -37,11 +37,11 @@ namespace draftio
                 .ConfigureServices((context, services) =>
                 {
                     services.AddTransient<MainViewModel>();
+                    services.AddSingleton<ColorPickerManager>();
 
                     services.AddSingleton<FileManager>();
                     services.AddSingleton<EncodeManager>();
                     services.AddSingleton<IOManager>();
-                    services.AddSingleton<ColorPickerManager>();
 
                     services.AddSingleton<LayoutViewModel>();
 
