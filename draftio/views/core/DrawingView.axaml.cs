@@ -14,6 +14,8 @@ using draftio.models.structs;
 using draftio.services;
 using draftio.viewmodels;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -33,6 +35,8 @@ public partial class DrawingView : UserControl
     // status of draw operation
     private bool isDraw;
     private bool isMove;
+
+    private bool isRightClick;
     
     private Avalonia.Point oldCurrentPosition;
     private Avalonia.Point currentPosition;
@@ -113,7 +117,10 @@ public partial class DrawingView : UserControl
         //timer.Start();
         AfterInit();
         renderManager.SetMainDisplay(Display);
+        //SetObjectMenu();
     }
+
+    
 
     private void DrawingView_SizeChanged(object? sender, SizeChangedEventArgs e)
     {
@@ -198,9 +205,6 @@ public partial class DrawingView : UserControl
     {
         var point = e.GetCurrentPoint(sender as Control);
 
-        
-
-
         if (isDraw)
         {
             isDraw = false;
@@ -209,6 +213,25 @@ public partial class DrawingView : UserControl
             handleDraw();
             draw();
         }
+
+        if(isMove && Math.Abs(firstPosition.X - point.Position.X) < 1 && Math.Abs(firstPosition.Y - point.Position.Y) < 1)
+        {
+            isMove = false;
+            lastPosition = new Avalonia.Point((int)point.Position.X, (int)point.Position.Y); ;
+            if (!isMove && isRightClick)
+            {
+                ViewModel.CollisionDetectPoint(new Vector2(point.Position.X, point.Position.Y));
+
+                if (ViewModel.SelectedObject != null)
+                {
+                    layoutViewModel.IsOpenMenu = true;
+                }
+                isRightClick = false;
+                return;
+            }
+        }
+        
+
         if (isMove)
         {
             isMove = false;
@@ -217,6 +240,8 @@ public partial class DrawingView : UserControl
             handleTranslate();
             draw();
         }
+
+        
 
         if(ViewModel.IsScale)
         {
@@ -232,7 +257,10 @@ public partial class DrawingView : UserControl
         oldCurrentPosition = currentPosition;
         currentPosition = position;
 
-
+        if(point.Properties.IsRightButtonPressed)
+        {
+            isRightClick = true;
+        }
 
         if (point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && !ViewModel.IsOverScalePoint && !ViewModel.IsScale)
         {

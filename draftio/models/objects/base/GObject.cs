@@ -51,6 +51,9 @@ namespace draftio.models.objects.@base
         [JsonIgnore]
         public Control? CloseControl { get; set; }
 
+        [JsonIgnore]
+        public ContextMenu? ContextMenu { get; set; }
+
         public List<Property> Properties { get; set; } = new List<Property>();
 
         public double WorldX

@@ -25,7 +25,7 @@
 				<views:BodyView/>
 			</Grid>
 		</Grid>
-		<Canvas x:Name="OverlayLayout" IsEnabled="false" Background="Aqua" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></Canvas>
+		<Canvas x:Name="OverlayLayout" Background="Aqua" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></Canvas>
 	</Grid>
 
 

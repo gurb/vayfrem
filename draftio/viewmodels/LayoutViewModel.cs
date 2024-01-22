@@ -22,10 +22,19 @@ namespace draftio.viewmodels
         [ObservableProperty]
         int counter;
 
+        [ObservableProperty]
+        bool isOpenMenu;
+
         public LayoutViewModel()
         {
             Counter = 0;
             IsDragCompleted = true;
+        }
+
+
+        public void OpenMenu()
+        {
+            IsOpenMenu = true;
         }
     }
 }
