@@ -1,0 +1,25 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:vayfrem.views.components">
+  <Design.PreviewWith>
+    <controls:TabButtonControl />
+  </Design.PreviewWith>
+
+  <Style Selector="controls|TabButtonControl">
+    <!-- Set Defaults -->
+	<Setter Property="Background" Value="{DynamicResource MainColor}" ></Setter>
+	 <Setter Property="VerticalAlignment" Value="Center"></Setter>  
+	  
+    <Setter Property="Template">
+      <ControlTemplate>
+		  <Border Padding="5, 5" Background="{TemplateBinding Background}">
+			  <Grid ColumnDefinitions="*, 10, 10">
+				  <TextBlock Grid.Column="0" Text="{TemplateBinding Title}" />
+				  <TextBlock Grid.Column="1" Text="" />
+				  <TextBlock Grid.Column="2" Text="x" />
+			  </Grid>
+		  </Border>
+	  </ControlTemplate>
+    </Setter>
+  </Style>
+</Styles>

@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="vayfrem.TopbarView">
+	<StackPanel Orientation="Horizontal">
+		<Menu>
+			<MenuItem Header="File">
+				<MenuItem x:Name="NewPageBtn" Header="New Page"></MenuItem>
+				<MenuItem x:Name="OpenProjectBtn" Header="Open Project"></MenuItem>
+				<MenuItem x:Name="ExitBtn" Header="Exit"></MenuItem>
+			</MenuItem>
+			<MenuItem Header="Edit">
+				<MenuItem x:Name="UndoBtn" Header="Undo"></MenuItem>
+				<MenuItem x:Name="RedoBtn" Header="Redo"></MenuItem>
+			</MenuItem>
+			<MenuItem Header="Help">
+				<MenuItem x:Name="AboutBtn" Header="About"></MenuItem>
+			</MenuItem>
+		</Menu>
+	</StackPanel>
+</UserControl>

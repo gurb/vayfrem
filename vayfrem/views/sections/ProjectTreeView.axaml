@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800"
+			 xmlns:vm="using:vayfrem.viewmodels"
+             x:DataType="vm:ProjectTreeViewModel"
+			 x:CompileBindings="True"
+             x:Class="vayfrem.views.sections.ProjectTreeView">
+	
+			<Grid RowDefinitions="30, *, 30">
+				<StackPanel Grid.Row="0" x:Name="projectMenuHeader">
+					<TextBlock Margin="5">Project Menu</TextBlock>
+				</StackPanel>
+				<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" Background="White">
+					<StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+						<Canvas x:Name="ProjectMenu" Height="10" Background="White"></Canvas>
+					</StackPanel>
+				</ScrollViewer>
+				<StackPanel Grid.Row="2" x:Name="projectMenuFooter">
+					<Grid ColumnDefinitions="35, 35, *, 35">
+						<Button Width="30" Grid.Column="0" Padding="0" Margin="5" x:Name="AddFileButton" HorizontalContentAlignment="Center">
+							<Image Source="avares://vayfrem/assets/file-plus.png" Width="20" Height="20">
+							</Image>
+						</Button>
+						<Button Width="30" Grid.Column="1" Padding="0" Margin="5" x:Name="AddFolderButton" HorizontalContentAlignment="Center">
+							<Image Source="avares://vayfrem/assets/folder-plus.png" Width="20" Height="20">
+							</Image>
+						</Button>
+						<Button Width="30" Grid.Column="3" Padding="0" Margin="5" x:Name="DeleteNodeButton" HorizontalContentAlignment="Center">
+							<Image Source="avares://vayfrem/assets/trash.png" Width="20" Height="20">
+							</Image>
+						</Button>
+					</Grid>
+				</StackPanel>
+			</Grid>
+</UserControl>

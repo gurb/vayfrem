@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:vayfrem.viewmodels"
+			 xmlns:components="using:vayfrem.views.components"
+             x:DataType="vm:TabViewModel"
+			 x:CompileBindings="True"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="vayfrem.TabsView">
+
+	
+
+
+	<Grid ColumnDefinitions="*">
+		<ScrollViewer AllowAutoHide="False" Grid.Column="0" HorizontalScrollBarVisibility="Visible" Background="LightGray"  x:Name="TabMenuScrollParent">
+			<ScrollViewer.Styles>
+				<Style Selector="ScrollBar /template/ RepeatButton">
+					<Setter Property="IsVisible" Value="False"/>
+				</Style>
+				<Style Selector="ScrollBar[IsExpanded=true] /template/ Border">
+					<Setter Property="Height" Value="5"></Setter>
+					<Setter Property="ClipToBounds" Value="True"/>
+					<Setter Property="CornerRadius" Value="2"/>
+				</Style>
+				<Style Selector="ScrollBar[IsExpanded=true] /template/ Rectangle">
+					<Setter Property="Fill" Value="#EBECED"/>
+				</Style>
+				<Style Selector="ScrollBar[IsExpanded=true] /template/ Thumb">
+					<Setter Property="Background" Value="#ccc"/>
+					<Setter Property="Cursor" Value="Hand"/>
+				</Style>
+				<Style Selector="ScrollBar[IsExpanded=true] /template/ Thumb /template/ Border">
+					<Setter Property="ClipToBounds" Value="True"/>
+					<Setter Property="CornerRadius" Value="2"/>
+					<Setter Property="Height" Value="4"/>
+				</Style>
+			</ScrollViewer.Styles>
+			<StackPanel VerticalAlignment="Stretch" Orientation="Horizontal" Background="#EDECEB">
+				<Canvas x:Name="TabMenu" Height="45" Background="White"></Canvas>
+			</StackPanel>
+		</ScrollViewer>
+	</Grid>
+	
+</UserControl>

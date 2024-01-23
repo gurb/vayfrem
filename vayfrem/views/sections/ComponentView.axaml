@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="vayfrem.views.sections.ComponentView">
+
+	<Grid RowDefinitions="30, *, 30">
+		<StackPanel Grid.Row="0" x:Name="componentsMenuHeader">
+			<TextBlock Margin="5">Component List</TextBlock>
+		</StackPanel>
+		<ScrollViewer Grid.Row="1" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Visible" Background="White">
+			<StackPanel x:Name="ComponentMenu" HorizontalAlignment="Stretch" Orientation="Vertical">
+				
+			</StackPanel>
+		</ScrollViewer>
+		<StackPanel Grid.Row="2" x:Name="componentsMenuFooter">
+			<!--<Grid ColumnDefinitions="35, 35, *">
+				<Button Width="30" Grid.Column="0" Padding="0" Margin="5" x:Name="AddFileButton" HorizontalContentAlignment="Center">
+					<Image Source="avares://vayfrem/assets/file-plus.png" Width="20" Height="20">
+					</Image>
+				</Button>
+				<Button Width="30" Grid.Column="1" Padding="0" Margin="5" x:Name="AddFolderButton" HorizontalContentAlignment="Center">
+					<Image Source="avares://vayfrem/assets/folder-plus.png" Width="20" Height="20">
+					</Image>
+				</Button>
+			</Grid>-->
+		</StackPanel>
+	</Grid>
+</UserControl>

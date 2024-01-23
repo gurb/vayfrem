@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:paz="using:Avalonia.Controls.PanAndZoom"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="vayfrem.DrawingView">
+	<Grid x:Name="MainGrid" Background="Aqua">
+		<Border x:Name="BorderMain" ClipToBounds="True">
+			<paz:ZoomBorder Name="ZoomBorder" Stretch="None" ZoomSpeed="1.2"
+                            Background="Gray" ClipToBounds="True" Focusable="True"
+                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+			<Canvas x:Name="Display" Background="White" ZIndex="2" ClipToBounds="True">
+				
+			</Canvas>
+				</paz:ZoomBorder>
+		</Border>
+		<!--<Canvas Width="1920" Height="1080" x:Name="Overlay" Background="Transparent" ZIndex="2">
+			<Canvas.RenderTransform>
+				<ScaleTransform ScaleX="1" ScaleY="1"/>
+			</Canvas.RenderTransform>
+		</Canvas>-->
+		
+	</Grid>
+</UserControl>
