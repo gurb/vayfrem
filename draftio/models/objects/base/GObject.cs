@@ -77,6 +77,12 @@ namespace draftio.models.objects.@base
             }
         }
 
+        public virtual GObject Copy()
+        {
+            GObject obj = new GObject();
+            return obj;
+        }
+
         public virtual void InitializeObject () 
         {
         }

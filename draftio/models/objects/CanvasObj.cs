@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media;
 using draftio.models.objects.@base;
 using draftio.models.structs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,6 +41,28 @@ namespace draftio.models.objects
             //    new Property("BorderThickness", 1),
             //    new Property("BorderRadius", 0),
             //};
+        }
+
+        public override CanvasObj Copy()
+        {
+            CanvasObj obj = new CanvasObj();
+
+            obj.X = this.X;
+            obj.Y = this.Y;
+            obj.Width = this.Width;
+            obj.Height = this.Height;
+            
+            obj.Guid = System.Guid.NewGuid().ToString();
+            obj.BackgroundColor = this.BackgroundColor;
+            obj.BorderColor = this.BorderColor;
+            obj.BorderRadius = this.BorderRadius;
+            obj.BorderThickness = this.BorderThickness;
+            obj.Opacity = this.Opacity;
+            obj.ObjectType = this.ObjectType;
+            obj.ZIndex = this.ZIndex;
+
+
+            return obj;
         }
     }
 }

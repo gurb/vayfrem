@@ -6,12 +6,14 @@ using System;
 using draftio.viewmodels;
 using System.Diagnostics;
 using System.Collections.Generic;
+using draftio.services;
 
 namespace draftio;
 
 public partial class LayoutView : UserControl
 {
     LayoutViewModel ViewModel;
+    private readonly ObjectMenuManager objectMenuManager;
 
     Border? ghostItem;
 
@@ -31,6 +33,8 @@ public partial class LayoutView : UserControl
     {
         ViewModel = App.GetService<LayoutViewModel>();
         DataContext = ViewModel;
+
+        objectMenuManager = App.GetService<ObjectMenuManager>();
 
         InitializeComponent();
 
@@ -112,10 +116,11 @@ public partial class LayoutView : UserControl
 
         copyMenuItem = new MenuItem();
         copyMenuItem.Header = "Copy";
+        copyMenuItem.PointerPressed += CopyMenuItem_PointerPressed;
 
         pasteMenuItem = new MenuItem();
         pasteMenuItem.Header = "Paste";
-        pasteMenuItem.IsEnabled = true;
+        pasteMenuItem.PointerPressed += PasteMenuItem_PointerPressed;
 
         objectMenu.ItemsSource = new List<MenuItem>()
         {
@@ -126,7 +131,16 @@ public partial class LayoutView : UserControl
         OverlayLayout.Children.Add(objectMenuGrid);
     }
 
-    
+    private void PasteMenuItem_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        objectMenuManager.Paste();
+    }
+
+    private void CopyMenuItem_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        objectMenuManager.Copy();
+    }
+
     private void OpenObjectMenu(Avalonia.Point point)
     {
         OverlayLayout.IsEnabled = true;

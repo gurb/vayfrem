@@ -30,6 +30,7 @@ public partial class DrawingView : UserControl
     private readonly ProjectManager projectManager;
     private readonly RenderManager renderManager;
     private readonly ToolManager toolManager;
+    private readonly ObjectMenuManager objectMenuManager;
 
 
     // status of draw operation
@@ -70,6 +71,7 @@ public partial class DrawingView : UserControl
         //projectManager.setDimensionDelegate += SetDimension;
         renderManager = App.GetService<RenderManager>();
         toolManager = App.GetService<ToolManager>();
+        objectMenuManager = App.GetService<ObjectMenuManager>();
 
         InitializeComponent();
 
@@ -119,9 +121,6 @@ public partial class DrawingView : UserControl
         renderManager.SetMainDisplay(Display);
         //SetObjectMenu();
     }
-
-    
-
     private void DrawingView_SizeChanged(object? sender, SizeChangedEventArgs e)
     {
         if (ViewModel.setDimensionDelegate != null)
@@ -143,8 +142,6 @@ public partial class DrawingView : UserControl
             Display.Height = ViewModel.CurrentFile.PageHeight;
         }
     }
-
-
     private void Display_PointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
         var point = e.GetCurrentPoint(sender as Control);
@@ -199,7 +196,6 @@ public partial class DrawingView : UserControl
 
         renderManager.RenderOverlay(Overlay, firstPosition, currentPosition, isDraw, isMove, ViewModel.SelectedObject, moveOffset);
     }
-
     
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
@@ -224,8 +220,9 @@ public partial class DrawingView : UserControl
 
                 if (ViewModel.SelectedObject != null)
                 {
-                    layoutViewModel.IsOpenMenu = true;
+                    objectMenuManager.SetObject(ViewModel.SelectedObject);
                 }
+                layoutViewModel.IsOpenMenu = true;
                 isRightClick = false;
                 return;
             }
