@@ -8,6 +8,7 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 	<PublishSingleFile>true</PublishSingleFile>
 	<SelfContained>true</SelfContained>
+	<ApplicationIcon>assets\logo.ico</ApplicationIcon>
   </PropertyGroup>
 
 
@@ -47,6 +48,11 @@
 	    <Content Include="resources\**">
 		    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	    </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="assets\logo.ico" />
+	  <None Remove="assets\logo.png" />
 	</ItemGroup>
 
 

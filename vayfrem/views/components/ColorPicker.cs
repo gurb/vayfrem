@@ -609,7 +609,7 @@ namespace vayfrem.views.components
             Canvas.SetLeft(colorSelector, (int)ColorSelectPosition.X - 5);
             Canvas.SetTop(colorSelector, (int)ColorSelectPosition.Y - 5);
 
-            Trace.WriteLine($"4 - {S},{V}");
+            //Trace.WriteLine($"4 - {S},{V}");
         }
 
         public void HsvToHex()
@@ -917,11 +917,11 @@ namespace vayfrem.views.components
 
             leftClick = true;
 
-            Trace.WriteLine("Fare");
-            Trace.WriteLine(point.ToString());
+            //Trace.WriteLine("Fare");
+            //Trace.WriteLine(point.ToString());
             int x = (int)point.X;
             int y = (int)point.Y;
-            Trace.WriteLine($"{x},{y}");
+            //Trace.WriteLine($"{x},{y}");
             if (x > 255)
             {
                 x = 255;
@@ -943,9 +943,9 @@ namespace vayfrem.views.components
             //Avalonia.Media.Color pixelColor = GetPixelColor(x, y);
             S = (int)((x / 255.0) * 100.0);
             V = (int)(100 - ((y / 255.0) * 100.0));
-            Trace.WriteLine($"1 - {S},{V}");
+            //Trace.WriteLine($"1 - {S},{V}");
             HsvToHex();
-            Trace.WriteLine($"2 - {S},{V}");
+            //Trace.WriteLine($"2 - {S},{V}");
 
 
             Canvas.SetLeft(colorSelector, (int)(x - 5));
@@ -964,7 +964,7 @@ namespace vayfrem.views.components
             }
 
             Background = new SolidColorBrush(SelectedColor.ToColor());
-            Trace.WriteLine($"3 - {S},{V}");
+            //Trace.WriteLine($"3 - {S},{V}");
 
         }
 

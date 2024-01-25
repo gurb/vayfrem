@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Microsoft.Win32;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -21,6 +22,8 @@ namespace vayfrem
             {
                 Associate();
             }
+            
+            UpdateIco();
 
             BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
@@ -51,7 +54,7 @@ namespace vayfrem
                 {
                     string exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "vayfrem.exe");
                     string assetsFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources");
-                    string iconpath = Path.Combine(assetsFolderPath, "icon.ico");
+                    string iconpath = Path.Combine(assetsFolderPath, "logo.ico");
                     if (!File.Exists(iconpath))
                     {
                         return;
@@ -80,6 +83,46 @@ namespace vayfrem
             catch (Exception ex)
             {
                 
+            }
+        }
+
+        private static void UpdateIco()
+        {
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                string assetsFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources");
+                string iconpath = Path.Combine(assetsFolderPath, "logo.ico");
+                RegistryKey? FileReg = Registry.CurrentUser.OpenSubKey("Software\\Classes\\.vayfrem", true);
+
+                if (FileReg != null)
+                {
+                    RegistryKey? defaultIconFileReg = FileReg.OpenSubKey("DefaultIcon", true);
+
+                    if (defaultIconFileReg != null)
+                    {
+                        defaultIconFileReg.SetValue("", iconpath);
+                    }
+                    else
+                    {
+                        FileReg.CreateSubKey("DefaultIcon").SetValue("", iconpath);
+                    }
+                }
+
+                RegistryKey? AppReg = Registry.CurrentUser.OpenSubKey("Software\\Classes\\Applications\\vayfrem.exe", true);
+
+                if (AppReg != null)
+                {
+                    RegistryKey? defaultIconAppReg = AppReg.OpenSubKey("DefaultIcon", true);
+                    if (defaultIconAppReg != null)
+                    {
+                        defaultIconAppReg.SetValue("", iconpath);
+                    }
+                    else
+                    {
+                        AppReg.CreateSubKey("DefaultIcon").SetValue("", iconpath);
+                    }
+                }
             }
         }
     }

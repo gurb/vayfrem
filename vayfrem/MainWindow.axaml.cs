@@ -8,6 +8,7 @@ namespace vayfrem
     {
         public MainWindow()
         {
+
             InitializeComponent();
 
             this.Closed += MainWindow_Closed;

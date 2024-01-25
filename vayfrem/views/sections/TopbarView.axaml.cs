@@ -15,15 +15,16 @@ public partial class TopbarView : UserControl
 
     private void Init()
     {
-        SetNewProjectBtn();
+        SetButtonsClick();
     }
 
 
-    private void SetNewProjectBtn()
+    private void SetButtonsClick()
     {
         NewPageBtn.Click += NewPageBtn_Click;
+        AboutBtn.Click += AboutBtn_Click;
     }
-
+   
     private void NewPageBtn_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         NewProjectWindow window = new NewProjectWindow();
@@ -33,6 +34,20 @@ public partial class TopbarView : UserControl
         Window? parent = (Window?)this.GetVisualRoot();
 
         if(parent != null)
+        {
+            window.ShowDialog(parent);
+        }
+    }
+
+    private void AboutBtn_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        AboutWindow window = new AboutWindow();
+        window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+
+        Window? parent = (Window?)this.GetVisualRoot();
+
+        if (parent != null)
         {
             window.ShowDialog(parent);
         }

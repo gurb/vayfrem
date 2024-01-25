@@ -59,8 +59,6 @@ public partial class NewProjectWindow : Window
         this.ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.NoChrome;
         this.ExtendClientAreaToDecorationsHint = false;
 
-
-
         SetPanel();
         SetInputElements();
         SetLabelElements();
@@ -272,7 +270,6 @@ public partial class NewProjectWindow : Window
         separator.Margin = new Avalonia.Thickness(0);
 
         return separator;
-
     }
 
     public override void Show()

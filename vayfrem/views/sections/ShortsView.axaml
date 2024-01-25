@@ -52,13 +52,13 @@
 			</Image>
 		</Button>
 		<Rectangle VerticalAlignment="Stretch" Width="1" Margin="5, 8, 5, 8" Fill="#999" />
-		<Button x:Name="ZoomIn" Margin="2" Padding="7">
+		<!--<Button x:Name="ZoomIn" Margin="2" Padding="7">
 			<Image Source="avares://vayfrem/assets/zoomin.png" Width="25" Height="25">
 			</Image>
 		</Button>
 		<Button x:Name="ZoomOut" Margin="2" Padding="7">
 			<Image Source="avares://vayfrem/assets/zoomout.png" Width="25" Height="25">
 			</Image>
-		</Button>
+		</Button>-->
 	</StackPanel>
 </UserControl>

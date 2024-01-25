@@ -27,13 +27,5 @@
 			<Image Source="avares://vayfrem/assets/text.png" Width="25" Height="25">
 			</Image>
 		</Button>
-		<Button x:Name="ZoomInTool" Margin="5" Padding="10">
-			<Image Source="avares://vayfrem/assets/zoomin.png" Width="25" Height="25">
-			</Image>
-		</Button>
-		<Button x:Name="ZoomOutTool" Margin="5" Padding="10">
-			<Image Source="avares://vayfrem/assets/zoomout.png" Width="25" Height="25">
-			</Image>
-		</Button>
 	</StackPanel>
 </UserControl>

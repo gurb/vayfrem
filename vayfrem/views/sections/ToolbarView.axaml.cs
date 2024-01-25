@@ -28,8 +28,6 @@ public partial class ToolbarView : UserControl
         SelectTool.Click += SelectTool_Click;
         RectTool.Click += RectTool_Click;
         TextTool.Click += TextTool_Click;
-        ZoomInTool.Click += ZoomInTool_Click;
-        ZoomOutTool.Click += ZoomOutTool_Click;
     }
 
     private void SelectTool_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -50,15 +48,6 @@ public partial class ToolbarView : UserControl
         toolManager.SetToolOption(ToolOption.Text);
     }
 
-    private void ZoomOutTool_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        toolManager.SetToolOption(ToolOption.ZoomOut);
-    }
-
-    private void ZoomInTool_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        toolManager.SetToolOption(ToolOption.ZoomIn);
-    }
 
     private void RectTool_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
