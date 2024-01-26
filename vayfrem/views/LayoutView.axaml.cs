@@ -27,8 +27,6 @@ public partial class LayoutView : UserControl
     MenuItem copyMenuItem;
     MenuItem pasteMenuItem;
 
-
-
     public LayoutView()
     {
         ViewModel = App.GetService<LayoutViewModel>();

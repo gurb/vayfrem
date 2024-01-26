@@ -1,20 +1,16 @@
-﻿using Avalonia.Controls.Templates;
-using Avalonia.Metadata;
-using vayfrem.models.structs;
+﻿using vayfrem.models.structs;
 using vayfrem.viewmodels;
-using System.Collections.Generic;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using static System.Net.Mime.MediaTypeNames;
-using vayfrem.views.components;
 using Avalonia.Controls;
 using vayfrem.models.dtos;
-using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia;
 using vayfrem.models.lists;
 using vayfrem.models.objects;
+using vayfrem.models.objects.components;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace vayfrem.views.sections
 {
@@ -24,12 +20,12 @@ namespace vayfrem.views.sections
 
         vayfrem.views.components.DataGrid grid;
 
-
         TextBox name_property;
         TextBox x_property;
         TextBox y_property;
         TextBox width_property;
         TextBox height_property;
+        TextBox text_property;
         components.ColorPicker bg_color_property;
         components.ColorPicker border_color_property;
 
@@ -40,7 +36,8 @@ namespace vayfrem.views.sections
         components.ColorPicker font_color_property;
         ComboBox font_family_property;
         ComboBox font_size_property;
-
+        ComboBox text_alignment_property;
+        ComboBox content_alignment_property;
 
         public PropertyView()
         {
@@ -93,6 +90,12 @@ namespace vayfrem.views.sections
             height_property.Margin = new Avalonia.Thickness(0);
             height_property.BorderThickness = new Avalonia.Thickness(0);
 
+            text_property = new TextBox();
+            text_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            text_property.TextChanged += Text_property_TextChanged;
+            text_property.Margin = new Avalonia.Thickness(0);
+            text_property.BorderThickness = new Avalonia.Thickness(0);
+
             bg_color_property = new components.ColorPicker("property-bg");
             bg_color_property.ValueChanged += RectBackgroundColor_ValueChanged;
             bg_color_property.Margin = new Thickness(0);
@@ -130,6 +133,18 @@ namespace vayfrem.views.sections
             font_size_property.SelectionChanged += FontSizeComboBox_SelectionChanged;
             font_size_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             font_size_property.BorderThickness = new Thickness(0);
+
+            text_alignment_property = new ComboBox();
+            text_alignment_property.ItemsSource = ListStorage.TextAlignments;
+            text_alignment_property.SelectionChanged += TextAlignmentComboBox_SelectionChanged;
+            text_alignment_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            text_alignment_property.BorderThickness = new Thickness(0);
+
+            content_alignment_property = new ComboBox();
+            content_alignment_property.ItemsSource = ListStorage.ContentAlignments;
+            content_alignment_property.SelectionChanged += ContentAlignmentComboBox_SelectionChanged;
+            content_alignment_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            content_alignment_property.BorderThickness = new Thickness(0);
         }
 
         private async void X_property_TextChanged(object? sender, TextChangedEventArgs e)
@@ -212,6 +227,31 @@ namespace vayfrem.views.sections
             }
         }
 
+
+        private async void Text_property_TextChanged(object? sender, TextChangedEventArgs e)
+        {
+            if (sender == null) return;
+            TextBox textBox = (TextBox)sender;
+
+            if (ViewModel.ActiveObj != null)
+            {
+                if(ViewModel.ActiveObj.ObjectType == models.enums.ObjectType.Text)
+                {
+                    TextObj textObj = (TextObj)ViewModel.ActiveObj;
+                    textObj.Text = textBox.Text;
+                }
+
+                if (ViewModel.ActiveObj.ObjectType == models.enums.ObjectType.Button)
+                {
+                    ButtonObj buttonObj = (ButtonObj)ViewModel.ActiveObj;
+                    buttonObj.Text = textBox.Text;
+                }
+
+                ViewModel.RefreshDraw();
+            }
+        }
+
+        
         private void RectBackgroundColor_ValueChanged()
         {
             if (ViewModel.ActiveObj != null)
@@ -267,6 +307,12 @@ namespace vayfrem.views.sections
                 TextObj textObj = (TextObj)ViewModel.ActiveObj;
                 textObj.FontColor = font_color_property.SelectedColor;
             }
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Button)
+            {
+                ButtonObj buttonObj = (ButtonObj)ViewModel.ActiveObj;
+                buttonObj.FontColor = font_color_property.SelectedColor;
+            }
+
             ViewModel.RefreshDraw();
         }
 
@@ -284,6 +330,12 @@ namespace vayfrem.views.sections
                 TextObj textObj = (TextObj)ViewModel.ActiveObj;
                 textObj.FontFamily = (fontFamilyComboBox.SelectedValue as FontFamily).Name;
             }
+            if(ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Button)
+            {
+                ButtonObj buttonObj = (ButtonObj)ViewModel.ActiveObj;
+                buttonObj.FontFamily = (fontFamilyComboBox.SelectedValue as FontFamily).Name;
+            }
+
             ViewModel.RefreshDraw();
         }
 
@@ -296,6 +348,36 @@ namespace vayfrem.views.sections
                 TextObj textObj = (TextObj)ViewModel.ActiveObj;
                 textObj.FontSize = (int)fontSizeComboBox.SelectedValue;
             }
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Button)
+            {
+                ButtonObj buttonObj = (ButtonObj)ViewModel.ActiveObj;
+                buttonObj.FontSize = (int)fontSizeComboBox.SelectedValue;
+            }
+            ViewModel.RefreshDraw();
+        }
+
+        private void TextAlignmentComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            var textAlignmentComboBox = sender as ComboBox;
+
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Button)
+            {
+                ButtonObj buttonObj = (ButtonObj)ViewModel.ActiveObj;
+                buttonObj.TextAlignment = (models.enums.TextAlignment)textAlignmentComboBox.SelectedValue;
+            }
+            ViewModel.RefreshDraw();
+        }
+
+        private void ContentAlignmentComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            var textAlignmentComboBox = sender as ComboBox;
+
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Text)
+            {
+                TextObj textObj = (TextObj)ViewModel.ActiveObj;
+                textObj.ContentAlignment = (models.enums.ContentAlignment)textAlignmentComboBox.SelectedValue;
+            }
+            
             ViewModel.RefreshDraw();
         }
 
@@ -359,6 +441,11 @@ namespace vayfrem.views.sections
             {
                 TextObj textObj = (TextObj)ViewModel.ActiveObj;
 
+                text_property.Text = textObj.Text;
+                
+                var contentAlignment = ListStorage.ContentAlignments.FirstOrDefault(x => x == textObj.ContentAlignment);
+                content_alignment_property.SelectedIndex = ListStorage.ContentAlignments.IndexOf(contentAlignment);
+
                 font_color_property.Background = new SolidColorBrush(textObj.FontColor.ToColor());
 
                 var fontFamily = ListStorage.FontFamilies.FirstOrDefault(x => x.Name == textObj.FontFamily);
@@ -372,6 +459,45 @@ namespace vayfrem.views.sections
                 {
                     font_size_property.SelectedIndex = ListStorage.FontSizes.IndexOf(fontSize.Value);
                 }
+            }
+
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Button)
+            {
+                ButtonObj buttonObj = (ButtonObj)ViewModel.ActiveObj;
+
+                text_property.Text = buttonObj.Text;
+
+                var textAlignment = ListStorage.TextAlignments.FirstOrDefault(x => x == buttonObj.TextAlignment);
+                text_alignment_property.SelectedIndex = ListStorage.TextAlignments.IndexOf(textAlignment);
+
+                font_color_property.Background = new SolidColorBrush(buttonObj.FontColor.ToColor());
+
+                var fontFamily = ListStorage.FontFamilies.FirstOrDefault(x => x.Name == buttonObj.FontFamily);
+                if (fontFamily != null)
+                {
+                    font_family_property.SelectedIndex = ListStorage.FontFamilies.IndexOf(fontFamily);
+                }
+
+                int? fontSize = ListStorage.FontSizes.FirstOrDefault(x => x == buttonObj.FontSize);
+                if (fontSize != null)
+                {
+                    font_size_property.SelectedIndex = ListStorage.FontSizes.IndexOf(fontSize.Value);
+                }
+
+                bg_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BackgroundColor.ToColor());
+                bg_color_property.Hex = ViewModel.ActiveObj.BackgroundColor.ToHex();
+                bg_color_property.SetColorPickerDTO(
+                    new ColorPickerDTO
+                    {
+                        Color = ViewModel.ActiveObj.BackgroundColor,
+                    }
+                );
+
+                border_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BorderColor.ToColor());
+
+                bg_opacity_property.Value = (int)ViewModel.ActiveObj.Opacity;
+                border_radius_property.Value = (int)ViewModel.ActiveObj.BorderRadius;
+                border_thickness_property.Value = (int)ViewModel.ActiveObj.BorderThickness;
             }
         }
 
@@ -416,9 +542,35 @@ namespace vayfrem.views.sections
                     new Property(ValueType.Y, y_property),
                     new Property(ValueType.Width, width_property),
                     new Property(ValueType.Height, height_property),
+                    new Property(ValueType.Text, text_property),
+                    new Property(ValueType.ContentAlignment, content_alignment_property),
                     new Property(ValueType.FontColor, font_color_property),
                     new Property(ValueType.FontFamily, font_family_property),
                     new Property(ValueType.FontSize, font_size_property),
+                };
+                grid.SetProperties(ViewModel.Properties.ToList());
+            }
+
+            if(ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Button)
+            {
+                SetValues();
+                ViewModel.Properties = new ObservableCollection<Property>()
+                {
+                    new Property(ValueType.Name, name_property),
+                    new Property(ValueType.X, x_property),
+                    new Property(ValueType.Y, y_property),
+                    new Property(ValueType.Width, width_property),
+                    new Property(ValueType.Height, height_property),
+                    new Property(ValueType.Text, text_property),
+                    new Property(ValueType.TextAlignment, text_alignment_property),
+                    new Property(ValueType.FontColor, font_color_property),
+                    new Property(ValueType.FontFamily, font_family_property),
+                    new Property(ValueType.FontSize, font_size_property),
+                    new Property(ValueType.Background, bg_color_property),
+                    new Property(ValueType.Opacity, bg_opacity_property),
+                    new Property(ValueType.BorderColor, border_color_property),
+                    new Property(ValueType.BorderRadius, border_radius_property),
+                    new Property(ValueType.BorderThickness, border_thickness_property),
                 };
                 grid.SetProperties(ViewModel.Properties.ToList());
             }
@@ -432,6 +584,9 @@ namespace vayfrem.views.sections
         Y,
         Width,
         Height,
+        Text,
+        TextAlignment,
+        ContentAlignment,
         Background,
         Opacity,
         BorderColor,

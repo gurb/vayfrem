@@ -5,6 +5,7 @@ using vayfrem.models.structs;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Avalonia.Media;
 
 namespace vayfrem.models.objects.@base
 {
@@ -85,6 +86,23 @@ namespace vayfrem.models.objects.@base
 
         public virtual void InitializeObject () 
         {
+        }
+
+        public virtual void SetStyle()
+        {
+
+        }
+
+        public Avalonia.Media.TextAlignment TextAlignmentConverter(enums.TextAlignment textAlignment)
+        {
+            if(textAlignment == enums.TextAlignment.MiddleCenter)
+            {
+                return Avalonia.Media.TextAlignment.Center;
+            }
+            else
+            {
+                return Avalonia.Media.TextAlignment.Left;
+            }
         }
     }
 }

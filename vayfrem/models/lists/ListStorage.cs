@@ -14,7 +14,7 @@ namespace vayfrem.models.lists
 
         public static List<FontFamily> FontFamilies = new InstalledFontCollection().Families.Select(x => new FontFamily(x.Name))
                 .OrderBy(x => x.Name).ToList();
-       
+
         public static List<int> FontSizes = new List<int>
         {
             5,
@@ -68,6 +68,26 @@ namespace vayfrem.models.lists
                 Height = 740,
                 Type = DimensionType.SamsungGalaxyS8Plus
             },
+        };
+
+        public static List<enums.TextAlignment> TextAlignments = new List<enums.TextAlignment>
+        {
+            enums.TextAlignment.TopLeft,
+            enums.TextAlignment.TopCenter,
+            enums.TextAlignment.TopRight,
+            enums.TextAlignment.MiddleLeft,
+            enums.TextAlignment.MiddleCenter,
+            enums.TextAlignment.MiddleRight,
+            enums.TextAlignment.BottomLeft,
+            enums.TextAlignment.BottomCenter,
+            enums.TextAlignment.BottomRight,
+        };
+
+        public static List<enums.ContentAlignment> ContentAlignments = new List<enums.ContentAlignment>
+        {
+            enums.ContentAlignment.Left,
+            enums.ContentAlignment.Center,
+            enums.ContentAlignment.Right,
         };
 
 

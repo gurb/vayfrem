@@ -18,6 +18,7 @@ namespace vayfrem.models.objects
         public ColorDTO FontColor { get; set; } = new ColorDTO(255, 0, 0, 0);
         public int FontSize { get; set; } = 14;
 
+        public enums.ContentAlignment ContentAlignment { get; set; } = enums.ContentAlignment.Left;
 
         public TextObj()
         {

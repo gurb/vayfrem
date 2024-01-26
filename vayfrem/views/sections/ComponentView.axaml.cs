@@ -35,16 +35,10 @@ public partial class ComponentView : UserControl
         LayoutViewModel = App.GetService<LayoutViewModel>();
         DataContext = ViewModel;
 
-
-
         InitializeComponent();
-
-        
 
         Init();
         setStyle();
-
-
     }
 
     private void setStyle()
@@ -63,16 +57,17 @@ public partial class ComponentView : UserControl
     {
         button = new Border();
         button.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-        button.BorderThickness = new Thickness(1);
+        button.BorderThickness = new Thickness(2);
         button.BorderBrush = Brushes.Black;
         button.Background = Brushes.White;
-        button.CornerRadius = new CornerRadius(2);
+        button.CornerRadius = new CornerRadius(5);
         button.Padding = new Thickness(10, 10, 10, 10);
         button.Margin = new Thickness(5, 5, 5, 5);
         button.PointerPressed += Button_PointerPressed;
 
         TextBlock text = new TextBlock();
         text.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+        text.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
         text.Height = 18;
         text.Text = "Button";
         text.Background = Brushes.White;

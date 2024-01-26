@@ -1,10 +1,6 @@
 ﻿using Avalonia.Controls;
+using vayfrem.models.dtos;
 using vayfrem.models.objects.@base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace vayfrem.models.objects.components
 {
@@ -15,21 +11,33 @@ namespace vayfrem.models.objects.components
         public string? Text { get; set; } = "Button";
 
         public string? FontFamily { get; set; } = "Arial";
-        public Avalonia.Media.Color FontColor { get; set; } = new Avalonia.Media.Color(255, 0, 0, 0);
+        public ColorDTO FontColor { get; set; } = new ColorDTO(255, 0, 0, 0);
         public int FontSize { get; set; } = 14;
 
+        public enums.TextAlignment TextAlignment { get; set; } = enums.TextAlignment.MiddleCenter;
 
         public ButtonObj()
         {
             InitializeObject();
-
         }
 
         public override void InitializeObject()
         {
+            this.ObjectType = enums.ObjectType.Button;
+
+            SetStyle();
+        }
+
+        public override void SetStyle()
+        {
+            base.SetStyle();
+
             Width = 200;
             Height = 50;
-            this.ObjectType = enums.ObjectType.Button;
+            
+            BorderColor = new dtos.ColorDTO(255, 0, 0, 0);
+            BorderThickness = 3;
+            BorderRadius = 5;
         }
 
         public void TextBox_TextChanged(object? sender, TextChangedEventArgs e)
