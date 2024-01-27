@@ -36,6 +36,8 @@ namespace vayfrem
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices((context, services) =>
                 {
+                    services.AddSingleton<VersionControlManager>();
+
                     services.AddTransient<MainViewModel>();
                     services.AddSingleton<ColorPickerManager>();
 

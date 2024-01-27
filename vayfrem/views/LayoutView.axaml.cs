@@ -158,19 +158,19 @@ public partial class LayoutView : UserControl
     private void SetGhostItem()
     {
         ghostItem = new Border();
-        ghostItem.BorderThickness = new Thickness(1);
+        ghostItem.BorderThickness = new Thickness(3);
         ghostItem.BorderBrush = Brushes.Black;
         ghostItem.Background = Brushes.White;
-        ghostItem.CornerRadius = new CornerRadius(2);
-        //ghostItem.Padding = new Thickness(10, 10, 10, 10);
-        //ghostItem.Margin = new Thickness(5, 5, 5, 5);
+        ghostItem.CornerRadius = new CornerRadius(5);
+        ghostItem.Padding = new Thickness(0, 5, 0, 5);
         ghostItem.IsVisible = false;
 
         TextBlock text = new TextBlock();
-        text.Height = 50;
+        text.Height = 20;
         text.Width = 200;
 
         text.Text = "Button";
+        text.TextAlignment = TextAlignment.Center;
         text.Background = Brushes.White;
 
         ghostItem.Child = text;

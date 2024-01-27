@@ -169,9 +169,11 @@ public partial class DrawingView : UserControl
         {
             if (layoutViewModel.DragObject != null)
             {
+                GObject? parentObject = ViewModel.CollisionPointWithObject(new Vector2(point.Position.X, point.Position.Y), null);
+
                 layoutViewModel.DragObject.X = (int)point.Position.X;
                 layoutViewModel.DragObject.Y = (int)point.Position.Y;
-                ViewModel.AddDirectObject(layoutViewModel.DragObject);
+                ViewModel.AddDirectObject(layoutViewModel.DragObject, parentObject);
                 layoutViewModel.DragObject = null;
             }
             layoutViewModel.IsDragCompleted = true;

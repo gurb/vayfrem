@@ -110,16 +110,34 @@ namespace vayfrem.viewmodels
             }
         }
 
-        [RelayCommand]
-        public void AddDirectObject(GObject? gobject)
+        public void AddDirectObject(GObject? gobject, GObject? parentObj = null)
         {
             if(gobject != null)
             {
-                Objects.Add(gobject);
+                if(parentObj != null)
+                {
+                    CanvasObj parentCanvas = (CanvasObj)parentObj;
 
+                    gobject.Parent = parentCanvas;
+                    gobject.ParentGuid = parentCanvas.Guid;
+                    gobject.X = gobject.X - parentCanvas.WorldX;
+                    gobject.Y = gobject.Y - parentCanvas.WorldY;
+
+                    parentCanvas.Add(gobject);
+                }
+                else
+                {
+                    Objects.Add(gobject);
+                }
                 if (drawDelegate != null)
                 {
                     drawDelegate.Invoke();
+                }
+
+
+                if (pageTreeViewModel.drawPageView != null)
+                {
+                    pageTreeViewModel.Refresh(CurrentFile!);
                 }
             }
         }
@@ -312,6 +330,55 @@ namespace vayfrem.viewmodels
                     SelectedObject = null;
                 }
                 CloseEditMode();
+            }
+        }
+
+
+        // this method is used for dragging object the objects if interacted then add the drag object to collided object if there is.
+        public GObject? CollisionPointWithObject(Vector2 mousePosition, CanvasObj? canvas = null)
+        {
+            bool isCollide = false;
+
+            var tempObjects = canvas != null ? canvas.Children : Objects;
+
+            tempObjects = tempObjects.OrderBy(x => x.ZIndex).ToList();
+
+            foreach (var obj in tempObjects)
+            {
+                if (mousePosition.X >= obj.X &&
+                    mousePosition.X <= obj.X + obj.Width &&
+                    mousePosition.Y >= obj.Y &&
+                    mousePosition.Y <= obj.Y + obj.Height)
+                {
+                    isCollide = true;
+                    if (obj.ObjectType == models.enums.ObjectType.Canvas)
+                    {
+                        CanvasObj canvasObj = (CanvasObj)obj;
+                        if (canvasObj.Children.Count > 0)
+                        {
+                            var mouseOffset = new Vector2(mousePosition.X - canvasObj.X, mousePosition.Y - canvasObj.Y);
+
+                            return CollisionPointWithObject(mouseOffset, canvasObj);
+                        }
+                        else
+                        {
+                            return obj;
+                        }
+                    }
+                    else
+                    {
+                        return canvas;
+                    }
+                }
+            }
+
+            if (canvas != null)
+            {
+                return canvas;
+            }
+            else
+            {
+                return null;
             }
         }
 

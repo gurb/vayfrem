@@ -1,11 +1,14 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using vayfrem.services;
 
 namespace vayfrem;
 
 public partial class AboutWindow : Window
 {
+
+    private readonly VersionControlManager versionControlManager;
 
     Grid grid;
     StackPanel contentStack;
@@ -18,6 +21,8 @@ public partial class AboutWindow : Window
 
     public AboutWindow()
     {
+        versionControlManager = App.GetService<VersionControlManager>();
+
         InitializeComponent();
         SetWindow();
     }
@@ -56,7 +61,7 @@ public partial class AboutWindow : Window
         content.FontSize = 12;
 
         versionContent = new TextBlock();
-        versionContent.Text = "Vayfrem v0.0.1 Pre-Alpha";
+        versionContent.Text = "Vayfrem " + versionControlManager.Version;
         versionContent.TextWrapping = Avalonia.Media.TextWrapping.Wrap;
         versionContent.TextAlignment = Avalonia.Media.TextAlignment.Center;
         versionContent.FontWeight = Avalonia.Media.FontWeight.Medium;

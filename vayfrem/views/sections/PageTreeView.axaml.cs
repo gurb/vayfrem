@@ -23,6 +23,7 @@ public partial class PageTreeView : UserControl
     ImageBrush caretOff;
     Avalonia.Media.Imaging.Bitmap text;
     Avalonia.Media.Imaging.Bitmap rect;
+    Avalonia.Media.Imaging.Bitmap button;
 
     public PageTreeView()
     {
@@ -183,6 +184,10 @@ public partial class PageTreeView : UserControl
             {
                 icon.Source = rect;
             }
+            if (node.ObjectType == ObjectType.Button)
+            {
+                icon.Source = button;
+            }
             Grid.SetColumn(icon, 1);
             grid.Children.Add(icon);
 
@@ -305,7 +310,6 @@ public partial class PageTreeView : UserControl
                 ViewModel.SetSelected(node);
                 DrawCanvas();
             }
-
         }
     }
 
@@ -315,5 +319,6 @@ public partial class PageTreeView : UserControl
         caretOff = new ImageBrush(new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://vayfrem/assets/caret.png"))));
         text = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://vayfrem/assets/text.png")));
         rect = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://vayfrem/assets/rect.png")));
+        button = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://vayfrem/assets/button.png")));
     }
 }

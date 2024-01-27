@@ -280,13 +280,12 @@ namespace vayfrem.services
                 }
                 else if(obj.TextAlignment == models.enums.TextAlignment.TopCenter)
                 {
-                    Canvas.SetLeft(textBlock, 0);
                     textBlock.TextAlignment = Avalonia.Media.TextAlignment.Center;
                     Canvas.SetTop(textBlock, 0);
                 }
                 else if(obj.TextAlignment == models.enums.TextAlignment.TopRight)
                 {
-                    Canvas.SetRight(textBlock, 0);
+                    textBlock.TextAlignment = Avalonia.Media.TextAlignment.Right;
                     Canvas.SetTop(textBlock, 0);
                 }
                 else if(obj.TextAlignment == models.enums.TextAlignment.MiddleLeft)
@@ -303,8 +302,8 @@ namespace vayfrem.services
                 else if (obj.TextAlignment == models.enums.TextAlignment.MiddleRight)
                 {
                     Canvas.SetRight(textBlock, 0);
-                    textBlock.TextAlignment = Avalonia.Media.TextAlignment.Center;
-                    Canvas.SetTop(textBlock, obj.Height / 2.0  - obj.FontSize);
+                    textBlock.TextAlignment = Avalonia.Media.TextAlignment.Right;
+                    Canvas.SetTop(textBlock, obj.Height / 2.0 - obj.FontSize / 2.0);
                 }
                 if (obj.TextAlignment == models.enums.TextAlignment.BottomLeft)
                 {
@@ -314,11 +313,13 @@ namespace vayfrem.services
                 if (obj.TextAlignment == models.enums.TextAlignment.BottomCenter)
                 {
                     Canvas.SetLeft(textBlock, 0);
+                    textBlock.TextAlignment = Avalonia.Media.TextAlignment.Center;
                     Canvas.SetBottom(textBlock, 0);
                 }
                 if (obj.TextAlignment == models.enums.TextAlignment.BottomRight)
                 {
                     Canvas.SetLeft(textBlock, 0);
+                    textBlock.TextAlignment = Avalonia.Media.TextAlignment.Right;
                     Canvas.SetBottom(textBlock, 0);
                 }
 
@@ -331,7 +332,7 @@ namespace vayfrem.services
                 textBlock.Foreground = new SolidColorBrush(obj.FontColor.ToColor());
                 //textBlock.Background = Brushes.Aqua;
                 textBlock.TextWrapping = TextWrapping.Wrap;
-                textBlock.TextAlignment = obj.TextAlignmentConverter(obj.TextAlignment);
+                //textBlock.TextAlignment = obj.TextAlignmentConverter(obj.TextAlignment);
                 textBlock.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
                 canvas.Children.Add(textBlock);
 
