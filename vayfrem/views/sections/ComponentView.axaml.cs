@@ -47,7 +47,6 @@ public partial class ComponentView : UserControl
         componentsMenuFooter.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 204, 208, 209));
     }
 
-  
     private void Init()
     {
         SetComponents();
@@ -76,7 +75,6 @@ public partial class ComponentView : UserControl
 
         ComponentMenu.Children.Add(button);
     }
-
     private async void Button_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         // drag started
@@ -89,5 +87,3 @@ public partial class ComponentView : UserControl
         LayoutViewModel.Counter = 1;
     }
 }
-
-

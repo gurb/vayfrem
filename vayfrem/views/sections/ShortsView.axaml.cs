@@ -173,11 +173,11 @@ namespace vayfrem
             _redoImageFile_original.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://vayfrem/assets/redo.png")));
             _grayScaleRedoImageFile = new Image();
             _grayScaleRedoImageFile.Source = GetGrayScaleFromBlackImage("avares://vayfrem/assets/redo.png");
-            
+
             // example of svg
-            //tigerSvg.Path = "avares://vayfrem/assets/tiger.svg";
-            //tigerSvg.Width = 25;
-            //tigerSvg.Height = 25;
+            tigerSvg.Path = "avares://vayfrem/assets/tiger.svg";
+            tigerSvg.Width = 25;
+            tigerSvg.Height = 25;
         }
 
         public Avalonia.Media.Imaging.Bitmap GetGrayScaleImage(string path)
