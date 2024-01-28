@@ -15,7 +15,6 @@ public partial class AboutWindow : Window
     TextBlock content;
     TextBlock versionContent;
 
-
     int width_window = 250;
     int height_window = 150;
 

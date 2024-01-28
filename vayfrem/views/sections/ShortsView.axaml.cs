@@ -8,6 +8,7 @@ using vayfrem.viewmodels;
 using SkiaSharp;
 using System;
 using System.IO;
+using Avalonia.Svg;
 
 namespace vayfrem
 {
@@ -24,6 +25,11 @@ namespace vayfrem
         private Image _redoImageFile_original;
         private Image _grayScaleRedoImageFile;
 
+        private Image tigerImage;
+        private SvgImage svgImage;
+
+
+        private Avalonia.Svg.Svg svg;
         public ShortsView()
         {
             ViewModel = App.GetService<ShortsViewModel>();
@@ -167,6 +173,11 @@ namespace vayfrem
             _redoImageFile_original.Source = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://vayfrem/assets/redo.png")));
             _grayScaleRedoImageFile = new Image();
             _grayScaleRedoImageFile.Source = GetGrayScaleFromBlackImage("avares://vayfrem/assets/redo.png");
+            
+            // example of svg
+            //tigerSvg.Path = "avares://vayfrem/assets/tiger.svg";
+            //tigerSvg.Width = 25;
+            //tigerSvg.Height = 25;
         }
 
         public Avalonia.Media.Imaging.Bitmap GetGrayScaleImage(string path)

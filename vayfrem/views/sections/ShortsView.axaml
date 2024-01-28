@@ -52,6 +52,10 @@
 			</Image>
 		</Button>
 		<Rectangle VerticalAlignment="Stretch" Width="1" Margin="5, 8, 5, 8" Fill="#999" />
+		<!--<Button x:Name="tigerButton" Margin="2" Padding="7">
+			<Svg x:Name="tigerSvg" Width="25" Height="25"></Svg>
+		</Button>-->
+		
 		<!--<Button x:Name="ZoomIn" Margin="2" Padding="7">
 			<Image Source="avares://vayfrem/assets/zoomin.png" Width="25" Height="25">
 			</Image>

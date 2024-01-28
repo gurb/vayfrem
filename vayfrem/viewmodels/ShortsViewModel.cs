@@ -115,7 +115,6 @@ namespace vayfrem.viewmodels
                 refreshProjectVM.Invoke();
             }
 
-
             return response;
         }
 
@@ -189,7 +188,6 @@ namespace vayfrem.viewmodels
 
                 ChangeUndoState(undoRedoManager.CheckUndo(currentFile.Guid!));
                 ChangeRedoState(undoRedoManager.CheckRedo(currentFile.Guid!));
-
             }
 
             return response;
