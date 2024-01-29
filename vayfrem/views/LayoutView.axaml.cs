@@ -110,8 +110,8 @@ public partial class LayoutView : UserControl
         {
             ghostItem.IsVisible = true;
 
-            Canvas.SetLeft(ghostItem, _ghostPosition.X);
-            Canvas.SetTop(ghostItem, _ghostPosition.Y);
+            Canvas.SetLeft(ghostItem, _ghostPosition.X - (ghostItem.Bounds.Width / 2));
+            Canvas.SetTop(ghostItem, _ghostPosition.Y - (ghostItem.Bounds.Height / 2));
         }
         if (ViewModel.DragObject.ObjectType == models.enums.ObjectType.Svg)
         {

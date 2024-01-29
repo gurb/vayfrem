@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="150"
         x:Class="vayfrem.NewProjectWindow"
-        Title="NewProjectWindow">
+        Title="NewProjectWindow"
+		Icon="/assets/logo.png">
     
 </Window>

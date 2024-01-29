@@ -1,0 +1,48 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="vayfrem.ExportWindow"
+        Title="Export"
+		Icon="/assets/logo.png">
+	<Panel>
+		<Grid Margin="30, 0" RowDefinitions="35, 35, 10, 35, 10 35, 30, 35">
+			<ComboBox Grid.Row="1" HorizontalAlignment="Stretch" SelectedIndex="0">
+				<ComboBoxItem>Export Current Page</ComboBoxItem>
+				<ComboBoxItem>Export Project</ComboBoxItem>
+			</ComboBox>
+
+			
+			<Grid Grid.Row="3" ColumnDefinitions="90, 15, *">
+				<TextBlock Grid.Column="0" VerticalAlignment="Center">Export Type</TextBlock>
+				<ComboBox Grid.Column="2" HorizontalAlignment="Stretch" SelectedIndex="0">
+					<ComboBoxItem>*.png</ComboBoxItem>
+					<ComboBoxItem>Export Project</ComboBoxItem>
+				</ComboBox>
+			</Grid>
+
+
+			<Grid Grid.Row="5" ColumnDefinitions="*, 15, 90">
+				<TextBox Grid.Column="0"></TextBox>
+				<Button Grid.Column="2" 
+						HorizontalAlignment="Stretch"
+						HorizontalContentAlignment="Center" 
+						VerticalContentAlignment="Center" 
+						VerticalAlignment="Stretch" 
+						Content="Select"></Button>
+			</Grid>
+
+			
+				
+			<Button Grid.Row="7" 
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch" 
+					Content="Export"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center">
+			
+			</Button>
+		</Grid>
+	</Panel>
+</Window>

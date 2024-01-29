@@ -16,7 +16,7 @@
     <PackageReference Include="Avalonia" Version="11.0.5" />
     <PackageReference Include="Avalonia.Controls.PanAndZoom" Version="11.0.0" />
     <PackageReference Include="Avalonia.Desktop" Version="11.0.5" />
-    <PackageReference Include="Avalonia.Svg" Version="11.0.0.12" />
+    <PackageReference Include="Avalonia.Svg" Version="11.0.0.13" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.5" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.5" />
 	<PackageReference Include="Avalonia.Controls.DataGrid" Version="11.0.5" />

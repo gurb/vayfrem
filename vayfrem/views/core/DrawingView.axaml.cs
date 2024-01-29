@@ -92,14 +92,12 @@ public partial class DrawingView : UserControl
         //Overlay.Opacity = 0.3;
         Overlay.ZIndex = 2;
 
-
         Canvas.SetTop(Overlay, 0);
         Canvas.SetLeft(Overlay, 0);
 
         Display.Children.Add(Overlay);
 
         Display.IsVisible = false;
-
 
         // new ----------------------------------
 
@@ -171,8 +169,8 @@ public partial class DrawingView : UserControl
             {
                 GObject? parentObject = ViewModel.CollisionPointWithObject(new Vector2(point.Position.X, point.Position.Y), null);
 
-                layoutViewModel.DragObject.X = (int)point.Position.X;
-                layoutViewModel.DragObject.Y = (int)point.Position.Y;
+                layoutViewModel.DragObject.X = (int)point.Position.X - layoutViewModel.DragObject.Width / 2;
+                layoutViewModel.DragObject.Y = (int)point.Position.Y - layoutViewModel.DragObject.Height / 2;
                 ViewModel.AddDirectObject(layoutViewModel.DragObject, parentObject);
                 layoutViewModel.DragObject = null;
             }
@@ -274,9 +272,6 @@ public partial class DrawingView : UserControl
         {
             ViewModel.IsScale = true;
         }
-
-        
-
 
         if (point.Properties.IsLeftButtonPressed 
         && 

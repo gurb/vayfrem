@@ -11,10 +11,6 @@ using vayfrem.views.components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using vayfrem.models.enums;
-using System.IO;
 
 namespace vayfrem.services
 {   
@@ -130,6 +126,7 @@ namespace vayfrem.services
             svg.Width = obj.Width;
             svg.Height = obj.Height;
             
+
             Canvas.SetLeft(svg, obj.X);
             Canvas.SetTop(svg, obj.Y);
 
