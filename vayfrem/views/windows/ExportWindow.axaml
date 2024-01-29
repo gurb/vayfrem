@@ -8,34 +8,31 @@
 		Icon="/assets/logo.png">
 	<Panel>
 		<Grid Margin="30, 0" RowDefinitions="35, 35, 10, 35, 10 35, 30, 35">
-			<ComboBox Grid.Row="1" HorizontalAlignment="Stretch" SelectedIndex="0">
+			<ComboBox x:Name="exportTypeCb" Grid.Row="1" HorizontalAlignment="Stretch" SelectedIndex="0">
 				<ComboBoxItem>Export Current Page</ComboBoxItem>
 				<ComboBoxItem>Export Project</ComboBoxItem>
 			</ComboBox>
-
 			
-			<Grid Grid.Row="3" ColumnDefinitions="90, 15, *">
-				<TextBlock Grid.Column="0" VerticalAlignment="Center">Export Type</TextBlock>
-				<ComboBox Grid.Column="2" HorizontalAlignment="Stretch" SelectedIndex="0">
+			<Grid Grid.Row="3" ColumnDefinitions="60, 15, *">
+				<TextBlock Grid.Column="0" VerticalAlignment="Center">File Type</TextBlock>
+				<ComboBox x:Name="fileTypeCb"  Grid.Column="2" HorizontalAlignment="Stretch" SelectedIndex="0">
 					<ComboBoxItem>*.png</ComboBoxItem>
 					<ComboBoxItem>Export Project</ComboBoxItem>
 				</ComboBox>
 			</Grid>
 
-
 			<Grid Grid.Row="5" ColumnDefinitions="*, 15, 90">
-				<TextBox Grid.Column="0"></TextBox>
-				<Button Grid.Column="2" 
+				<TextBox x:Name="filePathTxt" Grid.Column="0"></TextBox>
+				<Button x:Name="selectBtn" Grid.Column="2" 
 						HorizontalAlignment="Stretch"
 						HorizontalContentAlignment="Center" 
 						VerticalContentAlignment="Center" 
 						VerticalAlignment="Stretch" 
 						Content="Select"></Button>
 			</Grid>
-
-			
 				
-			<Button Grid.Row="7" 
+			<Button x:Name="exportBtn"
+					Grid.Row="7" 
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Stretch" 
 					Content="Export"
