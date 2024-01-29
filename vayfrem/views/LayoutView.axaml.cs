@@ -7,6 +7,8 @@ using vayfrem.viewmodels;
 using System.Diagnostics;
 using System.Collections.Generic;
 using vayfrem.services;
+using Avalonia.Svg;
+using vayfrem.models.objects.components;
 
 namespace vayfrem;
 
@@ -16,6 +18,7 @@ public partial class LayoutView : UserControl
     private readonly ObjectMenuManager objectMenuManager;
 
     Border? ghostItem;
+    Avalonia.Svg.Svg ghostSvg;
 
     private Point _ghostPosition = new(0, 0);
     private readonly Point _mouseOffset = new(-5, -5);
@@ -55,6 +58,13 @@ public partial class LayoutView : UserControl
             ViewModel.IsOpenMenu = false;
             CloseObjectMenu();
         }
+
+        if(ViewModel.DragObject != null && ViewModel.DragObject.ObjectType == models.enums.ObjectType.Svg)
+        {
+            SvgObj svgObj = (SvgObj)ViewModel.DragObject;
+
+            ghostSvg.Path = svgObj.Path;
+        }
     }
 
     private void LayoutView_PointerReleased(object? sender, Avalonia.Input.PointerReleasedEventArgs e)
@@ -66,7 +76,9 @@ public partial class LayoutView : UserControl
             ViewModel.Counter++;
 
             ViewModel.IsDrag = false;
+
             ghostItem.IsVisible = false;
+            ghostSvg.IsVisible = false;
         }
 
         if(ViewModel.IsOpenMenu)
@@ -94,10 +106,20 @@ public partial class LayoutView : UserControl
 
     public void DrawDrag()
     {
-        ghostItem.IsVisible = true;
+        if(ViewModel.DragObject.ObjectType == models.enums.ObjectType.Button)
+        {
+            ghostItem.IsVisible = true;
 
-        Canvas.SetLeft(ghostItem, _ghostPosition.X);
-        Canvas.SetTop(ghostItem,_ghostPosition.Y);
+            Canvas.SetLeft(ghostItem, _ghostPosition.X);
+            Canvas.SetTop(ghostItem, _ghostPosition.Y);
+        }
+        if (ViewModel.DragObject.ObjectType == models.enums.ObjectType.Svg)
+        {
+            ghostSvg.IsVisible = true;
+
+            Canvas.SetLeft(ghostSvg, _ghostPosition.X - (ghostSvg.Width / 2));
+            Canvas.SetTop(ghostSvg, _ghostPosition.Y - (ghostSvg.Height / 2));
+        }
     }
 
     private void SetObjectMenu()
@@ -178,7 +200,15 @@ public partial class LayoutView : UserControl
         Canvas.SetLeft(ghostItem, _ghostPosition.X);
         Canvas.SetTop(ghostItem, _ghostPosition.Y);
 
+
+        Uri uri = new System.Uri("C://test");
+        ghostSvg = new Avalonia.Svg.Svg(uri);
+        ghostSvg.Width = 64;
+        ghostSvg.Height = 64;
+        ghostSvg.IsVisible = false;
+
         OverlayLayout.Children.Add(ghostItem);
+        OverlayLayout.Children.Add(ghostSvg);
 
     }
 }

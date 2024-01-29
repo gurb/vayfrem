@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using vayfrem.models.enums;
+using System.IO;
 
 namespace vayfrem.services
 {   
@@ -68,6 +69,12 @@ namespace vayfrem.services
 
                     DrawButton(Display, buttonObj);
                 }
+                if (obj.ObjectType == models.enums.ObjectType.Svg)
+                {
+                    SvgObj svgObj = (SvgObj)obj;
+
+                    DrawSvg(Display, svgObj);
+                }
             }
         }
 
@@ -111,6 +118,22 @@ namespace vayfrem.services
 
             Display.Children.Add(panel);
             return canvas;
+        }
+
+        public void DrawSvg(Panel Display, SvgObj obj)
+        {
+            Avalonia.Svg.Svg svg;
+            Uri uri = new System.Uri(obj.Path);
+
+            svg = new Avalonia.Svg.Svg(uri);
+            svg.Path = obj.Path;
+            svg.Width = obj.Width;
+            svg.Height = obj.Height;
+            
+            Canvas.SetLeft(svg, obj.X);
+            Canvas.SetTop(svg, obj.Y);
+
+            Display.Children.Add(svg);
         }
 
         private void DrawText(Panel Display, TextObj obj)

@@ -10,11 +10,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using vayfrem.models.objects;
+using vayfrem.models.objects.components;
+using vayfrem.viewmodels;
 
 namespace vayfrem.views.sections;
 
 public partial class SvgView : UserControl
 {
+    private readonly LayoutViewModel layoutViewModel;
 
     Dictionary<string, List<string>> svgFiles = new Dictionary<string, List<string>>(); 
     List<Canvas> svgNodes = new List<Canvas>();
@@ -35,6 +38,8 @@ public partial class SvgView : UserControl
 
     public SvgView()
     {
+        layoutViewModel = App.GetService<LayoutViewModel>();
+
         InitializeComponent();
 
         SvgMenu.Background = Brushes.White;
@@ -79,11 +84,14 @@ public partial class SvgView : UserControl
 
     private void GetFiles()
     {
-        if(Directory.Exists("svg"))
+        string? executableLocation = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        string svgFolderLocation = System.IO.Path.Combine(executableLocation!, "svg");
+
+
+        if(Directory.Exists(svgFolderLocation))
         {
             // yep
-            string? executableLocation = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string svgFolderLocation = System.IO.Path.Combine(executableLocation!, "svg");
+            
             //string svgLocation = Path.Combine(executableLocation!, "svg\\tiger.svg");
             //string[] fileEntries = Directory.GetFiles(svgFolderLocation);
             string[] dirEntries = Directory.GetDirectories(svgFolderLocation);
@@ -174,8 +182,6 @@ public partial class SvgView : UserControl
 
         if (SvgMenu.Bounds.Width > 0)
         {
-
-
             columnLen = 0;
             rowLen = 0;
 
@@ -222,8 +228,6 @@ public partial class SvgView : UserControl
                     counter++;
                 }
             }
-
-            
         }
     }
 
@@ -243,10 +247,27 @@ public partial class SvgView : UserControl
         for (int i = 0; i < activeSvg.Count; i++)
         {
             Canvas canvas = SvgNode();
+            canvas.Name = i.ToString();
+            canvas.PointerPressed += Canvas_PointerPressed;
             canvas.Children.Add(activeSvg[i]);
             Canvas.SetLeft(canvas, 0);
             Canvas.SetTop(canvas, 0);
             svgNodes.Add(canvas);
         }
+    }
+
+    private void Canvas_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        Canvas canvas = sender as Canvas;
+
+        int index = Int32.Parse(canvas.Name);
+
+        SvgObj svgObj = new SvgObj();
+        svgObj.Path = activeSvg[index].Path;
+
+        layoutViewModel.IsDrag = true;
+        layoutViewModel.DragObject = svgObj;
+        layoutViewModel.IsDragCompleted = false;
+        layoutViewModel.Counter = 1;
     }
 }

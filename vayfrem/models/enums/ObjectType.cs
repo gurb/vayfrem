@@ -12,6 +12,7 @@ namespace vayfrem.models.enums
         Rectangle,
         Text,
         Selection,
-        Button
+        Button,
+        Svg,
     }
 }

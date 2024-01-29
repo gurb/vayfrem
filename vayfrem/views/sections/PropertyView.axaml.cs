@@ -574,6 +574,30 @@ namespace vayfrem.views.sections
                 };
                 grid.SetProperties(ViewModel.Properties.ToList());
             }
+
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Svg)
+            {
+                SetValues();
+                ViewModel.Properties = new ObservableCollection<Property>()
+                {
+                    new Property(ValueType.Name, name_property),
+                    new Property(ValueType.X, x_property),
+                    new Property(ValueType.Y, y_property),
+                    new Property(ValueType.Width, width_property),
+                    new Property(ValueType.Height, height_property),
+                    //new Property(ValueType.Text, text_property),
+                    //new Property(ValueType.TextAlignment, text_alignment_property),
+                    //new Property(ValueType.FontColor, font_color_property),
+                    //new Property(ValueType.FontFamily, font_family_property),
+                    //new Property(ValueType.FontSize, font_size_property),
+                    //new Property(ValueType.Background, bg_color_property),
+                    //new Property(ValueType.Opacity, bg_opacity_property),
+                    //new Property(ValueType.BorderColor, border_color_property),
+                    //new Property(ValueType.BorderRadius, border_radius_property),
+                    //new Property(ValueType.BorderThickness, border_thickness_property),
+                };
+                grid.SetProperties(ViewModel.Properties.ToList());
+            }
         }
     }
 

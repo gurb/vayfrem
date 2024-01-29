@@ -520,7 +520,9 @@ public partial class DrawingView : UserControl
                     obj.Height = (int)Math.Abs(currentPos.Y - obj.Y);
                 }
 
-                ViewModel.RefreshState();
+
+                // note: we comment this because of performance issue
+                //ViewModel.RefreshState();
 
                 if (obj.Width <= 50)
                 {

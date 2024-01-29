@@ -6,11 +6,15 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Avalonia.Media;
+using vayfrem.models.objects.components;
 
 namespace vayfrem.models.objects.@base
 {
     [JsonDerivedType(typeof(CanvasObj), typeDiscriminator: "CanvasObjType")]
     [JsonDerivedType(typeof(TextObj), typeDiscriminator: "TextObjType")]
+    [JsonDerivedType(typeof(ButtonObj), typeDiscriminator: "ButtonObjType")]
+    [JsonDerivedType(typeof(SvgObj), typeDiscriminator: "SvgObjType")]
+
     public class GObject : IObject
     {
         public string? Guid { get; set; }
