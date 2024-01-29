@@ -5,7 +5,9 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using vayfrem.models.objects;
 
@@ -29,6 +31,8 @@ public partial class SvgView : UserControl
 
     double width;
 
+    string svgDir;
+
     public SvgView()
     {
         InitializeComponent();
@@ -43,6 +47,19 @@ public partial class SvgView : UserControl
         set();
 
         svgComboBox.SelectionChanged += SvgComboBox_SelectionChanged;
+
+        FolderButton.Click += FolderButton_Click;
+    }
+
+    private void FolderButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var psi = new System.Diagnostics.ProcessStartInfo()
+        {
+            FileName = svgDir,
+            UseShellExecute = true
+        };
+
+        Process.Start(psi);
     }
 
     private void SvgComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -71,13 +88,13 @@ public partial class SvgView : UserControl
             //string[] fileEntries = Directory.GetFiles(svgFolderLocation);
             string[] dirEntries = Directory.GetDirectories(svgFolderLocation);
             List<string> dirNames = new List<string>();
-            
+
+            svgDir = svgFolderLocation;
 
             foreach (var dir in dirEntries)
             {
                 string dirName = System.IO.Path.GetFileName(dir)!;
                 svgFiles.Add(dirName, new List<string>());
-                currentDir = dirName;
 
                 string dirLocation = System.IO.Path.Combine(svgFolderLocation, dir);
 
@@ -91,7 +108,12 @@ public partial class SvgView : UserControl
                 }
             }
 
-            if(currentDir != null)
+            if(dirNames.Count() > 0)
+            {
+                currentDir = dirNames[0];
+            }
+
+            if (currentDir != null)
             {
                 foreach (var file in svgFiles[currentDir])
                 {
@@ -118,10 +140,7 @@ public partial class SvgView : UserControl
 
         set();
 
-
         DrawCanvas();
-
-
     }
 
     private Avalonia.Svg.Svg GetSvg(string path)
