@@ -4,35 +4,39 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="vayfrem.ExportWindow"
-        Title="Export"
+        Title="Export..."
 		Icon="/assets/logo.png">
 	<Panel>
-		<Grid Margin="30, 0" RowDefinitions="35, 35, 10, 35, 10 35, 30, 35">
-			<ComboBox x:Name="exportTypeCb" Grid.Row="1" HorizontalAlignment="Stretch" SelectedIndex="0">
-				<ComboBoxItem>Export Current Page</ComboBoxItem>
-				<ComboBoxItem>Export Project</ComboBoxItem>
+		<Grid Margin="30, 0" RowDefinitions="15, 35, 10, 35, 10 35, 10, 35, 10 30, 15">
+			<ComboBox FontSize="12" x:Name="exportTypeCb" Grid.Row="1" HorizontalAlignment="Stretch" SelectedIndex="0">
+				<ComboBoxItem FontSize="12">Export Current Page</ComboBoxItem>
+				<ComboBoxItem FontSize="12">Export Project</ComboBoxItem>
 			</ComboBox>
-			
+
 			<Grid Grid.Row="3" ColumnDefinitions="60, 15, *">
-				<TextBlock Grid.Column="0" VerticalAlignment="Center">File Type</TextBlock>
-				<ComboBox x:Name="fileTypeCb"  Grid.Column="2" HorizontalAlignment="Stretch" SelectedIndex="0">
-					<ComboBoxItem>*.png</ComboBoxItem>
-					<ComboBoxItem>Export Project</ComboBoxItem>
+				<TextBlock x:Name="exportNameBlock" Grid.Column="0" FontSize="12" VerticalAlignment="Center" Text="File Name"></TextBlock>
+				<TextBox FontSize="12" x:Name="exportNameTxt" Grid.Column="2"></TextBox>
+			</Grid>
+			
+			<Grid Grid.Row="5" ColumnDefinitions="60, 15, *">
+				<TextBlock Grid.Column="0" FontSize="12" VerticalAlignment="Center">File Type</TextBlock>
+				<ComboBox FontSize="12" x:Name="fileTypeCb"  Grid.Column="2" HorizontalAlignment="Stretch" SelectedIndex="0">
+					<ComboBoxItem FontSize="12">*.png</ComboBoxItem>
 				</ComboBox>
 			</Grid>
 
-			<Grid Grid.Row="5" ColumnDefinitions="*, 15, 90">
-				<TextBox x:Name="filePathTxt" Grid.Column="0"></TextBox>
-				<Button x:Name="selectBtn" Grid.Column="2" 
+			<Grid Grid.Row="7" ColumnDefinitions="*, 15, 90">
+				<TextBox FontSize="12" x:Name="filePathTxt" Grid.Column="0"></TextBox>
+				<Button FontSize="12" x:Name="selectBtn" Grid.Column="2" 
 						HorizontalAlignment="Stretch"
 						HorizontalContentAlignment="Center" 
 						VerticalContentAlignment="Center" 
 						VerticalAlignment="Stretch" 
-						Content="Select"></Button>
+						Content="Path"></Button>
 			</Grid>
 				
-			<Button x:Name="exportBtn"
-					Grid.Row="7" 
+			<Button FontSize="12" x:Name="exportBtn"
+					Grid.Row="9" 
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Stretch" 
 					Content="Export"

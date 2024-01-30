@@ -54,6 +54,7 @@
 	<ItemGroup>
 	  <None Remove="assets\logo.ico" />
 	  <None Remove="assets\logo.png" />
+	  <None Remove="assets\svg.png" />
 	  <None Remove="assets\tiger.svg" />
 	</ItemGroup>
 

@@ -1,20 +1,27 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.VisualTree;
 using System.Collections.Generic;
 using System.Linq;
+using vayfrem.services;
 
 namespace vayfrem;
 
 public partial class ExportWindow : Window
 {
+    private readonly ExportManager exportManager;
+
     int width_window = 400;
     int height_window = 270;
 
+
     public ExportWindow()
     {
+        exportManager = App.GetService<ExportManager>();
+
         InitializeComponent();
 
         SetWindow();
@@ -54,31 +61,49 @@ public partial class ExportWindow : Window
 
         if(result.Count >= 1)
         {
-            filePathTxt.Text = result[0].Path.AbsoluteUri;
+            filePathTxt.Text = result[0].Path.AbsolutePath.Replace("%20", " ");
         }
     }
 
-    private void ExportBtn_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private async void ExportBtn_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        if(!exportManager.CurrentFileValid() && exportTypeCb.SelectedIndex == 0)
+        {
+            await MessageBox.Show(this, "Error", $"Current page not found", MessageBox.MessageBoxButtons.Ok);
+            return;
+        }
+
+        if (!exportManager.ProjectValid() && exportTypeCb.SelectedIndex == 1)
+        {
+            await MessageBox.Show(this, "Error", $"Not found valid file for the project", MessageBox.MessageBoxButtons.Ok);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(exportNameTxt.Text))
+        {
+            await MessageBox.Show(this, "Error", $"File name cannot be empty", MessageBox.MessageBoxButtons.Ok);
+            return;
+        }
+
         if(string.IsNullOrEmpty(filePathTxt.Text))
         {
-            // file path not found
+            await MessageBox.Show(this, "Error", $"Directory path is empty", MessageBox.MessageBoxButtons.Ok);
             return;
         }
 
         if(!System.IO.Directory.Exists(filePathTxt.Text))
         {
-            // dir not found
+            await MessageBox.Show(this, "Error", $"Directory path not found", MessageBox.MessageBoxButtons.Ok);
             return;
         }
 
         if (fileTypeCb.SelectedValue == null) return;
 
-        string selected = fileTypeCb.SelectedValue.ToString();
+        ComboBoxItem selectedItem = fileTypeCb.SelectedValue as ComboBoxItem;
+        string content = selectedItem.Content.ToString();
 
-        if (getExtension(selected!) == "png")
+        if (getExtension(content!) == "png")
         {
-            // export as png
             ExportPNG();
         }
     }
@@ -87,14 +112,25 @@ public partial class ExportWindow : Window
     {
         if (exportTypeCb.SelectedValue == null) return;
 
-        // current file
-        if (exportTypeCb.SelectedIndex == 0)
+        if (exportTypeCb.SelectedIndex == 0) // current file
         {
+            RenderTargetBitmap bitmap = exportManager.GenerateCurrentPng();
 
-        // project
-        } else if (exportTypeCb.SelectedIndex == 1)
+            bitmap.Save(filePathTxt.Text + "/test.png");
+
+            bitmap.Dispose();
+        } 
+        else if (exportTypeCb.SelectedIndex == 1) // project
         {
+            List<RenderTargetBitmap> bitmaps = exportManager.GenerateAllPagesPng();
 
+            int fileCounter = 1;
+            foreach (RenderTargetBitmap bitmap in bitmaps)
+            {
+                bitmap.Save(filePathTxt.Text + "/" + exportNameTxt.Text + "-" +  fileCounter.ToString() + ".png");
+                bitmap.Dispose();
+                fileCounter++;
+            }
         }
     }
 
@@ -102,6 +138,6 @@ public partial class ExportWindow : Window
     {
         List<string> subs = val.Split('.').ToList();
 
-        return subs[2];
+        return subs.Last();
     }
 }

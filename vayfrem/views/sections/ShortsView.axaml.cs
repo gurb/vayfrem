@@ -28,7 +28,6 @@ namespace vayfrem
         private Image tigerImage;
         private SvgImage svgImage;
 
-
         private Avalonia.Svg.Svg svg;
         public ShortsView()
         {
@@ -174,10 +173,7 @@ namespace vayfrem
             _grayScaleRedoImageFile = new Image();
             _grayScaleRedoImageFile.Source = GetGrayScaleFromBlackImage("avares://vayfrem/assets/redo.png");
 
-            // example of svg
-            tigerSvg.Path = "avares://vayfrem/assets/tiger.svg";
-            tigerSvg.Width = 25;
-            tigerSvg.Height = 25;
+
         }
 
         public Avalonia.Media.Imaging.Bitmap GetGrayScaleImage(string path)

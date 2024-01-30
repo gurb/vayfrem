@@ -62,6 +62,7 @@ namespace vayfrem
                     services.AddSingleton<ObjectMenuManager>();
 
                     services.AddSingleton<UndoRedoManager>();
+                    services.AddSingleton<ExportManager>();
                 })
                 .Build();
 
