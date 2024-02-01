@@ -8,6 +8,6 @@ namespace vayfrem.services
 {
     public class VersionControlManager
     {
-        public string? Version { get; set; } = "Pre-Alpha v0.0.2";
+        public string? Version { get; set; } = "Pre-Alpha v0.0.3";
     }
 }

@@ -58,6 +58,11 @@ public partial class SvgView : UserControl
 
     private void FolderButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        if (!Directory.Exists(svgDir)) 
+        {
+            Directory.CreateDirectory(svgDir);
+        }
+
         var psi = new System.Diagnostics.ProcessStartInfo()
         {
             FileName = svgDir,
@@ -84,11 +89,12 @@ public partial class SvgView : UserControl
 
     private void GetFiles()
     {
-        string? executableLocation = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        string? executableLocation = System.IO.Path.GetDirectoryName(System.AppContext.BaseDirectory);
         string svgFolderLocation = System.IO.Path.Combine(executableLocation!, "svg");
 
+        svgDir = svgFolderLocation;
 
-        if(Directory.Exists(svgFolderLocation))
+        if (Directory.Exists(svgFolderLocation))
         {
             // yep
             
@@ -96,9 +102,7 @@ public partial class SvgView : UserControl
             //string[] fileEntries = Directory.GetFiles(svgFolderLocation);
             string[] dirEntries = Directory.GetDirectories(svgFolderLocation);
             List<string> dirNames = new List<string>();
-
-            svgDir = svgFolderLocation;
-
+            
             foreach (var dir in dirEntries)
             {
                 string dirName = System.IO.Path.GetFileName(dir)!;

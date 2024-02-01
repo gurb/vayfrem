@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using Avalonia.Animation;
 
 namespace vayfrem;
 
@@ -31,7 +32,6 @@ public partial class DrawingView : UserControl
     private readonly RenderManager renderManager;
     private readonly ToolManager toolManager;
     private readonly ObjectMenuManager objectMenuManager;
-
 
     // status of draw operation
     private bool isDraw;
@@ -56,7 +56,6 @@ public partial class DrawingView : UserControl
 
     TimeSpan lastClickTime = new TimeSpan();
     Node? lastClickNode;
-
 
     public DrawingView()
     {
@@ -277,7 +276,8 @@ public partial class DrawingView : UserControl
         && 
         (
             toolManager.SelectedToolOption == ToolOption.Rect ||
-            toolManager.SelectedToolOption == ToolOption.Text
+            toolManager.SelectedToolOption == ToolOption.Text ||
+            toolManager.SelectedToolOption == ToolOption.QBC
         ))
         {
             isDraw = true;
@@ -339,8 +339,19 @@ public partial class DrawingView : UserControl
             Y = Math.Min(firstPosition.Y, lastPosition.Y),
             Width = Math.Abs(firstPosition.X - lastPosition.X),
             Height = Math.Abs(firstPosition.Y - lastPosition.Y),
-            SelectedObjectType = toolManager.SelectedObjectType
+            SelectedObjectType = toolManager.SelectedObjectType,
         };
+
+        if (toolManager.SelectedObjectType == ObjectType.QuadraticBC)
+        {
+            passData.StartPoint = new Vector2((int)firstPosition.X, (int)firstPosition.Y);
+            passData.Point2 = new Vector2((int)lastPosition.X, (int)lastPosition.Y);
+
+            int center_x = ((int)passData.StartPoint.X + (int)passData.Point2.X) / 2;
+            int center_y = ((int)passData.StartPoint.Y + (int)passData.Point2.Y) / 2;
+
+            passData.Point1 = new Vector2(center_x, center_y);
+        }
 
         ViewModel.AddObject(passData);
     }

@@ -24,6 +24,9 @@ namespace vayfrem.viewmodels
         TextToolDTO textToolDTO;
 
         [ObservableProperty]
+        QuadraticBCToolDTO quadraticBCToolDTO;
+
+        [ObservableProperty]
         string? toolNameTitle;
 
         public delegate void DrawToolOptionDelegate();
@@ -36,6 +39,7 @@ namespace vayfrem.viewmodels
         {
             rectToolDTO = new RectToolDTO();
             textToolDTO = new TextToolDTO();
+            quadraticBCToolDTO = new QuadraticBCToolDTO();
         }
 
         public void SetToolOption(ToolOption toolOption)

@@ -37,6 +37,9 @@ namespace vayfrem.services
                 case ToolOption.Text:
                     SelectedObjectType = ObjectType.Text;
                     break;
+                case ToolOption.QBC:
+                    SelectedObjectType = ObjectType.QuadraticBC;
+                    break;
                 default:
                     SelectedObjectType = ObjectType.Canvas;
                     break;

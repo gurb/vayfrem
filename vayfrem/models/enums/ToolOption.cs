@@ -14,5 +14,6 @@ namespace vayfrem.models.enums
         Erase,
         ZoomIn,
         ZoomOut,
+        QBC,
     }
 }

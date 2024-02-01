@@ -116,7 +116,7 @@ public partial class ExportWindow : Window
         {
             RenderTargetBitmap bitmap = exportManager.GenerateCurrentPng();
 
-            bitmap.Save(filePathTxt.Text + "/test.png");
+            bitmap.Save(filePathTxt.Text + "/" + exportNameTxt.Text + ".png");
 
             bitmap.Dispose();
         } 

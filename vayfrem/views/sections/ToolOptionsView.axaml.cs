@@ -23,11 +23,15 @@ public partial class ToolOptionsView : UserControl
     public double ParentSize;
 
     List<double> rect_heights = new List<double>();
+    List<double> quadratic_heights = new List<double>();
     List<double> text_heights = new List<double>();
 
     components.ColorPicker backgroundColorPicker;
     components.ColorPicker borderColorPicker;
     components.ColorPicker fontColorPicker;
+
+    components.ColorPicker qbc_backgroundColorPicker;
+    components.ColorPicker qbc_borderColorPicker;
 
     TextBlock rectOpacityValueText;
     TextBlock borderRadiusValueText;
@@ -37,6 +41,9 @@ public partial class ToolOptionsView : UserControl
     components.Slider bgOpacitySlider;
     components.Slider borderRadiusSlider;
     components.Slider borderThicknessSlider;
+
+    components.Slider qbc_bgOpacitySlider;
+    components.Slider qbc_borderThicknessSlider;
 
     bool isLoaded;
     public ToolOptionsView()
@@ -75,6 +82,7 @@ public partial class ToolOptionsView : UserControl
 
         SetRectOption();
         SetTextOption();
+        SetQuadraticBCOption();
 
         switch (ViewModel.ToolOption)
         {
@@ -85,6 +93,9 @@ public partial class ToolOptionsView : UserControl
                 break;
             case ToolOption.Text:
                 DrawTextOption();
+                break;
+            case ToolOption.QBC:
+                DrawQuadraticBCOption();
                 break;
             default:
                 break;
@@ -172,9 +183,84 @@ public partial class ToolOptionsView : UserControl
         Options["Rect"].Add(row_border_radius_thickness);
     }
 
+    private void SetQuadraticBCOption()
+    {
+        Options.Add("QuadraticBC", new List<Control>());
+
+        quadratic_heights = new List<double>
+        {
+            26,
+            40,
+            40,
+
+            26,
+            40,
+            40,
+        };
+
+
+        // Background
+        var row_background = RowOption("Background", null, null, quadratic_heights[0], true);
+        var row_background_canvas = GetCanvas(quadratic_heights[0], row_background, Brushes.Gray);
+        Options["QuadraticBC"].Add(row_background_canvas);
+
+        qbc_backgroundColorPicker = new components.ColorPicker("bg");
+        qbc_backgroundColorPicker.Background = new SolidColorBrush(ViewModel.QuadraticBCToolDTO.BackgroundColorPicker.Color.ToColor());
+        qbc_backgroundColorPicker.SelectedColor = ViewModel.QuadraticBCToolDTO.BackgroundColorPicker.Color;
+        qbc_backgroundColorPicker.Hex = ViewModel.QuadraticBCToolDTO.BackgroundColorPicker.Color.ToHex();
+        qbc_backgroundColorPicker.SetColorPickerDTO(ViewModel.QuadraticBCToolDTO.BackgroundColorPicker);
+        qbc_backgroundColorPicker.ValueChanged += QBC_RectBackgroundColor_ValueChanged;
+        qbc_backgroundColorPicker.Margin = new Thickness(10, 5, 10, 5);
+        var row_background_width = RowOption("Color", qbc_backgroundColorPicker, null, quadratic_heights[1]);
+        var row_background_width_canvas = GetCanvas(quadratic_heights[1], row_background_width, Brushes.Gray);
+        Options["QuadraticBC"].Add(row_background_width_canvas);
+
+
+        qbc_bgOpacitySlider = new components.Slider();
+        qbc_bgOpacitySlider.ValueChanged += QBC_BgOpactiyChanged_ValueChanged;
+        qbc_bgOpacitySlider.Maximum = 255;
+        qbc_bgOpacitySlider.Minimum = 0;
+
+        var row_background_opacity = RowOption("Opacity", qbc_bgOpacitySlider, null, quadratic_heights[2]);
+        var row_background_opacity_canvas = GetCanvas(quadratic_heights[2], row_background_opacity, Brushes.Gray);
+        Options["QuadraticBC"].Add(row_background_opacity_canvas);
+
+
+        // Border
+        var row_border = RowOption("Border", null, null, quadratic_heights[3], true);
+        var row_border_canvas = GetCanvas(quadratic_heights[3], row_border, Brushes.Gray);
+        Options["QuadraticBC"].Add(row_border_canvas);
+
+        qbc_borderColorPicker = new components.ColorPicker("borderColor");
+        qbc_borderColorPicker.Background = new SolidColorBrush(ViewModel.RectToolDTO.BorderColorPicker.Color.ToColor());
+        qbc_borderColorPicker.SetColorPickerDTO(ViewModel.QuadraticBCToolDTO.BorderColorPicker);
+        qbc_borderColorPicker.Hex = ViewModel.QuadraticBCToolDTO.BorderColorPicker.Color.ToHex();
+        qbc_borderColorPicker.ValueChanged += QBC_RectBorderColor_ValueChanged;
+        qbc_borderColorPicker.Margin = new Thickness(10, 5, 10, 5);
+        var row_border_color = RowOption("Color", qbc_borderColorPicker, null, rect_heights[4]);
+        var row_border_color_canvas = GetCanvas(quadratic_heights[4], row_border_color, Brushes.Gray);
+        Options["QuadraticBC"].Add(row_border_color_canvas);
+
+
+        qbc_borderThicknessSlider = new components.Slider();
+        qbc_borderThicknessSlider.ValueChanged += QBC_BorderThicknessChanged_ValueChanged;
+        qbc_borderThicknessSlider.Value = (int)ViewModel.QuadraticBCToolDTO.BorderThickness;
+        qbc_borderThicknessSlider.Maximum = 100;
+        qbc_borderThicknessSlider.Minimum = 0;
+
+        var row_border_thickness = RowOption("Thickness", qbc_borderThicknessSlider, null, quadratic_heights[5]);
+        var row_border_radius_thickness = GetCanvas(quadratic_heights[5], row_border_thickness, Brushes.Gray);
+        Options["QuadraticBC"].Add(row_border_radius_thickness);
+    }
+
     private void BgOpactiyChanged_ValueChanged()
     {
         ViewModel.RectToolDTO.Opacity = bgOpacitySlider.Value;
+    }
+
+    private void QBC_BgOpactiyChanged_ValueChanged()
+    {
+        ViewModel.QuadraticBCToolDTO.Opacity = qbc_bgOpacitySlider.Value;
     }
 
     private void BorderRadiusChanged_ValueChanged()
@@ -185,6 +271,11 @@ public partial class ToolOptionsView : UserControl
     private void BorderThicknessChanged_ValueChanged()
     {
         ViewModel.RectToolDTO.BorderThickness = borderThicknessSlider.Value;
+    }
+
+    private void QBC_BorderThicknessChanged_ValueChanged()
+    {
+        ViewModel.QuadraticBCToolDTO.BorderThickness = qbc_borderThicknessSlider.Value;
     }
 
 
@@ -207,6 +298,18 @@ public partial class ToolOptionsView : UserControl
         };
     }
 
+    // quadratic bezier curve
+    private void QBC_RectBackgroundColor_ValueChanged()
+    {
+        ViewModel.QuadraticBCToolDTO.BackgroundColorPicker = new models.dtos.ColorPickerDTO
+        {
+            Color = qbc_backgroundColorPicker.SelectedColor,
+            BarColor = qbc_backgroundColorPicker.SelectedBarColor,
+            ColorSelectPosition = qbc_backgroundColorPicker.ColorSelectPosition,
+            BarPosition = qbc_backgroundColorPicker.BarPosition,
+        };
+    }
+
     private void RectBorderColor_ValueChanged()
     {
         ViewModel.RectToolDTO.BorderColorPicker = new models.dtos.ColorPickerDTO
@@ -215,6 +318,17 @@ public partial class ToolOptionsView : UserControl
             BarColor = borderColorPicker.SelectedBarColor,
             ColorSelectPosition = borderColorPicker.ColorSelectPosition,
             BarPosition = borderColorPicker.BarPosition,
+        };
+    }
+
+    private void QBC_RectBorderColor_ValueChanged()
+    {
+        ViewModel.QuadraticBCToolDTO.BorderColorPicker = new models.dtos.ColorPickerDTO
+        {
+            Color = qbc_borderColorPicker.SelectedColor,
+            BarColor = qbc_borderColorPicker.SelectedBarColor,
+            ColorSelectPosition = qbc_borderColorPicker.ColorSelectPosition,
+            BarPosition = qbc_borderColorPicker.BarPosition,
         };
     }
 
@@ -302,6 +416,27 @@ public partial class ToolOptionsView : UserControl
         foreach (var item in Options["Rect"])
         {
             var height = rect_heights.GetRange(0, counter).Sum();
+
+            Canvas.SetLeft(item, 0);
+            Canvas.SetTop(item, height);
+
+            ToolOptionCanvas.Children.Add(item);
+            counter++;
+        }
+    }
+
+    private void DrawQuadraticBCOption()
+    {
+        if (!Options.ContainsKey("QuadraticBC"))
+            return;
+
+        ToolOptionCanvas.Height = quadratic_heights.Sum();
+
+        int counter = 0;
+
+        foreach (var item in Options["QuadraticBC"])
+        {
+            var height = quadratic_heights.GetRange(0, counter).Sum();
 
             Canvas.SetLeft(item, 0);
             Canvas.SetTop(item, height);

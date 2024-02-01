@@ -14,5 +14,6 @@ namespace vayfrem.models.enums
         Selection,
         Button,
         Svg,
+        QuadraticBC,
     }
 }

@@ -14,7 +14,7 @@ namespace vayfrem.models.objects.@base
     [JsonDerivedType(typeof(TextObj), typeDiscriminator: "TextObjType")]
     [JsonDerivedType(typeof(ButtonObj), typeDiscriminator: "ButtonObjType")]
     [JsonDerivedType(typeof(SvgObj), typeDiscriminator: "SvgObjType")]
-
+    [JsonDerivedType(typeof(QuadraticBCObj), typeDiscriminator: "QuadraticBCObjType")]
     public class GObject : IObject
     {
         public string? Guid { get; set; }

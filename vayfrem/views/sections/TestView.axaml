@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="vayfrem.views.sections.TestView">
+	<Canvas Width="200" Height="200" Background="AntiqueWhite">
+		<Path Stroke="Black" StrokeThickness="10">
+			<Path.Data>
+				<PathGeometry>
+					<PathGeometry.Figures>
+						<PathFigure StartPoint="0,100">
+							<PathFigure.Segments>
+								<QuadraticBezierSegment Point1="100,100" Point2="200,100" />
+							</PathFigure.Segments>
+						</PathFigure>
+					</PathGeometry.Figures>
+				</PathGeometry>
+			</Path.Data>
+		</Path>
+	</Canvas>
+</UserControl>

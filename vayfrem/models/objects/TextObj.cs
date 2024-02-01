@@ -11,9 +11,7 @@ namespace vayfrem.models.objects
     public class TextObj: GObject
     {
         public bool IsEditMode { get; set; }
-
         public string? Text { get; set; }
-
         public string? FontFamily { get; set; } = "Arial";
         public ColorDTO FontColor { get; set; } = new ColorDTO(255, 0, 0, 0);
         public int FontSize { get; set; } = 14;

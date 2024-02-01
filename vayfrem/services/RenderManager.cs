@@ -19,7 +19,8 @@ namespace vayfrem.services
     {
         private Vector2 childMoveOffset = new Vector2(0,0);
         private readonly DrawingViewModel drawingViewModel;
-        
+        private readonly ToolManager toolManager;
+
         public Canvas? MainDisplay { get; set; }
         public double Zoom { get; set; } = 1;
 
@@ -28,6 +29,7 @@ namespace vayfrem.services
         public RenderManager() 
         {
             drawingViewModel = App.GetService<DrawingViewModel>();
+            toolManager = App.GetService<ToolManager>();
         }
 
         public void SetMainDisplay(Canvas mainDisplay)
@@ -58,6 +60,12 @@ namespace vayfrem.services
                     TextObj textObj = (TextObj)obj;
 
                     DrawText(Display, textObj);
+                }
+                if(obj.ObjectType == models.enums.ObjectType.QuadraticBC)
+                {
+                    QuadraticBCObj quadraticBCObj = (QuadraticBCObj)obj;
+
+                    DrawQBC(Display, quadraticBCObj);
                 }
                 if (obj.ObjectType == models.enums.ObjectType.Button)
                 {
@@ -131,6 +139,35 @@ namespace vayfrem.services
             Canvas.SetTop(svg, obj.Y);
 
             Display.Children.Add(svg);
+        }
+
+        public void DrawQBC(Panel Display, QuadraticBCObj obj)
+        {
+            Path path = new Path();
+
+            path.Stroke = new SolidColorBrush(obj.BorderColor.ToColor());
+            path.StrokeThickness = obj.BorderThickness;
+            path.Fill = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
+            path.Data = new PathGeometry
+            {
+                Figures = new PathFigures
+                {
+                    new PathFigure
+                    {
+                        StartPoint = new Point(obj.StartPoint.X, obj.StartPoint.Y),
+                        Segments = new PathSegments
+                        {
+                            new QuadraticBezierSegment
+                            {
+                                Point1 = new Point(obj.Point1.X, obj.Point1.Y),
+                                Point2 = new Point(obj.Point2.X, obj.Point2.Y)
+                            }
+                        }
+                    }
+                }
+            };
+
+            Display.Children.Add(path);
         }
 
         private void DrawText(Panel Display, TextObj obj)
@@ -381,16 +418,24 @@ namespace vayfrem.services
 
             if (drawActive)
             {
-                Rectangle overlayActive = new Rectangle();
-                Canvas.SetLeft(overlayActive, (int)System.Math.Min(first.X, last.X));
-                Canvas.SetTop(overlayActive, (int)System.Math.Min(first.Y, last.Y));
-                overlayActive.Width = (int)Math.Abs(first.X - last.X);
-                overlayActive.Height = (int)Math.Abs(first.Y - last.Y);
-                overlayActive.Fill = Brushes.Transparent;
-                overlayActive.Stroke = Brushes.Black;
-                overlayActive.StrokeThickness = 1;
+                if(toolManager.SelectedToolOption == models.enums.ToolOption.Rect || toolManager.SelectedToolOption == models.enums.ToolOption.Text)
+                {
+                    Rectangle overlayActive = new Rectangle();
+                    Canvas.SetLeft(overlayActive, (int)System.Math.Min(first.X, last.X));
+                    Canvas.SetTop(overlayActive, (int)System.Math.Min(first.Y, last.Y));
+                    overlayActive.Width = (int)Math.Abs(first.X - last.X);
+                    overlayActive.Height = (int)Math.Abs(first.Y - last.Y);
+                    overlayActive.Fill = Brushes.Transparent;
+                    overlayActive.Stroke = Brushes.Black;
+                    overlayActive.StrokeThickness = 1;
 
-                Overlay.Children.Add(overlayActive);
+                    Overlay.Children.Add(overlayActive);
+                }
+
+                if(toolManager.SelectedToolOption == models.enums.ToolOption.QBC)
+                {
+
+                }
             }
 
             if(moveActive && moveObject != null)

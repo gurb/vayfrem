@@ -75,8 +75,6 @@ namespace vayfrem.services
                 throw new Exception(ex.Message);
             }
 
-            
-
             return response;
         }
     }

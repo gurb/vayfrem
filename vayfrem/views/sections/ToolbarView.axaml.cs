@@ -28,6 +28,7 @@ public partial class ToolbarView : UserControl
         SelectTool.Click += SelectTool_Click;
         RectTool.Click += RectTool_Click;
         TextTool.Click += TextTool_Click;
+        QuadraticBCTool.Click += QuadraticBCTool_Click;
     }
 
     private void SelectTool_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -53,6 +54,12 @@ public partial class ToolbarView : UserControl
     {
         setButton(RectTool);
         toolManager.SetToolOption(ToolOption.Rect);
+    }
+
+    private void QuadraticBCTool_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        setButton(QuadraticBCTool);
+        toolManager.SetToolOption(ToolOption.QBC);
     }
 
     private void setButton(Button button)
