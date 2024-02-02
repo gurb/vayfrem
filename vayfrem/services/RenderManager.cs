@@ -434,7 +434,33 @@ namespace vayfrem.services
 
                 if(toolManager.SelectedToolOption == models.enums.ToolOption.QBC)
                 {
+                    Path path = new Path();
 
+                    Vector2 p1 = new Vector2((first.X + last.X) / 2, (first.Y + last.Y) / 2);
+
+                    path.Stroke = Brushes.Black;
+                    path.StrokeThickness = 1.0;
+                    path.Fill = Brushes.Black;
+                    path.Data = new PathGeometry
+                    {
+                        Figures = new PathFigures
+                        {
+                            new PathFigure
+                            {
+                                StartPoint = new Point(first.X, first.Y),
+                                Segments = new PathSegments
+                                {
+                                    new QuadraticBezierSegment
+                                    {
+                                        Point1 = new Point(p1.X, p1.Y),
+                                        Point2 = new Point(last.X, last.Y)
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    Overlay.Children.Add(path);
                 }
             }
 
@@ -442,27 +468,60 @@ namespace vayfrem.services
             {
                 childMoveOffset = new Vector2(0, 0);
 
-                Rectangle overlayActive = new Rectangle();
-                
-                if(moveObject.Parent != null)
+                if (moveObject.ObjectType == models.enums.ObjectType.QuadraticBC)
                 {
-                    childMoveOffset.X = (int)moveObject.Parent.WorldX;
-                    childMoveOffset.Y = (int)moveObject.Parent.WorldY;
+                    //Path path = new Path();
+
+                    //Vector2 p1 = new Vector2((first.X + last.X) / 2, (first.Y + last.Y) / 2);
+
+                    //path.Stroke = Brushes.Aqua;
+                    //path.StrokeThickness = 1.0;
+                    //path.Fill = Brushes.Aqua;
+                    //path.Data = new PathGeometry
+                    //{
+                    //    Figures = new PathFigures
+                    //    {
+                    //        new PathFigure
+                    //        {
+                    //            StartPoint = new Point(first.X, first.Y),
+                    //            Segments = new PathSegments
+                    //            {
+                    //                new QuadraticBezierSegment
+                    //                {
+                    //                    Point1 = new Point(p1.X, p1.Y),
+                    //                    Point2 = new Point(last.X, last.Y)
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //};
+
+                    //Overlay.Children.Add(path);
                 }
+                else
+                {
+                    Rectangle overlayActive = new Rectangle();
 
-                Canvas.SetLeft(overlayActive, (childMoveOffset.X + last.X) - (moveOffset.X));
-                Canvas.SetTop(overlayActive, (childMoveOffset.Y + last.Y) - (moveOffset.Y));
-                overlayActive.Width = moveObject.Width;
-                overlayActive.Height = moveObject.Height;
-                overlayActive.Fill = Brushes.Aqua;
-                overlayActive.Opacity = 0.4;
-                overlayActive.Stroke = Brushes.Aqua;
-                overlayActive.StrokeThickness = 1;
+                    if (moveObject.Parent != null)
+                    {
+                        childMoveOffset.X = (int)moveObject.Parent.WorldX;
+                        childMoveOffset.Y = (int)moveObject.Parent.WorldY;
+                    }
 
-                Overlay.Children.Add(overlayActive);
+                    Canvas.SetLeft(overlayActive, (childMoveOffset.X + last.X) - (moveOffset.X));
+                    Canvas.SetTop(overlayActive, (childMoveOffset.Y + last.Y) - (moveOffset.Y));
+                    overlayActive.Width = moveObject.Width;
+                    overlayActive.Height = moveObject.Height;
+                    overlayActive.Fill = Brushes.Aqua;
+                    overlayActive.Opacity = 0.4;
+                    overlayActive.Stroke = Brushes.Aqua;
+                    overlayActive.StrokeThickness = 1;
+
+                    Overlay.Children.Add(overlayActive);
+                }
             }
 
-            if(drawingViewModel.CurrentFile != null && drawingViewModel.CurrentFile.Selection!.SelectedObject != null)
+            if(drawingViewModel.CurrentFile != null && drawingViewModel.CurrentFile.Selection!.SelectedObject != null && drawingViewModel.CurrentFile.Selection!.SelectedObject.ObjectType != models.enums.ObjectType.QuadraticBC)
             {
                 GObject selected = drawingViewModel.CurrentFile.Selection!.SelectedObject;
                 selectionObject.IsVisible = true;

@@ -60,7 +60,6 @@ namespace vayfrem.views.components
             ViewModel = viewModel;
         }
 
-
         private void InitBorder()
         {
             Border = new Border();

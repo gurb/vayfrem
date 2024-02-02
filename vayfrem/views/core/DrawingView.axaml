@@ -7,13 +7,17 @@
              x:Class="vayfrem.DrawingView">
 	<Grid x:Name="MainGrid" Background="Aqua">
 		<Border x:Name="BorderMain" ClipToBounds="True">
-			<paz:ZoomBorder Name="ZoomBorder" Stretch="None" ZoomSpeed="1.2"
+			<paz:ZoomBorder Name="ZoomBorder1" Stretch="None" ZoomSpeed="1.2"
                             Background="Gray" ClipToBounds="True" Focusable="True"
                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-			<Canvas x:Name="Display" Background="White" ZIndex="2" ClipToBounds="True">
-				
-			</Canvas>
-				</paz:ZoomBorder>
+				<Canvas x:Name="Main">
+					<Canvas x:Name="Display" Background="White" ZIndex="2" ClipToBounds="True">
+					</Canvas>
+					<Canvas x:Name="Overlay" Background="White" ZIndex="2" ClipToBounds="True">	</Canvas>
+				</Canvas>
+
+
+			</paz:ZoomBorder>
 		</Border>
 		<!--<Canvas Width="1920" Height="1080" x:Name="Overlay" Background="Transparent" ZIndex="2">
 			<Canvas.RenderTransform>

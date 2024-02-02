@@ -21,6 +21,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using Avalonia.Animation;
+using vayfrem.models.objects;
+using Avalonia.Controls.PanAndZoom;
 
 namespace vayfrem;
 
@@ -47,7 +49,7 @@ public partial class DrawingView : UserControl
     private double scaleOverlay = 1.0;
     private double scaleDisplay = 1.0;
     private DispatcherTimer timer;
-    private Canvas Overlay;
+    //private Canvas Overlay;
 
 
     private Avalonia.Point origin;
@@ -56,6 +58,17 @@ public partial class DrawingView : UserControl
 
     TimeSpan lastClickTime = new TimeSpan();
     Node? lastClickNode;
+
+
+
+    // Polygon selection
+    private Polygon triangle = new Polygon();
+    Avalonia.Controls.Shapes.Rectangle startPointRect = new Avalonia.Controls.Shapes.Rectangle();
+    Avalonia.Controls.Shapes.Rectangle point1Rect = new Avalonia.Controls.Shapes.Rectangle();
+    Avalonia.Controls.Shapes.Rectangle point2Rect = new Avalonia.Controls.Shapes.Rectangle();
+    Avalonia.Controls.Shapes.Rectangle? selectedPoint;
+    List<Avalonia.Controls.Shapes.Rectangle> triangleRects = new List<Avalonia.Controls.Shapes.Rectangle>();
+
 
     public DrawingView()
     {
@@ -83,18 +96,19 @@ public partial class DrawingView : UserControl
 
         this.PointerReleased += DrawingView_PointerReleased;
 
-        Overlay = new Canvas();
+        //Overlay = new Canvas();
         Overlay.Width = 1920;
         Overlay.Height = 1080;
         Overlay.IsEnabled = false;
         Overlay.Background = Avalonia.Media.Brushes.Transparent;
-        //Overlay.Opacity = 0.3;
-        Overlay.ZIndex = 2;
+        Overlay.ClipToBounds = false;
+        ////Overlay.Opacity = 0.3;
+        //Overlay.ZIndex = 2;
 
         Canvas.SetTop(Overlay, 0);
         Canvas.SetLeft(Overlay, 0);
 
-        Display.Children.Add(Overlay);
+        //Display.Children.Add(Overlay);
 
         Display.IsVisible = false;
 
@@ -114,6 +128,9 @@ public partial class DrawingView : UserControl
         //timer.Interval = TimeSpan.FromMilliseconds(60);
         //timer.Tick += Timer_Tick;
         //timer.Start();
+
+        SetPolygonTriangle();
+
         AfterInit();
         renderManager.SetMainDisplay(Display);
         //SetObjectMenu();
@@ -145,9 +162,10 @@ public partial class DrawingView : UserControl
         currentPosition = e.GetPosition(sender as Control);
         currentPosition = new Avalonia.Point((int)currentPosition.X, (int)currentPosition.Y);
 
-        renderManager.Zoom = ZoomBorder.ZoomX;
+        renderManager.Zoom = ZoomBorder1.ZoomX;
 
         renderManager.RenderOverlay(Overlay, firstPosition, currentPosition, isDraw, isMove, ViewModel.SelectedObject, moveOffset);
+        DrawTriangleSelection();
     }
 
     private void AfterInit()
@@ -194,6 +212,7 @@ public partial class DrawingView : UserControl
         }
 
         renderManager.RenderOverlay(Overlay, firstPosition, currentPosition, isDraw, isMove, ViewModel.SelectedObject, moveOffset);
+        DrawTriangleSelection();
     }
     
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -226,7 +245,6 @@ public partial class DrawingView : UserControl
                 return;
             }
         }
-        
 
         if (isMove)
         {
@@ -236,8 +254,6 @@ public partial class DrawingView : UserControl
             handleTranslate();
             draw();
         }
-
-        
 
         if(ViewModel.IsScale)
         {
@@ -253,12 +269,14 @@ public partial class DrawingView : UserControl
         oldCurrentPosition = currentPosition;
         currentPosition = position;
 
-        if(point.Properties.IsRightButtonPressed)
+        CollisionDetectPoint(point.Position);
+
+        if (point.Properties.IsRightButtonPressed)
         {
             isRightClick = true;
         }
 
-        if (point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && !ViewModel.IsOverScalePoint && !ViewModel.IsScale)
+        if (point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && !ViewModel.IsOverScalePoint  && !ViewModel.IsScale)
         {
             ViewModel.IsSelect = true;
             
@@ -298,7 +316,6 @@ public partial class DrawingView : UserControl
         {
             lastClickTime = DateTime.Now.TimeOfDay;
         }
-
 
         if (point.Properties.IsRightButtonPressed)
         {
@@ -365,6 +382,23 @@ public partial class DrawingView : UserControl
 
             ViewModel.SelectedObject.X = (int)(lastPosition.X - moveOffset.X);
             ViewModel.SelectedObject.Y = (int)(lastPosition.Y - moveOffset.Y);
+            
+            if(ViewModel.SelectedObject.ObjectType == ObjectType.QuadraticBC)
+            {
+                QuadraticBCObj qbc = (QuadraticBCObj)ViewModel.SelectedObject;
+
+                moveOffset = new Vector2(firstPosition.X - qbc.StartPoint.X, firstPosition.Y - qbc.StartPoint.Y);
+
+                Vector2 old = new Vector2(qbc.StartPoint);
+
+                qbc.StartPoint.X = (int)(lastPosition.X - moveOffset.X);
+                qbc.StartPoint.Y = (int)(lastPosition.Y - moveOffset.Y);
+                Vector2 delta = old - qbc.StartPoint;
+
+                qbc.Point1 = qbc.Point1 - delta;
+                qbc.Point2 = qbc.Point2 - delta;
+            }
+
             ViewModel.RefreshState();
         }
     }
@@ -383,7 +417,29 @@ public partial class DrawingView : UserControl
     private void handleScale()
     {
         GObject? obj = ViewModel.GetSelectionObject();
-        if (obj != null)
+        if(obj != null && obj.ObjectType == ObjectType.QuadraticBC && selectedPoint != null)
+        {
+            Avalonia.Point currentPos = currentPosition;
+
+            QuadraticBCObj qbcObj = (QuadraticBCObj)obj;
+
+            Canvas.SetLeft(selectedPoint, (int)currentPos.X);
+            Canvas.SetTop(selectedPoint, (int)currentPos.Y);
+
+            if (selectedPoint.Name == "StartPoint")
+            {
+                qbcObj.StartPoint = new Vector2(currentPos.X, currentPos.Y);
+            }
+            if (selectedPoint.Name == "Point1")
+            {
+                qbcObj.Point1 = new Vector2(currentPos.X, currentPos.Y);
+            }
+            if (selectedPoint.Name == "Point2")
+            {
+                qbcObj.Point2 = new Vector2(currentPos.X, currentPos.Y);
+            }
+        } 
+        else if (obj != null)
         {
             
             string? scalePointType = ViewModel.GetOverScalePoint;
@@ -548,23 +604,132 @@ public partial class DrawingView : UserControl
 
     private void draw()
     {
+        ZoomBorder1.Child = null;
         Display.Children.Clear();
 
         if(!ViewModel.IsEmpty)
         {
             Display.IsVisible = true;
-            Display.Children.Add(Overlay);
+            //Display.Children.Add(Overlay);
 
             renderManager.Render(Display, ViewModel.Objects);
             renderManager.RenderOverlay(Overlay, firstPosition, currentPosition, isDraw, isMove, ViewModel.SelectedObject, moveOffset);
+            DrawTriangleSelection();
         } else
         {
             Display.IsVisible = false;
         }
+
+        ZoomBorder1.Child = Main;
     }
 
     public static Avalonia.Matrix ScaleAt(double scaleX, double scaleY, double centerX, double centerY)
     {
         return new Avalonia.Matrix(scaleX, 0, 0, scaleY, centerX - (scaleX * centerX), centerY - (scaleY * centerY));
+    }
+
+    //
+    private void SetPolygonTriangle()
+    {
+        triangle.Stroke = Avalonia.Media.Brushes.Black;
+        triangle.StrokeThickness = 1;
+
+        startPointRect.Name = "StartPoint";
+        point1Rect.Name = "Point1";
+        point2Rect.Name = "Point2";
+
+        startPointRect.PointerPressed += TrianglePointRect_PointerPressed;
+        point1Rect.PointerPressed += TrianglePointRect_PointerPressed;
+        point2Rect.PointerPressed += TrianglePointRect_PointerPressed;
+
+        triangleRects.Add(startPointRect);
+        triangleRects.Add(point1Rect);
+        triangleRects.Add(point2Rect);
+
+        Avalonia.Controls.Shapes.Rectangle Sample = new Avalonia.Controls.Shapes.Rectangle();
+
+        Sample.Width = 10;
+        Sample.Height = 10;
+        Sample.StrokeThickness = 1;
+        Sample.Stroke = Avalonia.Media.Brushes.Black;
+
+        foreach (var rect in triangleRects)
+        {
+            rect.Width = Sample.Width;
+            rect.Height = Sample.Height;
+            rect.Fill = Avalonia.Media.Brushes.White;
+            rect.StrokeThickness = Sample.StrokeThickness;
+            rect.Stroke = Sample.Stroke;
+        }
+    }
+
+    private void TrianglePointRect_PointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        Avalonia.Controls.Shapes.Rectangle rect = sender as Avalonia.Controls.Shapes.Rectangle;
+
+        ViewModel.IsScale = true;
+
+        if (rect.Name == "StartPoint")
+        {
+            selectedPoint = rect;
+        }
+        if (rect.Name == "Point1")
+        {
+            selectedPoint = rect;
+        }
+        if (rect.Name == "Point2")
+        {
+            selectedPoint = rect;
+        }
+    }
+
+    public void CollisionDetectPoint(Avalonia.Point mousePosition)
+    {
+        bool isCollide = false;
+
+        if (ViewModel.IsScale)
+        {
+            return;
+        }
+
+        foreach (var obj in triangleRects)
+        {
+            if (mousePosition.X >= obj.Bounds.TopLeft.X &&
+                mousePosition.X <= obj.Bounds.TopLeft.X + obj.Bounds.Width &&
+                mousePosition.Y >= obj.Bounds.TopLeft.Y &&
+                mousePosition.Y <= obj.Bounds.TopLeft.Y + obj.Bounds.Height)
+            {
+                //SetCursorAccordingToRectangle(obj);
+                selectedPoint = obj;
+                ViewModel.IsOverScalePoint = true;
+                //ViewModel.IsScale = true;
+                isCollide = true;
+                return;
+            }
+        }
+        ViewModel.IsOverScalePoint = false;
+    }
+
+
+
+    private void DrawTriangleSelection()
+    {
+        if(ViewModel.CurrentFile != null && ViewModel.CurrentFile.Selection!.SelectedObject != null && ViewModel.CurrentFile.Selection!.SelectedObject.ObjectType == ObjectType.QuadraticBC)
+        {
+            QuadraticBCObj quadraticBCObj = (QuadraticBCObj)ViewModel.CurrentFile.Selection.SelectedObject;
+
+            Canvas.SetLeft(startPointRect, quadraticBCObj.StartPoint.X);
+            Canvas.SetTop(startPointRect, quadraticBCObj.StartPoint.Y);
+
+            Canvas.SetLeft(point1Rect, quadraticBCObj.Point1.X);
+            Canvas.SetTop(point1Rect, quadraticBCObj.Point1.Y);
+
+            Canvas.SetLeft(point2Rect, quadraticBCObj.Point2.X);
+            Canvas.SetTop(point2Rect, quadraticBCObj.Point2.Y);
+
+            Overlay.Children.Add(startPointRect);
+            Overlay.Children.Add(point1Rect);
+            Overlay.Children.Add(point2Rect);
+        }
     }
 }

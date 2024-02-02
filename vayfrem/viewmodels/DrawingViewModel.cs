@@ -47,6 +47,9 @@ namespace vayfrem.viewmodels
         bool isOverScalePoint;
 
         [ObservableProperty]
+        bool isOverQBCScalePoint;
+
+        [ObservableProperty]
         string? getOverScalePoint;
 
         [ObservableProperty]
@@ -335,7 +338,11 @@ namespace vayfrem.viewmodels
                 {
                     QuadraticBCObj qbcObj = (QuadraticBCObj)obj;
                     if(!isCollide)
+                    {
                         isCollide = IsPointOnEdgeWithThickness(mousePosition, qbcObj.StartPoint, qbcObj.Point1, qbcObj.Point2, qbcObj.BorderThickness);
+
+                        SelectedObject = isCollide ? qbcObj : null;
+                    }
                 }
                 else if (mousePosition.X >= obj.X &&
                     mousePosition.X <= obj.X + obj.Width &&
@@ -378,34 +385,69 @@ namespace vayfrem.viewmodels
             }
         }
 
-        public bool IsPointOnEdgeWithThickness(Vector2 p, Vector2 p0, Vector2 p1, Vector2 p2, double thickness)
+        //public bool IsPointOnEdgeWithThickness(Vector2 p, Vector2 p0, Vector2 p1, Vector2 p2, double thickness)
+        //{
+        //    // Üçgenin kenarlarının birim vektörlerini hesaplayın
+        //    Vector2 edge0 = p1 - p0;
+        //    Vector2 edge1 = p2 - p1;
+        //    Vector2 edge2 = p0 - p2;
+
+        //    // Kenar birim vektörlerinin normalize edilmiş versiyonlarını alın
+        //    Vector2 edge0Normal = Vector2.Normalize(new Vector2(-edge0.Y, edge0.X));
+        //    Vector2 edge1Normal = Vector2.Normalize(new Vector2(-edge1.Y, edge1.X));
+        //    Vector2 edge2Normal = Vector2.Normalize(new Vector2(-edge2.Y, edge2.X));
+
+        //    // Noktanın her bir kenara dik mesafesini hesaplayın
+        //    double dist0 = Vector2.Dot(p - p0, edge0Normal);
+        //    double dist1 = Vector2.Dot(p - p1, edge1Normal);
+        //    double dist2 = Vector2.Dot(p - p2, edge2Normal);
+
+        //    // Kenarların kalınlığına göre bir alan oluşturun
+        //    double halfThickness = thickness / 2f;
+
+        //    // Noktanın bu alanın içinde olup olmadığını kontrol edin
+        //    if (Math.Abs(dist0) <= halfThickness || Math.Abs(dist1) <= halfThickness || Math.Abs(dist2) <= halfThickness)
+        //        return true;
+
+        //    return false;
+        //}
+
+        bool IsPointOnEdgeWithThickness(Vector2 p, Vector2 v1, Vector2 v2, Vector2 v3, double thickness)
         {
-            // Üçgenin kenarlarının birim vektörlerini hesaplayın
-            Vector2 edge0 = p1 - p0;
-            Vector2 edge1 = p2 - p1;
-            Vector2 edge2 = p0 - p2;
+            // Noktanın her bir kenar ile olan mesafelerini kontrol etme
+            double distanceToEdge1 = DistancePointToLine(p, v1, v2);
+            double distanceToEdge2 = DistancePointToLine(p, v2, v3);
+            double distanceToEdge3 = DistancePointToLine(p, v3, v1);
 
-            // Kenar birim vektörlerinin normalize edilmiş versiyonlarını alın
-            Vector2 edge0Normal = Vector2.Normalize(new Vector2(-edge0.Y, edge0.X));
-            Vector2 edge1Normal = Vector2.Normalize(new Vector2(-edge1.Y, edge1.X));
-            Vector2 edge2Normal = Vector2.Normalize(new Vector2(-edge2.Y, edge2.X));
-
-            // Noktanın her bir kenara dik mesafesini hesaplayın
-            double dist0 = Vector2.Dot(p - p0, edge0Normal);
-            double dist1 = Vector2.Dot(p - p1, edge1Normal);
-            double dist2 = Vector2.Dot(p - p2, edge2Normal);
-
-            // Kenarların kalınlığına göre bir alan oluşturun
-            double halfThickness = thickness / 2f;
-
-            // Noktanın bu alanın içinde olup olmadığını kontrol edin
-            if (Math.Abs(dist0) <= halfThickness || Math.Abs(dist1) <= halfThickness || Math.Abs(dist2) <= halfThickness)
+            // Eğer nokta, herhangi bir kenara olan mesafesi kalınlıktan küçük veya eşitse, o nokta kenar üzerindedir
+            if (distanceToEdge1 <= thickness || distanceToEdge2 <= thickness || distanceToEdge3 <= thickness)
                 return true;
 
-            return false;
+            // Üçgenin alanı
+            double triangleArea = CalculateTriangleArea(v1, v2, v3);
+
+            // Noktanın oluşturduğu alt üçgenlerin alanları
+            double subTriangleArea1 = CalculateTriangleArea(p, v1, v2);
+            double subTriangleArea2 = CalculateTriangleArea(p, v2, v3);
+            double subTriangleArea3 = CalculateTriangleArea(p, v3, v1);
+
+            // Üçgenin içinde ise, alt üçgenlerin alanlarının toplamı üçgenin alanına eşit olmalıdır
+            return Math.Abs(subTriangleArea1 + subTriangleArea2 + subTriangleArea3 - triangleArea) < 0.000001; // Kesinlik kontrolü için bir eşik değeri kullanıyoruz
         }
 
+        double CalculateTriangleArea(Vector2 p1, Vector2 p2, Vector2 p3)
+        {
+            // Üçgenin alanını hesaplama
+            return Math.Abs((p1.X * (p2.Y - p3.Y) + p2.X * (p3.Y - p1.Y) + p3.X * (p1.Y - p2.Y)) / 2);
+        }
 
+        double DistancePointToLine(Vector2 p, Vector2 start, Vector2 end)
+        {
+            // Çizgi denkleminin kullanımıyla noktanın çizgiye olan uzaklığını hesapla
+            double numerator = Math.Abs((end.Y - start.Y) * p.X - (end.X - start.X) * p.Y + end.X * start.Y - end.Y * start.X);
+            double denominator = Math.Sqrt(Math.Pow(end.Y - start.Y, 2) + Math.Pow(end.X - start.X, 2));
+            return numerator / denominator;
+        }
 
         // this method is used for dragging object the objects if interacted then add the drag object to collided object if there is.
         public GObject? CollisionPointWithObject(Vector2 mousePosition, CanvasObj? canvas = null)

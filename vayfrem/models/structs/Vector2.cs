@@ -13,6 +13,12 @@ namespace vayfrem.models.structs
 
         public Vector2 (double x, double y) {  X = x; Y = y; }
 
+        public Vector2 (Vector2 vec2)
+        {
+            X = vec2.X;
+            Y = vec2.Y;
+        }
+
         public static bool operator == (Vector2 v1, Vector2 v2)
         {
             if (v1.X == v2.X && v1.Y == v2.Y)
@@ -36,6 +42,16 @@ namespace vayfrem.models.structs
             return new Vector2(v1.X - v2.X, v1.Y - v2.Y);
         }
 
+        public static Vector2 operator +(Vector2 v1, Vector2 v2)
+        {
+            return new Vector2(v1.X + v2.X, v1.Y + v2.Y);
+        }
+
+        public static Vector2 operator /(Vector2 v1, Vector2 v2)
+        {
+            return new Vector2(v1.X + v2.X, v1.Y + v2.Y);
+        }
+
         public static Vector2 Normalize(Vector2 v)
         {
             float length = (float)Math.Sqrt(v.X * v.X + v.Y * v.Y);
@@ -49,6 +65,11 @@ namespace vayfrem.models.structs
         public static double Dot(Vector2 v1, Vector2 v2)
         {
             return v1.X * v2.X + v1.Y * v2.Y;
+        }
+
+        public double Length()
+        {
+            return Math.Sqrt((X * X) + (Y * Y));
         }
     }
 }
