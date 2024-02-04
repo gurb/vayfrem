@@ -179,7 +179,6 @@ public partial class DrawingView : UserControl
         currentPosition = e.GetPosition(sender as Control);
         currentPosition = new Avalonia.Point((int)currentPosition.X, (int)currentPosition.Y);
 
-
         if (!layoutViewModel.IsDragCompleted)
         {
             if (layoutViewModel.DragObject != null)

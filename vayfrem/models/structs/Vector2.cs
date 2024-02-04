@@ -19,6 +19,12 @@ namespace vayfrem.models.structs
             Y = vec2.Y;
         }
 
+        public Vector2 (Avalonia.Point point)
+        {
+            X = point.X;
+            Y = point.Y;
+        }
+
         public static bool operator == (Vector2 v1, Vector2 v2)
         {
             if (v1.X == v2.X && v1.Y == v2.Y)
@@ -70,6 +76,11 @@ namespace vayfrem.models.structs
         public double Length()
         {
             return Math.Sqrt((X * X) + (Y * Y));
+        }
+
+        public Vector2 Clone()
+        {
+            return new Vector2(X, Y);
         }
     }
 }

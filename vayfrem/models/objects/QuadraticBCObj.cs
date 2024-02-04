@@ -23,5 +23,17 @@ namespace vayfrem.models.objects
         {
             this.ObjectType = enums.ObjectType.QuadraticBC;
         }
+
+        public override QuadraticBCObj Copy()
+        {
+            QuadraticBCObj copy = new QuadraticBCObj();
+
+            copy.StartPoint = this.StartPoint.Clone();
+            copy.Point1 = this.Point1.Clone();
+            copy.Point2 = this.Point2.Clone();
+
+            return copy;
+
+        }
     }
 }

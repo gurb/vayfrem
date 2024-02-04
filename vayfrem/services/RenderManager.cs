@@ -414,7 +414,7 @@ namespace vayfrem.services
         }
 
         // last equals currentPosition ****
-        public void RenderOverlay(Canvas Overlay, Point first, Point last, bool drawActive, bool moveActive, IObject? moveObject, Vector2 moveOffset)
+        public void RenderOverlay(Canvas Overlay, Avalonia.Point first, Avalonia.Point last, bool drawActive, bool moveActive, GObject? moveObject, Vector2 moveOffset)
         {
             Overlay.Children.Clear();
 
@@ -472,33 +472,56 @@ namespace vayfrem.services
 
                 if (moveObject.ObjectType == models.enums.ObjectType.QuadraticBC)
                 {
-                    //Path path = new Path();
 
-                    //Vector2 p1 = new Vector2((first.X + last.X) / 2, (first.Y + last.Y) / 2);
+                    QuadraticBCObj origin = (QuadraticBCObj)moveObject;
+                    QuadraticBCObj quadraticBCObj = origin.Copy();
 
-                    //path.Stroke = Brushes.Aqua;
-                    //path.StrokeThickness = 1.0;
-                    //path.Fill = Brushes.Aqua;
-                    //path.Data = new PathGeometry
-                    //{
-                    //    Figures = new PathFigures
-                    //    {
-                    //        new PathFigure
-                    //        {
-                    //            StartPoint = new Point(first.X, first.Y),
-                    //            Segments = new PathSegments
-                    //            {
-                    //                new QuadraticBezierSegment
-                    //                {
-                    //                    Point1 = new Point(p1.X, p1.Y),
-                    //                    Point2 = new Point(last.X, last.Y)
-                    //                }
-                    //            }
-                    //        }
-                    //    }
-                    //};
 
-                    //Overlay.Children.Add(path);
+                    Path path = new Path();
+
+                    Vector2 p1 = new Vector2((first.X + last.X) / 2, (first.Y + last.Y) / 2);
+
+                    if (moveObject.Parent != null)
+                    {
+                        childMoveOffset.X = (int)moveObject.Parent.WorldX;
+                        childMoveOffset.Y = (int)moveObject.Parent.WorldY;
+                    }
+
+                    moveOffset = new Vector2(first.X - quadraticBCObj.StartPoint.X, first.Y - quadraticBCObj.StartPoint.Y);
+                    Vector2 old = new Vector2(quadraticBCObj.StartPoint);
+
+                    quadraticBCObj.StartPoint.X = (int)(last.X - moveOffset.X);
+                    quadraticBCObj.StartPoint.Y = (int)(last.Y - moveOffset.Y);
+                    Vector2 delta = old - quadraticBCObj.StartPoint;
+
+                    quadraticBCObj.Point1 = quadraticBCObj.Point1 - delta;
+                    quadraticBCObj.Point2 = quadraticBCObj.Point2 - delta;
+
+
+                    path.Stroke = Brushes.Aqua;
+                    path.StrokeThickness = 1.0;
+                    path.Fill = Brushes.Aqua;
+                    path.Opacity = 0.4;
+                    path.Data = new PathGeometry
+                    {
+                        Figures = new PathFigures
+                        {
+                            new PathFigure
+                            {
+                                StartPoint = new Point(quadraticBCObj.StartPoint.X, quadraticBCObj.StartPoint.Y),
+                                Segments = new PathSegments
+                                {
+                                    new QuadraticBezierSegment
+                                    {
+                                        Point1 = new Avalonia.Point(quadraticBCObj.Point1.X, quadraticBCObj.Point1.Y),
+                                        Point2 = new Point(quadraticBCObj.Point2.X, quadraticBCObj.Point2.Y)
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    Overlay.Children.Add(path);
                 }
                 else
                 {
@@ -523,7 +546,10 @@ namespace vayfrem.services
                 }
             }
 
-            if(drawingViewModel.CurrentFile != null && drawingViewModel.CurrentFile.Selection!.SelectedObject != null && drawingViewModel.CurrentFile.Selection!.SelectedObject.ObjectType != models.enums.ObjectType.QuadraticBC)
+            if(
+                drawingViewModel.CurrentFile != null && 
+                drawingViewModel.CurrentFile.Selection!.SelectedObject != null && 
+                drawingViewModel.CurrentFile.Selection!.SelectedObject.ObjectType != models.enums.ObjectType.QuadraticBC)
             {
                 GObject selected = drawingViewModel.CurrentFile.Selection!.SelectedObject;
                 selectionObject.IsVisible = true;
@@ -539,6 +565,14 @@ namespace vayfrem.services
                 selectionObject.Draw();
 
                 Overlay.Children.Add(selectionObject);
+            }
+            else if(
+                drawingViewModel.CurrentFile != null &&
+                drawingViewModel.CurrentFile.Selection!.SelectedObject != null &&
+                drawingViewModel.CurrentFile.Selection!.SelectedObject.ObjectType == models.enums.ObjectType.QuadraticBC
+            )
+            {
+
             }
             else
             {
