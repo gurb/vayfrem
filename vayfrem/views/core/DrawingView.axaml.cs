@@ -269,25 +269,30 @@ public partial class DrawingView : UserControl
         oldCurrentPosition = currentPosition;
         currentPosition = position;
 
-        CollisionDetectPoint(point.Position);
+        
+        CollisionDetectPoint(position);
 
         if (point.Properties.IsRightButtonPressed)
         {
             isRightClick = true;
         }
 
-        if (point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && !ViewModel.IsOverScalePoint  && !ViewModel.IsScale)
+        if (point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && !ViewModel.IsOverScalePoint  && !ViewModel.IsScale && !ViewModel.IsOverQBCScalePoint)
         {
             ViewModel.IsSelect = true;
             
             firstPosition = position;
+
             ViewModel.CollisionDetectPoint(new Vector2(firstPosition.X, firstPosition.Y));
+
             handleSelection();
         }
 
-        if(point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && ViewModel.IsSelect && ViewModel.IsOverScalePoint && !ViewModel.IsScale)
+
+        if (point.Properties.IsLeftButtonPressed && toolManager.SelectedToolOption == ToolOption.Select && ViewModel.IsSelect && (ViewModel.IsOverScalePoint || ViewModel.IsOverQBCScalePoint) && !ViewModel.IsScale)
         {
             ViewModel.IsScale = true;
+
         }
 
         if (point.Properties.IsLeftButtonPressed 
@@ -685,8 +690,6 @@ public partial class DrawingView : UserControl
 
     public void CollisionDetectPoint(Avalonia.Point mousePosition)
     {
-        bool isCollide = false;
-
         if (ViewModel.IsScale)
         {
             return;
@@ -701,16 +704,12 @@ public partial class DrawingView : UserControl
             {
                 //SetCursorAccordingToRectangle(obj);
                 selectedPoint = obj;
-                ViewModel.IsOverScalePoint = true;
-                //ViewModel.IsScale = true;
-                isCollide = true;
+                ViewModel.IsOverQBCScalePoint = true;
                 return;
             }
         }
-        ViewModel.IsOverScalePoint = false;
+        ViewModel.IsOverQBCScalePoint = false;
     }
-
-
 
     private void DrawTriangleSelection()
     {

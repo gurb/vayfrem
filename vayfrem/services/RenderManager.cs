@@ -26,6 +26,8 @@ namespace vayfrem.services
 
         SelectionObject selectionObject = new SelectionObject();
 
+        
+
         public RenderManager() 
         {
             drawingViewModel = App.GetService<DrawingViewModel>();
@@ -533,10 +535,12 @@ namespace vayfrem.services
                 selectionObject.OverlayPosition = new Point(selected.WorldX, selected.WorldY);
 
                 selectionObject.Update(last, Zoom);
+
                 selectionObject.Draw();
 
                 Overlay.Children.Add(selectionObject);
-            } else
+            }
+            else
             {
                 selectionObject.IsVisible = false;
             }
