@@ -497,7 +497,6 @@ namespace vayfrem.services
                     quadraticBCObj.Point1 = quadraticBCObj.Point1 - delta;
                     quadraticBCObj.Point2 = quadraticBCObj.Point2 - delta;
 
-
                     path.Stroke = Brushes.Aqua;
                     path.StrokeThickness = 1.0;
                     path.Fill = Brushes.Aqua;

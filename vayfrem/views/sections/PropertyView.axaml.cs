@@ -26,6 +26,12 @@ namespace vayfrem.views.sections
         TextBox width_property;
         TextBox height_property;
         TextBox text_property;
+        TextBox startpointx_property;
+        TextBox middlepointx_property;
+        TextBox endpointx_property;
+        TextBox startpointy_property;
+        TextBox middlepointy_property;
+        TextBox endpointy_property;
         components.ColorPicker bg_color_property;
         components.ColorPicker border_color_property;
 
@@ -95,6 +101,48 @@ namespace vayfrem.views.sections
             text_property.TextChanged += Text_property_TextChanged;
             text_property.Margin = new Avalonia.Thickness(0);
             text_property.BorderThickness = new Avalonia.Thickness(0);
+
+            startpointx_property = new TextBox();
+            startpointx_property.Name = "sp_x";
+            startpointx_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            startpointx_property.TextChanged += QBC_property_TextChanged;
+            startpointx_property.Margin = new Avalonia.Thickness(0);
+            startpointx_property.BorderThickness = new Avalonia.Thickness(0);
+
+            startpointy_property = new TextBox();
+            startpointy_property.Name = "sp_y";
+            startpointy_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            startpointy_property.TextChanged += QBC_property_TextChanged;
+            startpointy_property.Margin = new Avalonia.Thickness(0);
+            startpointy_property.BorderThickness = new Avalonia.Thickness(0);
+
+            middlepointx_property = new TextBox();
+            middlepointx_property.Name = "mp_x";
+            middlepointx_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            middlepointx_property.TextChanged += QBC_property_TextChanged;
+            middlepointx_property.Margin = new Avalonia.Thickness(0);
+            middlepointx_property.BorderThickness = new Avalonia.Thickness(0);
+
+            middlepointy_property = new TextBox();
+            middlepointy_property.Name = "mp_y";
+            middlepointy_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            middlepointy_property.TextChanged += QBC_property_TextChanged;
+            middlepointy_property.Margin = new Avalonia.Thickness(0);
+            middlepointy_property.BorderThickness = new Avalonia.Thickness(0);
+
+            endpointx_property = new TextBox();
+            endpointx_property.Name = "ep_x";
+            endpointx_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            endpointx_property.TextChanged += QBC_property_TextChanged;
+            endpointx_property.Margin = new Avalonia.Thickness(0);
+            endpointx_property.BorderThickness = new Avalonia.Thickness(0);
+
+            endpointy_property = new TextBox();
+            endpointy_property.Name = "ep_y";
+            endpointy_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            endpointy_property.TextChanged += QBC_property_TextChanged;
+            endpointy_property.Margin = new Avalonia.Thickness(0);
+            endpointy_property.BorderThickness = new Avalonia.Thickness(0);
 
             bg_color_property = new components.ColorPicker("property-bg");
             bg_color_property.ValueChanged += RectBackgroundColor_ValueChanged;
@@ -251,7 +299,62 @@ namespace vayfrem.views.sections
             }
         }
 
-        
+
+        private async void QBC_property_TextChanged(object? sender, TextChangedEventArgs e)
+        {
+            if (sender == null) return;
+            TextBox textBox = (TextBox)sender;
+
+            if (String.IsNullOrEmpty(textBox.Text)) return;
+
+            if (!textBox.Text.All(char.IsDigit))
+            {
+                await MessageBox.Show(this, "Error", $"Input cannot be {textBox.Text}", MessageBox.MessageBoxButtons.Ok);
+                return;
+            }
+
+            if (ViewModel.ActiveObj != null)
+            {
+                QuadraticBCObj qbc = (QuadraticBCObj)ViewModel.ActiveObj;
+                if(textBox.Name == "sp_x")
+                {
+                    qbc.StartPoint.X = Int32.Parse(textBox.Text);
+
+                }
+                if (textBox.Name == "sp_y")
+                {
+                    qbc.StartPoint.Y = Int32.Parse(textBox.Text);
+
+                }
+                if (textBox.Name == "mp_x")
+                {
+                    qbc.Point1.X = Int32.Parse(textBox.Text);
+
+                }
+                if (textBox.Name == "mp_y")
+                {
+                    qbc.Point1.Y = Int32.Parse(textBox.Text);
+
+                }
+                if (textBox.Name == "ep_x")
+                {
+                    qbc.Point2.X = Int32.Parse(textBox.Text);
+
+                }
+                if (textBox.Name == "ep_y")
+                {
+                    qbc.Point2.Y = Int32.Parse(textBox.Text);
+                }
+
+                ViewModel.RefreshDraw();
+            }
+        }
+
+       
+
+
+
+
         private void RectBackgroundColor_ValueChanged()
         {
             if (ViewModel.ActiveObj != null)
@@ -499,6 +602,18 @@ namespace vayfrem.views.sections
                 border_radius_property.Value = (int)ViewModel.ActiveObj.BorderRadius;
                 border_thickness_property.Value = (int)ViewModel.ActiveObj.BorderThickness;
             }
+
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.QuadraticBC)
+            {
+                QuadraticBCObj qbcObj = (QuadraticBCObj)ViewModel.ActiveObj;
+
+                startpointx_property.Text = qbcObj.StartPoint.X.ToString();
+                startpointy_property.Text = qbcObj.StartPoint.Y.ToString();
+                middlepointx_property.Text = qbcObj.Point1.X.ToString();
+                middlepointy_property.Text = qbcObj.Point1.Y.ToString();
+                endpointx_property.Text = qbcObj.Point2.X.ToString();
+                endpointy_property.Text = qbcObj.Point2.Y.ToString();
+            }
         }
 
         private void SetProperties()
@@ -598,6 +713,32 @@ namespace vayfrem.views.sections
                 };
                 grid.SetProperties(ViewModel.Properties.ToList());
             }
+
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.QuadraticBC)
+            {
+                SetValues();
+                ViewModel.Properties = new ObservableCollection<Property>()
+                {
+                    new Property(ValueType.Name, name_property),
+                    new Property(ValueType.StartPointX, startpointx_property),
+                    new Property(ValueType.StartPointY, startpointy_property),
+                    new Property(ValueType.MiddlePointX, middlepointx_property),
+                    new Property(ValueType.MiddlePointY, middlepointy_property),
+                    new Property(ValueType.EndPointX, endpointx_property),
+                    new Property(ValueType.EndPointY, endpointy_property),
+                    //new Property(ValueType.Text, text_property),
+                    //new Property(ValueType.TextAlignment, text_alignment_property),
+                    //new Property(ValueType.FontColor, font_color_property),
+                    //new Property(ValueType.FontFamily, font_family_property),
+                    //new Property(ValueType.FontSize, font_size_property),
+                    //new Property(ValueType.Background, bg_color_property),
+                    //new Property(ValueType.Opacity, bg_opacity_property),
+                    //new Property(ValueType.BorderColor, border_color_property),
+                    //new Property(ValueType.BorderRadius, border_radius_property),
+                    //new Property(ValueType.BorderThickness, border_thickness_property),
+                };
+                grid.SetProperties(ViewModel.Properties.ToList());
+            }
         }
     }
 
@@ -619,5 +760,11 @@ namespace vayfrem.views.sections
         FontColor,
         FontFamily,
         FontSize,
+        StartPointX,
+        StartPointY,
+        MiddlePointX,
+        MiddlePointY,
+        EndPointX,
+        EndPointY,
     }
 }
