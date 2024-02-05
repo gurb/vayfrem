@@ -66,6 +66,7 @@ public partial class DrawingView : UserControl
     Avalonia.Controls.Shapes.Rectangle startPointRect = new Avalonia.Controls.Shapes.Rectangle();
     Avalonia.Controls.Shapes.Rectangle point1Rect = new Avalonia.Controls.Shapes.Rectangle();
     Avalonia.Controls.Shapes.Rectangle point2Rect = new Avalonia.Controls.Shapes.Rectangle();
+    
     Avalonia.Controls.Shapes.Rectangle? selectedPoint;
     List<Avalonia.Controls.Shapes.Rectangle> triangleRects = new List<Avalonia.Controls.Shapes.Rectangle>();
 
@@ -635,8 +636,16 @@ public partial class DrawingView : UserControl
     //
     private void SetPolygonTriangle()
     {
+        triangle.StrokeDashOffset = 1;
+
+        triangle.StrokeThickness = 1;
+        triangle.Fill = Avalonia.Media.Brushes.Transparent;
+        triangle.Stroke = Avalonia.Media.Brushes.Black;
+
         triangle.Stroke = Avalonia.Media.Brushes.Black;
         triangle.StrokeThickness = 1;
+        var dashStyle = new Avalonia.Media.DashStyle(new double[] { 2, 2 }, 0);
+        triangle.StrokeDashArray = dashStyle.Dashes;
 
         startPointRect.Name = "StartPoint";
         point1Rect.Name = "Point1";
@@ -725,6 +734,14 @@ public partial class DrawingView : UserControl
             Canvas.SetLeft(point2Rect, quadraticBCObj.Point2.X);
             Canvas.SetTop(point2Rect, quadraticBCObj.Point2.Y);
 
+            triangle.Points = new Points()
+            {
+                new Avalonia.Point(quadraticBCObj.StartPoint.X, quadraticBCObj.StartPoint.Y),
+                new Avalonia.Point(quadraticBCObj.Point1.X, quadraticBCObj.Point1.Y),
+                new Avalonia.Point(quadraticBCObj.Point2.X, quadraticBCObj.Point2.Y),
+            };
+
+            Overlay.Children.Add(triangle);
             Overlay.Children.Add(startPointRect);
             Overlay.Children.Add(point1Rect);
             Overlay.Children.Add(point2Rect);
