@@ -165,6 +165,7 @@ public partial class DrawingView : UserControl
 
         renderManager.Zoom = ZoomBorder1.ZoomX;
 
+        UpdateRects(ZoomBorder1.ZoomX);
         renderManager.RenderOverlay(Overlay, firstPosition, currentPosition, isDraw, isMove, ViewModel.SelectedObject, moveOffset);
         DrawTriangleSelection();
     }
@@ -391,6 +392,8 @@ public partial class DrawingView : UserControl
             if(ViewModel.SelectedObject.ObjectType == ObjectType.QuadraticBC)
             {
                 QuadraticBCObj qbc = (QuadraticBCObj)ViewModel.SelectedObject;
+                qbc.X = 0;
+                qbc.Y = 0;
 
                 moveOffset = new Vector2(firstPosition.X - qbc.StartPoint.X, firstPosition.Y - qbc.StartPoint.Y);
 
@@ -717,6 +720,32 @@ public partial class DrawingView : UserControl
             }
         }
         ViewModel.IsOverQBCScalePoint = false;
+    }
+
+    private void UpdateRects(double zoom)
+    {
+        double width = 10;
+        double height = 10;
+        double thickness = 1;
+        double borderThickness = 2;
+
+        if (zoom != 1)
+        {
+
+            double size = (10 / (double)zoom);
+            width = size;
+            height = size;
+            thickness = 1 / (double)zoom;
+            borderThickness = 2 / (double)zoom;
+        }
+
+        foreach (var rect in triangleRects)
+        {
+            rect.Width = width;
+            rect.Height = height;
+            rect.StrokeThickness = thickness;
+        }
+
     }
 
     private void DrawTriangleSelection()
