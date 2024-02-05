@@ -10,7 +10,6 @@ using Avalonia;
 using vayfrem.models.lists;
 using vayfrem.models.objects;
 using vayfrem.models.objects.components;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace vayfrem.views.sections
 {

@@ -28,7 +28,7 @@
 			</Image>
 		</Button>
 		<Button x:Name="QuadraticBCTool" Margin="5" Padding="10">
-			<Image Source="avares://vayfrem/assets/qbc.png" Width="25" Height="25">
+			<Image Source="avares://vayfrem/assets/qbc-t.png" Width="25" Height="25">
 			</Image>
 		</Button>
 	</StackPanel>
