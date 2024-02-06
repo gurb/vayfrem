@@ -507,13 +507,13 @@ namespace vayfrem.services
                         {
                             new PathFigure
                             {
-                                StartPoint = new Point(quadraticBCObj.StartPoint.X, quadraticBCObj.StartPoint.Y),
+                                StartPoint = new Point(quadraticBCObj.StartPoint.X, quadraticBCObj.StartPoint.Y) + new Point(childMoveOffset.X, childMoveOffset.Y),
                                 Segments = new PathSegments
                                 {
                                     new QuadraticBezierSegment
                                     {
-                                        Point1 = new Avalonia.Point(quadraticBCObj.Point1.X, quadraticBCObj.Point1.Y),
-                                        Point2 = new Point(quadraticBCObj.Point2.X, quadraticBCObj.Point2.Y)
+                                        Point1 = new Avalonia.Point(quadraticBCObj.Point1.X, quadraticBCObj.Point1.Y) + new Point(childMoveOffset.X, childMoveOffset.Y),
+                                        Point2 = new Avalonia.Point(quadraticBCObj.Point2.X, quadraticBCObj.Point2.Y) + new Point(childMoveOffset.X, childMoveOffset.Y)
                                     }
                                 }
                             }

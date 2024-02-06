@@ -33,16 +33,23 @@ namespace vayfrem.views.sections
         TextBox endpointy_property;
         components.ColorPicker bg_color_property;
         components.ColorPicker border_color_property;
+        components.ColorPicker qbc_bg_color_property;
+        components.ColorPicker qbc_border_color_property;
+
 
         components.Slider bg_opacity_property;
+        components.Slider qbc_bg_opacity_property;
         components.Slider border_radius_property;
         components.Slider border_thickness_property;
+        components.Slider qbc_border_thickness_property;
 
         components.ColorPicker font_color_property;
         ComboBox font_family_property;
         ComboBox font_size_property;
         ComboBox text_alignment_property;
         ComboBox content_alignment_property;
+
+  
 
         public PropertyView()
         {
@@ -147,14 +154,27 @@ namespace vayfrem.views.sections
             bg_color_property.ValueChanged += RectBackgroundColor_ValueChanged;
             bg_color_property.Margin = new Thickness(0);
 
+            qbc_bg_color_property = new components.ColorPicker("qbc-property-bg");
+            qbc_bg_color_property.ValueChanged += QBCBackgroundColor_ValueChanged;
+            qbc_bg_color_property.Margin = new Thickness(0);
+
             border_color_property = new components.ColorPicker("borderColor");
             border_color_property.ValueChanged += RectBorderColor_ValueChanged;
             border_color_property.Margin = new Thickness(0);
+
+            qbc_border_color_property = new components.ColorPicker("qbc-borderColor");
+            qbc_border_color_property.ValueChanged += QBCBorderColor_ValueChanged;
+            qbc_border_color_property.Margin = new Thickness(0);
 
             bg_opacity_property = new components.Slider();
             bg_opacity_property.ValueChanged += RectOpacityChanged_ValueChanged;
             bg_opacity_property.Maximum = 255;
             bg_opacity_property.Minimum = 0;
+
+            qbc_bg_opacity_property = new components.Slider();
+            qbc_bg_opacity_property.ValueChanged += QBCOpacityChanged_ValueChanged;
+            qbc_bg_opacity_property.Maximum = 255;
+            qbc_bg_opacity_property.Minimum = 0;
 
             border_radius_property = new components.Slider();
             border_radius_property.ValueChanged += BorderRadiusChanged_ValueChanged;
@@ -165,6 +185,11 @@ namespace vayfrem.views.sections
             border_thickness_property.ValueChanged += BorderThicknessChanged_ValueChanged;
             border_thickness_property.Maximum = 100;
             border_thickness_property.Minimum = 0;
+
+            qbc_border_thickness_property = new components.Slider();
+            qbc_border_thickness_property.ValueChanged += QBCBorderThicknessChanged_ValueChanged;
+            qbc_border_thickness_property.Maximum = 100;
+            qbc_border_thickness_property.Minimum = 0;
 
             font_color_property = new components.ColorPicker("fontColor");
             font_color_property.ValueChanged += FontColor_ValueChanged;
@@ -349,16 +374,20 @@ namespace vayfrem.views.sections
             }
         }
 
-       
-
-
-
-
         private void RectBackgroundColor_ValueChanged()
         {
             if (ViewModel.ActiveObj != null)
             {
                 ViewModel.ActiveObj!.BackgroundColor = bg_color_property.SelectedColor;
+                ViewModel.RefreshDraw();
+            }
+        }
+
+        private void QBCBackgroundColor_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BackgroundColor = qbc_bg_color_property.SelectedColor;
                 ViewModel.RefreshDraw();
             }
         }
@@ -371,12 +400,29 @@ namespace vayfrem.views.sections
                 ViewModel.RefreshDraw();
             }
         }
+        private void QBCBorderColor_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BorderColor = qbc_border_color_property.SelectedColor;
+                ViewModel.RefreshDraw();
+            }
+        }
 
         private void RectOpacityChanged_ValueChanged()
         {
             if (ViewModel.ActiveObj != null)
             {
                 ViewModel.ActiveObj!.Opacity = bg_opacity_property.Value;
+                ViewModel.RefreshDraw();
+            }
+        }
+
+        private void QBCOpacityChanged_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.Opacity = qbc_bg_opacity_property.Value;
                 ViewModel.RefreshDraw();
             }
         }
@@ -398,6 +444,16 @@ namespace vayfrem.views.sections
                 ViewModel.RefreshDraw();
             }
         }
+
+        private void QBCBorderThicknessChanged_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BorderThickness = qbc_border_thickness_property.Value;
+                ViewModel.RefreshDraw();
+            }
+        }
+
         private void FontColor_ValueChanged()
         {
             if(ViewModel.ActiveObj == null) {
@@ -604,6 +660,20 @@ namespace vayfrem.views.sections
 
             if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.QuadraticBC)
             {
+                qbc_bg_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BackgroundColor.ToColor());
+                qbc_bg_color_property.Hex = ViewModel.ActiveObj.BackgroundColor.ToHex();
+                qbc_bg_color_property.SetColorPickerDTO(
+                    new ColorPickerDTO
+                    {
+                        Color = ViewModel.ActiveObj.BackgroundColor,
+                    }
+                );
+                
+                qbc_bg_opacity_property.Value = (int)ViewModel.ActiveObj.Opacity;
+                qbc_border_thickness_property.Value = (int)ViewModel.ActiveObj.BorderThickness;
+                
+                qbc_border_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BorderColor.ToColor());
+
                 QuadraticBCObj qbcObj = (QuadraticBCObj)ViewModel.ActiveObj;
 
                 startpointx_property.Text = qbcObj.StartPoint.X.ToString();
@@ -725,16 +795,10 @@ namespace vayfrem.views.sections
                     new Property(ValueType.MiddlePointY, middlepointy_property),
                     new Property(ValueType.EndPointX, endpointx_property),
                     new Property(ValueType.EndPointY, endpointy_property),
-                    //new Property(ValueType.Text, text_property),
-                    //new Property(ValueType.TextAlignment, text_alignment_property),
-                    //new Property(ValueType.FontColor, font_color_property),
-                    //new Property(ValueType.FontFamily, font_family_property),
-                    //new Property(ValueType.FontSize, font_size_property),
-                    //new Property(ValueType.Background, bg_color_property),
-                    //new Property(ValueType.Opacity, bg_opacity_property),
-                    //new Property(ValueType.BorderColor, border_color_property),
-                    //new Property(ValueType.BorderRadius, border_radius_property),
-                    //new Property(ValueType.BorderThickness, border_thickness_property),
+                    new Property(ValueType.Background, qbc_bg_color_property),
+                    new Property(ValueType.Opacity, qbc_bg_opacity_property),
+                    new Property(ValueType.BorderColor, qbc_border_color_property),
+                    new Property(ValueType.BorderThickness, qbc_border_thickness_property),
                 };
                 grid.SetProperties(ViewModel.Properties.ToList());
             }

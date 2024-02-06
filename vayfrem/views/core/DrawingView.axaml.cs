@@ -388,7 +388,7 @@ public partial class DrawingView : UserControl
 
             ViewModel.SelectedObject.X = (int)(lastPosition.X - moveOffset.X);
             ViewModel.SelectedObject.Y = (int)(lastPosition.Y - moveOffset.Y);
-            
+
             if(ViewModel.SelectedObject.ObjectType == ObjectType.QuadraticBC)
             {
                 QuadraticBCObj qbc = (QuadraticBCObj)ViewModel.SelectedObject;
@@ -427,7 +427,9 @@ public partial class DrawingView : UserControl
         GObject? obj = ViewModel.GetSelectionObject();
         if(obj != null && obj.ObjectType == ObjectType.QuadraticBC && selectedPoint != null)
         {
-            Avalonia.Point currentPos = currentPosition;
+            Avalonia.Point offsetPosition = currentPosition - new Avalonia.Point(obj.WorldX, obj.WorldY);
+
+            Avalonia.Point currentPos = offsetPosition;
 
             QuadraticBCObj qbcObj = (QuadraticBCObj)obj;
 
@@ -754,20 +756,20 @@ public partial class DrawingView : UserControl
         {
             QuadraticBCObj quadraticBCObj = (QuadraticBCObj)ViewModel.CurrentFile.Selection.SelectedObject;
 
-            Canvas.SetLeft(startPointRect, quadraticBCObj.StartPoint.X);
-            Canvas.SetTop(startPointRect, quadraticBCObj.StartPoint.Y);
+            Canvas.SetLeft(startPointRect, quadraticBCObj.StartPoint.X + quadraticBCObj.WorldX);
+            Canvas.SetTop(startPointRect, quadraticBCObj.StartPoint.Y + quadraticBCObj.WorldY);
 
-            Canvas.SetLeft(point1Rect, quadraticBCObj.Point1.X);
-            Canvas.SetTop(point1Rect, quadraticBCObj.Point1.Y);
+            Canvas.SetLeft(point1Rect, quadraticBCObj.Point1.X + quadraticBCObj.WorldX);
+            Canvas.SetTop(point1Rect, quadraticBCObj.Point1.Y + quadraticBCObj.WorldY);
 
-            Canvas.SetLeft(point2Rect, quadraticBCObj.Point2.X);
-            Canvas.SetTop(point2Rect, quadraticBCObj.Point2.Y);
+            Canvas.SetLeft(point2Rect, quadraticBCObj.Point2.X + quadraticBCObj.WorldX);
+            Canvas.SetTop(point2Rect, quadraticBCObj.Point2.Y + quadraticBCObj.WorldY);
 
             triangle.Points = new Points()
             {
-                new Avalonia.Point(quadraticBCObj.StartPoint.X, quadraticBCObj.StartPoint.Y),
-                new Avalonia.Point(quadraticBCObj.Point1.X, quadraticBCObj.Point1.Y),
-                new Avalonia.Point(quadraticBCObj.Point2.X, quadraticBCObj.Point2.Y),
+                new Avalonia.Point(quadraticBCObj.StartPoint.X + quadraticBCObj.WorldX, quadraticBCObj.StartPoint.Y + quadraticBCObj.WorldY),
+                new Avalonia.Point(quadraticBCObj.Point1.X + quadraticBCObj.WorldX, quadraticBCObj.Point1.Y + quadraticBCObj.WorldY),
+                new Avalonia.Point(quadraticBCObj.Point2.X + quadraticBCObj.WorldX, quadraticBCObj.Point2.Y + quadraticBCObj.WorldY),
             };
 
             Overlay.Children.Add(triangle);

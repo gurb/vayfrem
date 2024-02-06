@@ -161,6 +161,10 @@ namespace vayfrem.viewmodels
             quadraticBCObj.BorderColor = toolOptionsViewModel.QuadraticBCToolDTO.BorderColorPicker.Color;
             quadraticBCObj.Opacity = toolOptionsViewModel.QuadraticBCToolDTO.Opacity;
 
+            quadraticBCObj.X = 0;
+            quadraticBCObj.Y = 0;
+
+
             quadraticBCObj.StartPoint = passData.StartPoint!;
             quadraticBCObj.Point1 = passData.Point1!;
             quadraticBCObj.Point2 = passData.Point2!;
@@ -175,6 +179,9 @@ namespace vayfrem.viewmodels
                     quadraticBCObj.ParentGuid = selectedCanvas.Guid;
                     //quadraticBCObj.X = textObj.X - selectedCanvas.WorldX;
                     //quadraticBCObj.Y = textObj.Y - selectedCanvas.WorldY;
+                    quadraticBCObj.StartPoint = passData.StartPoint! - new Vector2(selectedCanvas.WorldX, selectedCanvas.WorldY);
+                    quadraticBCObj.Point1 = passData.Point1! - new Vector2(selectedCanvas.WorldX, selectedCanvas.WorldY);
+                    quadraticBCObj.Point2 = passData.Point2! - new Vector2(selectedCanvas.WorldX, selectedCanvas.WorldY);
 
                     selectedCanvas.Add(quadraticBCObj);
                     return;
