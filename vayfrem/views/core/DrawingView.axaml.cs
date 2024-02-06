@@ -259,6 +259,7 @@ public partial class DrawingView : UserControl
         if(ViewModel.IsScale)
         {
             ViewModel.IsScale = false;
+            ViewModel.RefreshState();
             draw();
         }
     }
@@ -448,7 +449,8 @@ public partial class DrawingView : UserControl
             {
                 qbcObj.Point2 = new Vector2(currentPos.X, currentPos.Y);
             }
-        } 
+
+        }
         else if (obj != null)
         {
             
@@ -593,6 +595,7 @@ public partial class DrawingView : UserControl
                 }
 
 
+
                 // note: we comment this because of performance issue
                 //ViewModel.RefreshState();
 
@@ -608,6 +611,8 @@ public partial class DrawingView : UserControl
                     obj.Height = 51;
                     return;
                 }
+
+
             }
         }
     }

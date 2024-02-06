@@ -49,8 +49,6 @@ namespace vayfrem.views.sections
         ComboBox text_alignment_property;
         ComboBox content_alignment_property;
 
-  
-
         public PropertyView()
         {
             ViewModel = App.GetService<PropertyViewModel>();
@@ -62,7 +60,6 @@ namespace vayfrem.views.sections
 
             grid = new components.DataGrid();
             grid.SetProperties(ViewModel.Properties.ToList());
-
 
             this.Content = grid;
 
