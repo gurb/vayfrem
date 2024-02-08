@@ -5,6 +5,8 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.VisualTree;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using vayfrem.services;
 
@@ -17,13 +19,10 @@ public partial class ExportWindow : Window
     int width_window = 400;
     int height_window = 270;
 
-
     public ExportWindow()
     {
         exportManager = App.GetService<ExportManager>();
-
         InitializeComponent();
-
         SetWindow();
     }
 
@@ -105,6 +104,10 @@ public partial class ExportWindow : Window
         if (getExtension(content!) == "png")
         {
             ExportPNG();
+        } 
+        else if(getExtension(content!) == "pdf")
+        {
+            ExportPDF();
         }
     }
 
@@ -117,7 +120,6 @@ public partial class ExportWindow : Window
             RenderTargetBitmap bitmap = exportManager.GenerateCurrentPng();
 
             bitmap.Save(filePathTxt.Text + "/" + exportNameTxt.Text + ".png");
-
             bitmap.Dispose();
         } 
         else if (exportTypeCb.SelectedIndex == 1) // project
@@ -131,6 +133,35 @@ public partial class ExportWindow : Window
                 bitmap.Dispose();
                 fileCounter++;
             }
+        }
+    }
+
+    private void ExportPDF()
+    {
+        if (exportTypeCb.SelectedValue == null) return;
+
+        if (exportTypeCb.SelectedIndex == 0) // current file
+        {
+
+            exportManager.GenerateCurrentPdf(filePathTxt.Text + "/" + exportNameTxt.Text + ".pdf");
+            
+            //RenderTargetBitmap bitmap = exportManager.GenerateCurrentPng();
+
+            //bitmap.Save(filePathTxt.Text + "/" + exportNameTxt.Text + ".png");
+
+            //bitmap.Dispose();
+        }
+        else if (exportTypeCb.SelectedIndex == 1) // project
+        {
+            //List<RenderTargetBitmap> bitmaps = exportManager.GenerateAllPagesPng();
+
+            //int fileCounter = 1;
+            //foreach (RenderTargetBitmap bitmap in bitmaps)
+            //{
+            //    bitmap.Save(filePathTxt.Text + "/" + exportNameTxt.Text + "-" + fileCounter.ToString() + ".png");
+            //    bitmap.Dispose();
+            //    fileCounter++;
+            //}
         }
     }
 

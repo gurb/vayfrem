@@ -42,7 +42,7 @@ namespace vayfrem.services
         }
 
 
-        public void Render(Panel Display, List<GObject> objects)
+        public void Render(Panel Display, List<GObject> objects, bool ignoreText = false)
         {
             foreach (var obj in objects)
             {
@@ -54,10 +54,10 @@ namespace vayfrem.services
                     
                     if (canvasObj != null && canvasObj.Children.Count() > 0)
                     {
-                        Render(canvas, canvasObj.Children);
+                        Render(canvas, canvasObj.Children, ignoreText);
                     }
                 }
-                if(obj.ObjectType == models.enums.ObjectType.Text)
+                if(obj.ObjectType == models.enums.ObjectType.Text && !ignoreText)
                 {
                     TextObj textObj = (TextObj)obj;
 

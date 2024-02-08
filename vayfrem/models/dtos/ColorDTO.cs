@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media;
+using PdfSharpCore.Drawing;
 using System.Linq;
 using System.Text.Json.Serialization;
 
@@ -43,6 +44,16 @@ namespace vayfrem.models.dtos
         public ColorDTO toCopy()
         {
             return new ColorDTO(A, R, G, B);
+        }
+
+        public XColor ToXColor()
+        {
+            return XColor.FromArgb(A, R, G, B);
+        }
+
+        public XColor ToXColor(int opacity)
+        {
+            return XColor.FromArgb((byte)(opacity), R, G, B);
         }
     }
 }
