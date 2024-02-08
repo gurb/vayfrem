@@ -92,7 +92,7 @@ namespace vayfrem.services
             display.Width = file.PageWidth;
             display.Height = file.PageHeight;
 
-            renderManager.Render(display, file.Objects);
+            renderManager.Render(display, file.Objects, true);
 
             display.UpdateLayout();
             display.Measure(new Avalonia.Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -118,20 +118,23 @@ namespace vayfrem.services
 
             pdfManager.DrawPage(document, drawingViewModel.CurrentFile!, bitmap);
 
-            // PDF dosyasını kaydet
-            //document.Save("example.pdf");
-            //XRect rect = new XRect(100, 100, 200, 100);
+            document.Save(path);
+        }
 
-            //XBrush brush = XBrushes.Red; // Dikdörtgenin dolgu rengi
-            //XPen pen = new XPen(XColors.Black, 2); // Dikdörtgenin kenar rengi ve kalınlığı
-            //gfx.DrawRectangle(pen, brush, rect);
+        public void GenerateAllPdf(string path)
+        {
+            PdfDocument document = new PdfDocument();
+            document.Options.ColorMode = PdfColorMode.Rgb;
 
-            //// Dikdörtgen içine metin ekle
-            //XFont font = new XFont("Arial", 12); // Yazı tipi ve boyutu
-            //XStringFormat format = new XStringFormat(); // Metin formatı (opsiyonel)
-            //format.Alignment = XStringAlignment.Center; // Metnin ortalanması
-            //format.LineAlignment = XLineAlignment.Center; // Metnin dikey ortalanması
-            //gfx.DrawString("Merhaba, Dikdörtgen!", font, XBrushes.White, rect, format);
+            if (document.Version < 14)
+                document.Version = 14;
+
+            List<RenderTargetBitmap> list = GenerateAllPagesPng();
+
+            foreach (var item in list)
+            {
+                pdfManager.DrawPage(document, drawingViewModel.CurrentFile!, item);
+            }
 
             document.Save(path);
         }

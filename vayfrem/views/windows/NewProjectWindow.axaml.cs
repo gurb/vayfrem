@@ -93,7 +93,7 @@ public partial class NewProjectWindow : Window
         projectNameTextBox = new TextBox();
         projectNameTextBox.BorderBrush = Brushes.Black;
         projectNameTextBox.Height = height - 2;
-        projectNameTextBox.Watermark = "Project Name..";
+        projectNameTextBox.Watermark = "Page Name..";
         projectNameTextBox.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         projectNameTextBox.BorderThickness = new Thickness(1);
 
@@ -217,7 +217,7 @@ public partial class NewProjectWindow : Window
     private void SetLabelElements()
     {
         projectNameLabel = new TextBlock();
-        projectNameLabel.Text = "Project Name";
+        projectNameLabel.Text = "Page Name";
         projectNameLabel.Height = height;
         projectNameLabel.Padding = new Thickness(5);
         projectNameLabel.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;

@@ -18,6 +18,7 @@ public partial class ComponentView : UserControl
     StackPanel stackPanel;
 
     Border button;
+    Border image;
 
     Border? ghostItem;
 
@@ -62,7 +63,8 @@ public partial class ComponentView : UserControl
         button.CornerRadius = new CornerRadius(5);
         button.Padding = new Thickness(10, 10, 10, 10);
         button.Margin = new Thickness(5, 5, 5, 5);
-        button.PointerPressed += Button_PointerPressed;
+        button.PointerPressed += Drag_PointerPressed;
+        button.Name = "button";
 
         TextBlock text = new TextBlock();
         text.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
@@ -74,15 +76,53 @@ public partial class ComponentView : UserControl
         button.Child = text;
 
         ComponentMenu.Children.Add(button);
+
+        SetImageComponent();
     }
-    private async void Button_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+
+    private void SetImageComponent()
+    {
+        image = new Border();
+        image.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+        image.BorderThickness = new Thickness(2);
+        image.BorderBrush = Brushes.Black;
+        image.Background = Brushes.White;
+        image.CornerRadius = new CornerRadius(5);
+        image.Padding = new Thickness(10, 10, 10, 10);
+        image.Margin = new Thickness(5, 5, 5, 5);
+        image.PointerPressed += Drag_PointerPressed;
+        image.Name = "image";
+
+        TextBlock text = new TextBlock();
+        text.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+        text.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
+        text.Height = 18;
+        text.Text = "Image";
+        text.Background = Brushes.White;
+
+        image.Child = text;
+
+        ComponentMenu.Children.Add(image);
+    }
+
+    private async void Drag_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         // drag started
         Border dragButton = sender as Border;
+    
+
 
         isPressed = true;
         LayoutViewModel.IsDrag = true;
-        LayoutViewModel.DragObject = new ButtonObj();
+        if(dragButton.Name == "button") 
+        {
+            LayoutViewModel.DragObject = new ButtonObj();
+        }
+        else if(dragButton.Name == "image") 
+        {
+            LayoutViewModel.DragObject = new ImageObj();
+        }
+
         LayoutViewModel.IsDragCompleted = false;
         LayoutViewModel.Counter = 1;
     }

@@ -11,6 +11,7 @@ using vayfrem.views.components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Avalonia.Platform;
 
 namespace vayfrem.services
 {   
@@ -26,12 +27,16 @@ namespace vayfrem.services
 
         SelectionObject selectionObject = new SelectionObject();
 
+
         
+        Avalonia.Media.Imaging.Bitmap imageLayer;
 
         public RenderManager() 
         {
             drawingViewModel = App.GetService<DrawingViewModel>();
             toolManager = App.GetService<ToolManager>();
+
+            imageLayer = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://vayfrem/assets/image-layer.png")));
         }
 
         public void SetMainDisplay(Canvas mainDisplay)
@@ -80,6 +85,12 @@ namespace vayfrem.services
                     SvgObj svgObj = (SvgObj)obj;
 
                     DrawSvg(Display, svgObj);
+                }
+                if (obj.ObjectType == models.enums.ObjectType.Image)
+                {
+                    ImageObj imgObj = (ImageObj)obj;
+
+                    DrawImage(Display, imgObj);
                 }
             }
         }
@@ -141,6 +152,33 @@ namespace vayfrem.services
             Canvas.SetTop(svg, obj.Y);
 
             Display.Children.Add(svg);
+        }
+
+        public void DrawImage(Panel Display, ImageObj obj)
+        {
+            Canvas background = new Canvas();
+
+            background.Width = obj.Width;
+            background.Height = obj.Height;
+            background.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), 255);
+
+            Image image = new Image();
+            image.Source = imageLayer;
+
+            image.Stretch = Stretch.Fill;
+            image.Width = obj.Width;
+            image.Height = obj.Height;
+
+
+            Canvas.SetLeft(image,0);
+            Canvas.SetTop(image, 0);
+
+            background.Children.Add(image);
+
+            Canvas.SetLeft(background, obj.X);
+            Canvas.SetTop(background, obj.Y);
+
+            Display.Children.Add(background);
         }
 
         public void DrawQBC(Panel Display, QuadraticBCObj obj)

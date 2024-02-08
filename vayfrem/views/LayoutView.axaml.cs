@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using vayfrem.services;
 using Avalonia.Svg;
 using vayfrem.models.objects.components;
+using Avalonia.Platform;
+using vayfrem.models.objects;
 
 namespace vayfrem;
 
@@ -18,6 +20,7 @@ public partial class LayoutView : UserControl
     private readonly ObjectMenuManager objectMenuManager;
 
     Border? ghostItem;
+    Canvas ghostImage;
     Avalonia.Svg.Svg ghostSvg;
 
     private Point _ghostPosition = new(0, 0);
@@ -29,6 +32,8 @@ public partial class LayoutView : UserControl
     ContextMenu objectMenu;
     MenuItem copyMenuItem;
     MenuItem pasteMenuItem;
+
+    Avalonia.Media.Imaging.Bitmap imageLayer; 
 
     public LayoutView()
     {
@@ -46,6 +51,8 @@ public partial class LayoutView : UserControl
         this.PointerMoved += LayoutView_PointerMoved;
         this.PointerReleased += LayoutView_PointerReleased;
         this.PointerPressed += LayoutView_PointerPressed;
+
+        imageLayer = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://vayfrem/assets/image-layer.png")));
 
         SetGhostItem();
         SetObjectMenu();
@@ -79,6 +86,7 @@ public partial class LayoutView : UserControl
 
             ghostItem.IsVisible = false;
             ghostSvg.IsVisible = false;
+            ghostImage.IsVisible = false;   
         }
 
         if(ViewModel.IsOpenMenu)
@@ -119,6 +127,13 @@ public partial class LayoutView : UserControl
 
             Canvas.SetLeft(ghostSvg, _ghostPosition.X - (ghostSvg.Width / 2));
             Canvas.SetTop(ghostSvg, _ghostPosition.Y - (ghostSvg.Height / 2));
+        }
+        if (ViewModel.DragObject.ObjectType == models.enums.ObjectType.Image)
+        {
+            ghostImage.IsVisible = true;
+
+            Canvas.SetLeft(ghostImage, _ghostPosition.X - (ghostImage.Width / 2));
+            Canvas.SetTop(ghostImage, _ghostPosition.Y - (ghostImage.Height / 2));
         }
     }
 
@@ -207,8 +222,29 @@ public partial class LayoutView : UserControl
         ghostSvg.Height = 64;
         ghostSvg.IsVisible = false;
 
+
+        ghostImage = new Canvas();
+        ghostImage.Width = 200;
+        ghostImage.Height = 200;
+        ghostImage.Background = Brushes.White;
+        ghostImage.IsVisible = false;
+        Image image = new Image();
+        image.Width = 200;
+        image.Height = 200;
+        image.Source = imageLayer;
+
+        Canvas.SetLeft(image, 0);
+        Canvas.SetTop(image, 0);
+
+        Canvas.SetLeft(ghostImage, _ghostPosition.X);
+        Canvas.SetTop(ghostImage, _ghostPosition.Y);
+
+        ghostImage.Children.Add(image);
+
         OverlayLayout.Children.Add(ghostItem);
         OverlayLayout.Children.Add(ghostSvg);
+        OverlayLayout.Children.Add(ghostImage);
+
 
     }
 }

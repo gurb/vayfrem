@@ -142,17 +142,11 @@ public partial class ExportWindow : Window
 
         if (exportTypeCb.SelectedIndex == 0) // current file
         {
-
             exportManager.GenerateCurrentPdf(filePathTxt.Text + "/" + exportNameTxt.Text + ".pdf");
-            
-            //RenderTargetBitmap bitmap = exportManager.GenerateCurrentPng();
-
-            //bitmap.Save(filePathTxt.Text + "/" + exportNameTxt.Text + ".png");
-
-            //bitmap.Dispose();
         }
         else if (exportTypeCb.SelectedIndex == 1) // project
         {
+            exportManager.GenerateAllPdf(filePathTxt.Text + "/" + exportNameTxt.Text + ".pdf");
             //List<RenderTargetBitmap> bitmaps = exportManager.GenerateAllPagesPng();
 
             //int fileCounter = 1;

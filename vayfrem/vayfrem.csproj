@@ -53,6 +53,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="assets\image-layer.png" />
 	  <None Remove="assets\logo.ico" />
 	  <None Remove="assets\logo.png" />
 	  <None Remove="assets\svg.png" />
