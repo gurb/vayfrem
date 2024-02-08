@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using PdfSharpCore.Drawing;
+using PdfSharpCore.Drawing.Layout;
 using PdfSharpCore.Pdf;
 using SkiaSharp;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace vayfrem.services
             page.Width = XUnit.FromPoint(file.PageWidth);
             page.Height = XUnit.FromPoint(file.PageHeight);
             XGraphics gfx = XGraphics.FromPdfPage(page);
-
+            var tf = new XTextFormatter(gfx);
             XBrush bg = XBrushes.White;
             XRect rect = new XRect(0, 0, page.Width, page.Height);
             gfx.DrawRectangle(bg, rect);
@@ -51,12 +52,12 @@ namespace vayfrem.services
             gfx.DrawImage(image, 0, 0, page.Width, page.Height);
 
 
-            Render(page, file.Objects, gfx, null);
+            Render(page, file.Objects, gfx, null, tf);
 
             gfx.Dispose();
         }
 
-        private void Render(PdfPage page, List<GObject> objects, XGraphics gfx, GObject? parent)
+        private void Render(PdfPage page, List<GObject> objects, XGraphics gfx, GObject? parent, XTextFormatter tf)
         {
             foreach (var obj in objects)
             {
@@ -66,7 +67,7 @@ namespace vayfrem.services
 
                     if(canvasObj.Children.Count() > 0)
                     {
-                        Render(page, canvasObj.Children, gfx, obj);
+                        Render(page, canvasObj.Children, gfx, obj, tf);
                     }
                 }
 
@@ -91,11 +92,13 @@ namespace vayfrem.services
 
                     gfx.DrawRectangle(bg, rect);
 
-                    XFont font = new XFont(textObj.FontFamily, 12); // Yazı tipi ve boyutu
-                    XStringFormat format = new XStringFormat(); // Metin formatı (opsiyonel)
-                    //format.Alignment = XStringAlignment.Center; // Metnin ortalanması
+                    XFont font = new XFont(textObj.FontFamily, textObj.FontSize); // Yazı tipi ve boyutu
+                    XStringFormat format = new XStringFormat();
+                    format.LineAlignment = XLineAlignment.Near;
+                    format.Alignment = XStringAlignment.Near; // Metin formatı (opsiyonel)
                     //format.LineAlignment = XLineAlignment.Center; // Metnin dikey ortalanması
-                    gfx.DrawString(textObj.Text, font, XBrushes.Black, rect, format);
+                    
+                    tf.DrawString(textObj.Text, font, new XSolidBrush(textObj.FontColor.ToXColor()), rect, format);
                 }
             }
         }
