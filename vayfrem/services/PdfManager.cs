@@ -19,7 +19,6 @@ namespace vayfrem.services
         
         }
 
-
         public void DrawPage(PdfDocument document, vayfrem.models.File file, RenderTargetBitmap bitmap)
         {
             PdfPage page = document.AddPage();

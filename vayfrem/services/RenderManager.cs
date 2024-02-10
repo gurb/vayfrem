@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Platform;
+using System.Net.Mime;
 
 namespace vayfrem.services
 {   
@@ -27,9 +28,13 @@ namespace vayfrem.services
 
         SelectionObject selectionObject = new SelectionObject();
 
-
         
         Avalonia.Media.Imaging.Bitmap imageLayer;
+
+        Canvas ImageLayer;
+        Border borderImage;
+        Line line1;
+        Line line2;
 
         public RenderManager() 
         {
@@ -37,6 +42,7 @@ namespace vayfrem.services
             toolManager = App.GetService<ToolManager>();
 
             imageLayer = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://vayfrem/assets/image-layer.png")));
+            
         }
 
         public void SetMainDisplay(Canvas mainDisplay)
@@ -156,29 +162,92 @@ namespace vayfrem.services
 
         public void DrawImage(Panel Display, ImageObj obj)
         {
-            Canvas background = new Canvas();
+            //Canvas background = new Canvas();
 
-            background.Width = obj.Width;
-            background.Height = obj.Height;
-            background.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), 255);
+            //background.Width = obj.Width;
+            //background.Height = obj.Height;
+            //background.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), 255);
 
-            Image image = new Image();
-            image.Source = imageLayer;
+            //Border border = new Border();
+            //border.BorderThickness = new Thickness(4);
+            //border.BorderBrush = Brushes.Black;
 
-            image.Stretch = Stretch.Fill;
-            image.Width = obj.Width;
-            image.Height = obj.Height;
+            //Canvas content = new Canvas();
+            //content.Background = Brushes.Transparent;
+            //content.Width = obj.Width;
+            //content.Height = obj.Height;
+
+            //border.Child = content;
+            //border.BorderThickness = new Thickness(4);
+            
+            //Line line1 = new Line();
+            //line1.StrokeThickness = 4;
+            //line1.Stroke = Brushes.Black;
+            //line1.StartPoint = new Point(5, 5);
+            //line1.EndPoint = new Point(obj.Width - 5, obj.Height - 5);
+
+            //Line line2 = new Line();
+            //line2.StrokeThickness = 4;
+            //line2.Stroke = Brushes.Black;
+            //line2.StartPoint = new Point(obj.Width - 5, 5);
+            //line2.EndPoint = new Point(5, obj.Height - 5);
+
+            //content.Children.Add(line1);
+            //content.Children.Add(line2);
+
+            //background.Children.Add(border);
+            //Canvas.SetLeft(border, 0);
+            //Canvas.SetTop(border, 0);
+
+            //Canvas.SetLeft(background, obj.X);
+            //Canvas.SetTop(background, obj.Y);
+
+            //Display.Children.Add(background);
 
 
-            Canvas.SetLeft(image,0);
-            Canvas.SetTop(image, 0);
+            RelativePanel panel = new RelativePanel();
+            Canvas.SetLeft(panel, obj.X);
+            Canvas.SetTop(panel, obj.Y);
+            panel.Width = obj.Width;
+            panel.Height = obj.Height;
 
-            background.Children.Add(image);
+            Canvas canvas = new Canvas();
+            Canvas.SetLeft(canvas, obj.X);
+            Canvas.SetTop(canvas, obj.Y);
+            canvas.Width = obj.Width;
+            canvas.Height = obj.Height;
 
-            Canvas.SetLeft(background, obj.X);
-            Canvas.SetTop(background, obj.Y);
+            Line line1 = new Line();
+            line1.StrokeThickness = 4;
+            line1.Stroke = Brushes.Black;
+            line1.StartPoint = new Point(5, 5);
+            line1.EndPoint = new Point(obj.Width - 5, obj.Height - 5);
 
-            Display.Children.Add(background);
+            Line line2 = new Line();
+            line2.StrokeThickness = 4;
+            line2.Stroke = Brushes.Black;
+            line2.StartPoint = new Point(obj.Width - 5, 5);
+            line2.EndPoint = new Point(5, obj.Height - 5);
+
+            canvas.Children.Add(line1);
+            canvas.Children.Add(line2);
+            //canvasBackground.StrokeThickness = 1;
+
+            //panel.Children.Add(canvas);
+
+            Border border = new Border();
+            border.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
+            border.BorderThickness = new Thickness(4);
+            border.BorderBrush = Brushes.Black;
+
+            border.Padding = Avalonia.Thickness.Parse("0");
+            border.Margin = Avalonia.Thickness.Parse("0");
+            Canvas.SetLeft(border, obj.X);
+            Canvas.SetTop(border, obj.Y);
+            border.Child = canvas;
+            panel.Children.Add(border);
+
+            Display.Children.Add(panel);
         }
 
         public void DrawQBC(Panel Display, QuadraticBCObj obj)
