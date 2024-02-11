@@ -11,6 +11,9 @@ using vayfrem.models;
 using vayfrem.models.objects;
 using vayfrem.models.objects.@base;
 using System.Collections.ObjectModel;
+using vayfrem.models.objects.components;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
 
 namespace vayfrem.services
 {
@@ -102,6 +105,21 @@ namespace vayfrem.services
                                 if(canvasObj.Children != null && canvasObj.Children.Count > 0)
                                 {
                                     IterateChildren(canvasObj);
+                                }
+                            }
+
+                            if (obj.ObjectType == models.enums.ObjectType.Image)
+                            {
+                                ImageObj imageObj = (ImageObj)obj;
+
+                                if(imageObj.Base64 != null)
+                                {
+                                    var bitmap = new Bitmap(new MemoryStream(Convert.FromBase64String(imageObj.Base64)));
+                                    imageObj.Image = new Avalonia.Controls.Image
+                                    {
+                                        Source = bitmap,
+                                        Stretch = Stretch.Fill 
+                                    };
                                 }
                             }
                         }

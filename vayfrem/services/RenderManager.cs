@@ -36,6 +36,8 @@ namespace vayfrem.services
         Line line1;
         Line line2;
 
+        RelativePanel? oldImagePanel;
+
         public RenderManager() 
         {
             drawingViewModel = App.GetService<DrawingViewModel>();
@@ -168,9 +170,19 @@ namespace vayfrem.services
             panel.Width = obj.Width;
             panel.Height = obj.Height;
 
+
             if(obj.Base64 != null)
             {
+                if(oldImagePanel != null)
+                {
+                    oldImagePanel.Children.Remove(obj.Image);
+                }
 
+                Canvas.SetLeft(obj.Image, 0);
+                Canvas.SetTop(obj.Image, 0);
+                panel.Children.Add(obj.Image);
+
+                oldImagePanel = panel;
             }
             else
             {

@@ -69,7 +69,7 @@ namespace vayfrem
                 Patterns = new[] { "*.vayfrem" },
             };
 
-            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new Avalonia.Platform.Storage.FilePickerOpenOptions
+            var files = await topLevel!.StorageProvider.OpenFilePickerAsync(new Avalonia.Platform.Storage.FilePickerOpenOptions
             {
                 Title = "Open Project",
                 AllowMultiple = false,

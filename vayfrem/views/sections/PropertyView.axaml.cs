@@ -10,6 +10,13 @@ using Avalonia;
 using vayfrem.models.lists;
 using vayfrem.models.objects;
 using vayfrem.models.objects.components;
+using SixLabors.ImageSharp;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
+using System.Threading.Tasks;
+using System.IO;
+using System.Diagnostics;
+using Avalonia.Media.Imaging;
 
 namespace vayfrem.views.sections
 {
@@ -49,6 +56,8 @@ namespace vayfrem.views.sections
         ComboBox font_size_property;
         ComboBox text_alignment_property;
         ComboBox content_alignment_property;
+
+        TextBlock image_property;
 
         public PropertyView()
         {
@@ -226,6 +235,77 @@ namespace vayfrem.views.sections
             content_alignment_property.SelectionChanged += ContentAlignmentComboBox_SelectionChanged;
             content_alignment_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             content_alignment_property.BorderThickness = new Thickness(0);
+
+            image_property = new TextBlock();
+            image_property.PointerPressed += image_property_PointerPressedAsync;
+            image_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            image_property.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
+            image_property.Margin = new Avalonia.Thickness(0);
+        }
+
+        private async void image_property_PointerPressedAsync(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+        {
+            TextBlock textBox = (TextBlock)sender;
+
+            if (ViewModel.ActiveObj != null)
+            {
+                ImageObj imgObj = (ImageObj)ViewModel.ActiveObj;
+
+                FilePickerFileType imageType = new FilePickerFileType("Resim Dosyaları")
+                {
+                    Patterns = new[] { "*.jpg", "*.jpeg", "*.png", "*.bmp", "*.gif" }
+                };
+
+                var topLevel = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+                var files = await topLevel!.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+                {
+                    Title = "Select Image...",
+                    AllowMultiple = false,
+                    FileTypeFilter = new[] { imageType }
+                });
+
+                if (files.Count >= 1)
+                {
+                    var filePath = files[0].Path;
+
+                    try
+                    {
+                        using (FileStream fileStream = File.OpenRead(filePath.AbsolutePath))
+                        {
+                            string base64String = Convert.ToBase64String(ReadFully(fileStream));
+
+                            imgObj.Base64 = base64String;
+                            imgObj.Path = filePath.AbsolutePath;
+
+
+                            var bitmap = new Bitmap(new MemoryStream(Convert.FromBase64String(imgObj.Base64)));
+
+
+                            imgObj.Image = new Avalonia.Controls.Image
+                            {
+                                Source = bitmap,
+                                Stretch = Stretch.Fill 
+                            };
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        await MessageBox.Show(this, "Error", ex.Message, MessageBox.MessageBoxButtons.Ok);
+                    }
+                }
+
+
+                ViewModel.RefreshDraw();
+            }
+        }
+
+        static byte[] ReadFully(Stream input)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                input.CopyTo(ms);
+                return ms.ToArray();
+            }
         }
 
         private async void X_property_TextChanged(object? sender, TextChangedEventArgs e)
@@ -711,8 +791,10 @@ namespace vayfrem.views.sections
                 endpointy_property.Text = qbcObj.Point2.Y.ToString();
             }
 
-            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.QuadraticBC)
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Image)
             {
+                ImageObj imgObj = (ImageObj)ViewModel.ActiveObj;
+
                 img_bg_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BackgroundColor.ToColor());
                 img_bg_color_property.Hex = ViewModel.ActiveObj.BackgroundColor.ToHex();
                 img_bg_color_property.SetColorPickerDTO(
@@ -723,6 +805,7 @@ namespace vayfrem.views.sections
                 );
 
                 img_bg_opacity_property.Value = (int)ViewModel.ActiveObj.Opacity;
+                image_property.Text = imgObj.Path != null ? imgObj.Path : "- Image Not Found -"; 
             }
         }
 
@@ -856,6 +939,7 @@ namespace vayfrem.views.sections
                     new Property(ValueType.Height, height_property),
                     new Property(ValueType.Background, img_bg_color_property),
                     new Property(ValueType.Opacity, img_bg_opacity_property),
+                    new Property(ValueType.ImageUrl, image_property),
                     //new Property(ValueType.BorderColor, qbc_border_color_property),
                     //new Property(ValueType.BorderThickness, qbc_border_thickness_property),
                 };
@@ -888,5 +972,6 @@ namespace vayfrem.views.sections
         MiddlePointY,
         EndPointX,
         EndPointY,
+        ImageUrl,
     }
 }
