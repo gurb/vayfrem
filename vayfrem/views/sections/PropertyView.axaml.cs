@@ -35,10 +35,11 @@ namespace vayfrem.views.sections
         components.ColorPicker border_color_property;
         components.ColorPicker qbc_bg_color_property;
         components.ColorPicker qbc_border_color_property;
-
+        components.ColorPicker img_bg_color_property;
 
         components.Slider bg_opacity_property;
         components.Slider qbc_bg_opacity_property;
+        components.Slider img_bg_opacity_property;
         components.Slider border_radius_property;
         components.Slider border_thickness_property;
         components.Slider qbc_border_thickness_property;
@@ -155,6 +156,10 @@ namespace vayfrem.views.sections
             qbc_bg_color_property.ValueChanged += QBCBackgroundColor_ValueChanged;
             qbc_bg_color_property.Margin = new Thickness(0);
 
+            img_bg_color_property = new components.ColorPicker("img-property-bg");
+            img_bg_color_property.ValueChanged += ImageBackgroundColor_ValueChanged;
+            img_bg_color_property.Margin = new Thickness(0);
+
             border_color_property = new components.ColorPicker("borderColor");
             border_color_property.ValueChanged += RectBorderColor_ValueChanged;
             border_color_property.Margin = new Thickness(0);
@@ -162,6 +167,8 @@ namespace vayfrem.views.sections
             qbc_border_color_property = new components.ColorPicker("qbc-borderColor");
             qbc_border_color_property.ValueChanged += QBCBorderColor_ValueChanged;
             qbc_border_color_property.Margin = new Thickness(0);
+
+
 
             bg_opacity_property = new components.Slider();
             bg_opacity_property.ValueChanged += RectOpacityChanged_ValueChanged;
@@ -172,6 +179,11 @@ namespace vayfrem.views.sections
             qbc_bg_opacity_property.ValueChanged += QBCOpacityChanged_ValueChanged;
             qbc_bg_opacity_property.Maximum = 255;
             qbc_bg_opacity_property.Minimum = 0;
+
+            img_bg_opacity_property = new components.Slider();
+            img_bg_opacity_property.ValueChanged += ImageOpacityChanged_ValueChanged;
+            img_bg_opacity_property.Maximum = 255;
+            img_bg_opacity_property.Minimum = 0;
 
             border_radius_property = new components.Slider();
             border_radius_property.ValueChanged += BorderRadiusChanged_ValueChanged;
@@ -389,6 +401,15 @@ namespace vayfrem.views.sections
             }
         }
 
+        private void ImageBackgroundColor_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BackgroundColor = img_bg_color_property.SelectedColor;
+                ViewModel.RefreshDraw();
+            }
+        }
+
         private void RectBorderColor_ValueChanged()
         {
             if (ViewModel.ActiveObj != null)
@@ -420,6 +441,15 @@ namespace vayfrem.views.sections
             if (ViewModel.ActiveObj != null)
             {
                 ViewModel.ActiveObj!.Opacity = qbc_bg_opacity_property.Value;
+                ViewModel.RefreshDraw();
+            }
+        }
+
+        private void ImageOpacityChanged_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.Opacity = img_bg_opacity_property.Value;
                 ViewModel.RefreshDraw();
             }
         }
@@ -680,6 +710,20 @@ namespace vayfrem.views.sections
                 endpointx_property.Text = qbcObj.Point2.X.ToString();
                 endpointy_property.Text = qbcObj.Point2.Y.ToString();
             }
+
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.QuadraticBC)
+            {
+                img_bg_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BackgroundColor.ToColor());
+                img_bg_color_property.Hex = ViewModel.ActiveObj.BackgroundColor.ToHex();
+                img_bg_color_property.SetColorPickerDTO(
+                    new ColorPickerDTO
+                    {
+                        Color = ViewModel.ActiveObj.BackgroundColor,
+                    }
+                );
+
+                img_bg_opacity_property.Value = (int)ViewModel.ActiveObj.Opacity;
+            }
         }
 
         private void SetProperties()
@@ -796,6 +840,24 @@ namespace vayfrem.views.sections
                     new Property(ValueType.Opacity, qbc_bg_opacity_property),
                     new Property(ValueType.BorderColor, qbc_border_color_property),
                     new Property(ValueType.BorderThickness, qbc_border_thickness_property),
+                };
+                grid.SetProperties(ViewModel.Properties.ToList());
+            }
+
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Image)
+            {
+                SetValues();
+                ViewModel.Properties = new ObservableCollection<Property>()
+                {
+                    new Property(ValueType.Name, name_property),
+                    new Property(ValueType.X, x_property),
+                    new Property(ValueType.Y, y_property),
+                    new Property(ValueType.Width, width_property),
+                    new Property(ValueType.Height, height_property),
+                    new Property(ValueType.Background, img_bg_color_property),
+                    new Property(ValueType.Opacity, img_bg_opacity_property),
+                    //new Property(ValueType.BorderColor, qbc_border_color_property),
+                    //new Property(ValueType.BorderThickness, qbc_border_thickness_property),
                 };
                 grid.SetProperties(ViewModel.Properties.ToList());
             }

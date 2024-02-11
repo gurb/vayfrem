@@ -14,6 +14,7 @@ namespace vayfrem.models.objects.components
         public bool IsEditMode { get; set; }
 
         public string? Path { get; set; }
+        public string? Base64 { get; set; }
 
         public enums.TextAlignment TextAlignment { get; set; } = enums.TextAlignment.MiddleCenter;
 

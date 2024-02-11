@@ -162,90 +162,55 @@ namespace vayfrem.services
 
         public void DrawImage(Panel Display, ImageObj obj)
         {
-            //Canvas background = new Canvas();
-
-            //background.Width = obj.Width;
-            //background.Height = obj.Height;
-            //background.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), 255);
-
-            //Border border = new Border();
-            //border.BorderThickness = new Thickness(4);
-            //border.BorderBrush = Brushes.Black;
-
-            //Canvas content = new Canvas();
-            //content.Background = Brushes.Transparent;
-            //content.Width = obj.Width;
-            //content.Height = obj.Height;
-
-            //border.Child = content;
-            //border.BorderThickness = new Thickness(4);
-            
-            //Line line1 = new Line();
-            //line1.StrokeThickness = 4;
-            //line1.Stroke = Brushes.Black;
-            //line1.StartPoint = new Point(5, 5);
-            //line1.EndPoint = new Point(obj.Width - 5, obj.Height - 5);
-
-            //Line line2 = new Line();
-            //line2.StrokeThickness = 4;
-            //line2.Stroke = Brushes.Black;
-            //line2.StartPoint = new Point(obj.Width - 5, 5);
-            //line2.EndPoint = new Point(5, obj.Height - 5);
-
-            //content.Children.Add(line1);
-            //content.Children.Add(line2);
-
-            //background.Children.Add(border);
-            //Canvas.SetLeft(border, 0);
-            //Canvas.SetTop(border, 0);
-
-            //Canvas.SetLeft(background, obj.X);
-            //Canvas.SetTop(background, obj.Y);
-
-            //Display.Children.Add(background);
-
-
             RelativePanel panel = new RelativePanel();
             Canvas.SetLeft(panel, obj.X);
             Canvas.SetTop(panel, obj.Y);
             panel.Width = obj.Width;
             panel.Height = obj.Height;
 
-            Canvas canvas = new Canvas();
-            Canvas.SetLeft(canvas, obj.X);
-            Canvas.SetTop(canvas, obj.Y);
-            canvas.Width = obj.Width;
-            canvas.Height = obj.Height;
+            if(obj.Base64 != null)
+            {
 
-            Line line1 = new Line();
-            line1.StrokeThickness = 4;
-            line1.Stroke = Brushes.Black;
-            line1.StartPoint = new Point(5, 5);
-            line1.EndPoint = new Point(obj.Width - 5, obj.Height - 5);
+            }
+            else
+            {
+                Canvas canvas = new Canvas();
+                Canvas.SetLeft(canvas, obj.X);
+                Canvas.SetTop(canvas, obj.Y);
+                canvas.Width = obj.Width;
+                canvas.Height = obj.Height;
 
-            Line line2 = new Line();
-            line2.StrokeThickness = 4;
-            line2.Stroke = Brushes.Black;
-            line2.StartPoint = new Point(obj.Width - 5, 5);
-            line2.EndPoint = new Point(5, obj.Height - 5);
+                Line line1 = new Line();
+                line1.StrokeThickness = 5;
+                line1.Stroke = Brushes.Black;
+                line1.StartPoint = new Point(20, 20);
+                line1.EndPoint = new Point(obj.Width - 20, obj.Height - 20);
 
-            canvas.Children.Add(line1);
-            canvas.Children.Add(line2);
-            //canvasBackground.StrokeThickness = 1;
+                Line line2 = new Line();
+                line2.StrokeThickness = 5;
+                line2.Stroke = Brushes.Black;
+                line2.StartPoint = new Point(obj.Width - 20, 20);
+                line2.EndPoint = new Point(20, obj.Height - 20);
 
-            //panel.Children.Add(canvas);
+                canvas.Children.Add(line1);
+                canvas.Children.Add(line2);
+                //canvasBackground.StrokeThickness = 1;
 
-            Border border = new Border();
-            border.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
-            border.BorderThickness = new Thickness(4);
-            border.BorderBrush = Brushes.Black;
+                //panel.Children.Add(canvas);
 
-            border.Padding = Avalonia.Thickness.Parse("0");
-            border.Margin = Avalonia.Thickness.Parse("0");
-            Canvas.SetLeft(border, obj.X);
-            Canvas.SetTop(border, obj.Y);
-            border.Child = canvas;
-            panel.Children.Add(border);
+                Border border = new Border();
+                border.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
+                border.BorderThickness = new Thickness(4);
+                border.BorderBrush = Brushes.Black;
+
+                border.Padding = Avalonia.Thickness.Parse("0");
+                border.Margin = Avalonia.Thickness.Parse("0");
+                Canvas.SetLeft(border, obj.X);
+                Canvas.SetTop(border, obj.Y);
+                border.Child = canvas;
+                panel.Children.Add(border);
+            }
+            
 
             Display.Children.Add(panel);
         }
