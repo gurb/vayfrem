@@ -34,7 +34,7 @@ namespace vayfrem.services
             {
                 var options = new JsonSerializerOptions
                 {
-                        WriteIndented = true,
+                    WriteIndented = true,
                 };
 
                 string jsonString = JsonSerializer.Serialize<Project>(data.Project!, options);

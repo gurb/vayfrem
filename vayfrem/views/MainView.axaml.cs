@@ -10,7 +10,6 @@ namespace vayfrem;
 public partial class MainView : UserControl
 {
 
-   
     public MainViewModel ViewModel { get; private set; }
 
     public MainView()

@@ -240,7 +240,9 @@ namespace vayfrem.views.sections
             image_property.PointerPressed += image_property_PointerPressedAsync;
             image_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             image_property.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
+            image_property.TextAlignment = TextAlignment.Center;
             image_property.Margin = new Avalonia.Thickness(0);
+            image_property.Padding = new Avalonia.Thickness(5);
         }
 
         private async void image_property_PointerPressedAsync(object? sender, Avalonia.Input.PointerPressedEventArgs e)
