@@ -36,7 +36,6 @@ namespace vayfrem.services
         Line line1;
         Line line2;
 
-        RelativePanel? oldImagePanel;
 
         public RenderManager() 
         {
@@ -173,16 +172,14 @@ namespace vayfrem.services
 
             if(obj.Base64 != null)
             {
-                if(oldImagePanel != null)
-                {
-                    oldImagePanel.Children.Remove(obj.Image);
-                }
+                Image image = new Image();
+                image.Source = obj.Image.Source;
+                image.Width = obj.Width;
+                image.Height = obj.Height;
 
-                Canvas.SetLeft(obj.Image, 0);
-                Canvas.SetTop(obj.Image, 0);
-                panel.Children.Add(obj.Image);
-
-                oldImagePanel = panel;
+                Canvas.SetLeft(image, 0);
+                Canvas.SetTop(image, 0);
+                panel.Children.Add(image);
             }
             else
             {

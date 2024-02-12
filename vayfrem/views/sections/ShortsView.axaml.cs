@@ -36,7 +36,6 @@ namespace vayfrem
             DataContext = ViewModel;
             InitializeComponent();
 
-
             // this operation valid for one project
             OpenFile.Click += OpenFile_Click;
             // this operation just valid for single page
