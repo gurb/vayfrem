@@ -38,6 +38,12 @@ namespace vayfrem.models.lists
             72
         };
 
+        public static List<bool> TrueOrFalse = new List<bool>
+        {
+            false,
+            true
+        };
+
         public static List<Dimension> Dimensions = new List<Dimension>
         {
             new Dimension

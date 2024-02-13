@@ -104,12 +104,34 @@ namespace vayfrem.services
 
         private Panel DrawCanvas (Panel Display, CanvasObj obj)
         {
+            Border boxShadow = new Border();
+            
+            if(obj.IsBoxShadowActive)
+            {
+                boxShadow.BoxShadow = new BoxShadows(new BoxShadow
+                {
+                    Blur = obj.BoxShadow.Blur,
+                    OffsetX = obj.BoxShadow.HOffset,
+                    OffsetY = obj.BoxShadow.VOffset,
+                    IsInset = obj.BoxShadow.Inset,
+                    Spread = obj.BoxShadow.Spread,
+                    Color = Color.Parse("#"+obj.BoxShadowColor.ToHex())
+                });
+                boxShadow.CornerRadius = new CornerRadius(obj.BorderRadius);
+            }
+
             RelativePanel panel = new RelativePanel();
+
             Canvas.SetLeft(panel, obj.X);
             Canvas.SetTop(panel, obj.Y);
             panel.Width = obj.Width;
             panel.Height = obj.Height;
-            
+
+            boxShadow.BorderThickness = new Thickness(0);
+            boxShadow.Child = panel;
+            Canvas.SetLeft(boxShadow, obj.X);
+            Canvas.SetTop(boxShadow, obj.Y);
+
             Canvas canvas = new Canvas();
             Canvas.SetLeft(canvas, obj.X);
             Canvas.SetTop(canvas, obj.Y);
@@ -128,6 +150,7 @@ namespace vayfrem.services
             //panel.Children.Add(canvas);
 
             Border border = new Border();
+            
             border.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
             border.BorderBrush = new SolidColorBrush(obj.BorderColor.ToColor());
             border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderThickness.ToString());
@@ -140,7 +163,11 @@ namespace vayfrem.services
             border.Child = canvas;
             panel.Children.Add(border);
 
-            Display.Children.Add(panel);
+
+            Display.Children.Add(boxShadow);
+
+
+
             return canvas;
         }
 

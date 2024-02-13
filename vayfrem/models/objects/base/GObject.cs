@@ -31,6 +31,9 @@ namespace vayfrem.models.objects.@base
         public ColorDTO BorderColor { get; set; } = new ColorDTO(0, 0, 0, 255);
         public double BorderThickness { get; set; }
         public double BorderRadius { get; set; }
+        public bool IsBoxShadowActive { get; set; }
+        public BoxShadowDTO BoxShadow { get; set; } = new BoxShadowDTO();
+        public ColorDTO BoxShadowColor { get; set; } = new ColorDTO(255, 100, 100, 100);
         public ObjectType ObjectType { get; set; }
 
         [JsonIgnore]

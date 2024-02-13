@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using Avalonia.Media.Imaging;
+using System.Collections.Generic;
 
 namespace vayfrem.views.sections
 {
@@ -38,6 +39,7 @@ namespace vayfrem.views.sections
         TextBox startpointy_property;
         TextBox middlepointy_property;
         TextBox endpointy_property;
+
         components.ColorPicker bg_color_property;
         components.ColorPicker border_color_property;
         components.ColorPicker qbc_bg_color_property;
@@ -50,12 +52,20 @@ namespace vayfrem.views.sections
         components.Slider border_radius_property;
         components.Slider border_thickness_property;
         components.Slider qbc_border_thickness_property;
+        components.Slider box_shadow_hoffset_property;
+        components.Slider box_shadow_voffset_property;
+        components.Slider box_shadow_blur_property;
+        components.Slider box_shadow_spread_property;
 
         components.ColorPicker font_color_property;
+        components.ColorPicker box_shadow_color_property;
+
         ComboBox font_family_property;
         ComboBox font_size_property;
         ComboBox text_alignment_property;
         ComboBox content_alignment_property;
+        ComboBox boxshadow_active_property;
+        ComboBox boxshadow_inset_property;
 
         TextBlock image_property;
 
@@ -209,8 +219,32 @@ namespace vayfrem.views.sections
             qbc_border_thickness_property.Maximum = 100;
             qbc_border_thickness_property.Minimum = 0;
 
+
+            box_shadow_blur_property = new components.Slider();
+            box_shadow_blur_property.ValueChanged += BoxShadowBlurChanged_ValueChanged;
+            box_shadow_blur_property.Maximum = 100;
+            box_shadow_blur_property.Minimum = 0;
+
+            box_shadow_spread_property = new components.Slider();
+            box_shadow_spread_property.ValueChanged += BoxShadowSpreadChanged_ValueChanged;
+            box_shadow_spread_property.Maximum = 100;
+            box_shadow_spread_property.Minimum = 0;
+
+            box_shadow_hoffset_property = new components.Slider();
+            box_shadow_hoffset_property.ValueChanged += BoxShadowHOffsetChanged_ValueChanged;
+            box_shadow_hoffset_property.Maximum = 100;
+            box_shadow_hoffset_property.Minimum = 0;
+
+            box_shadow_voffset_property = new components.Slider();
+            box_shadow_voffset_property.ValueChanged += BoxShadowVOffsetChanged_ValueChanged;
+            box_shadow_voffset_property.Maximum = 100;
+            box_shadow_voffset_property.Minimum = 0;
+
             font_color_property = new components.ColorPicker("fontColor");
             font_color_property.ValueChanged += FontColor_ValueChanged;
+
+            box_shadow_color_property = new components.ColorPicker("boxShadowColor");
+            box_shadow_color_property.ValueChanged += BoxShadowColor_ValueChanged;
 
             font_family_property = new ComboBox();
             font_family_property.ItemsSource = ListStorage.FontFamilies;
@@ -235,6 +269,18 @@ namespace vayfrem.views.sections
             content_alignment_property.SelectionChanged += ContentAlignmentComboBox_SelectionChanged;
             content_alignment_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             content_alignment_property.BorderThickness = new Thickness(0);
+
+            boxshadow_active_property = new ComboBox();
+            boxshadow_active_property.ItemsSource = ListStorage.TrueOrFalse;
+            boxshadow_active_property.SelectionChanged += BoxShadowActiveComboBox_SelectionChanged;
+            boxshadow_active_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            boxshadow_active_property.BorderThickness = new Thickness(0);
+
+            boxshadow_inset_property = new ComboBox();
+            boxshadow_inset_property.ItemsSource = ListStorage.TrueOrFalse;
+            boxshadow_inset_property.SelectionChanged += BoxShadowInsetComboBox_SelectionChanged;
+            boxshadow_inset_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            boxshadow_inset_property.BorderThickness = new Thickness(0);
 
             image_property = new TextBlock();
             image_property.PointerPressed += image_property_PointerPressedAsync;
@@ -563,6 +609,41 @@ namespace vayfrem.views.sections
             }
         }
 
+        private void BoxShadowBlurChanged_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BoxShadow.Blur = box_shadow_blur_property.Value;
+                ViewModel.RefreshDraw();
+            }
+        }
+        private void BoxShadowSpreadChanged_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BoxShadow.Spread = box_shadow_spread_property.Value;
+                ViewModel.RefreshDraw();
+            }
+        }
+
+        private void BoxShadowHOffsetChanged_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BoxShadow.HOffset = box_shadow_hoffset_property.Value;
+                ViewModel.RefreshDraw();
+            }
+        }
+
+        private void BoxShadowVOffsetChanged_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BoxShadow.VOffset = box_shadow_voffset_property.Value;
+                ViewModel.RefreshDraw();
+            }
+        }
+
         private void FontColor_ValueChanged()
         {
             if(ViewModel.ActiveObj == null) {
@@ -578,6 +659,21 @@ namespace vayfrem.views.sections
             {
                 ButtonObj buttonObj = (ButtonObj)ViewModel.ActiveObj;
                 buttonObj.FontColor = font_color_property.SelectedColor;
+            }
+
+            ViewModel.RefreshDraw();
+        }
+
+        private void BoxShadowColor_ValueChanged()
+        {
+            if (ViewModel.ActiveObj == null)
+            {
+                return;
+            }
+
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Canvas)
+            {
+                ViewModel.ActiveObj!.BoxShadowColor = box_shadow_color_property.SelectedColor;
             }
 
             ViewModel.RefreshDraw();
@@ -648,6 +744,42 @@ namespace vayfrem.views.sections
             ViewModel.RefreshDraw();
         }
 
+        private void BoxShadowActiveComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.IsBoxShadowActive = (bool)comboBox.SelectedValue;
+
+                SetEnableStatusOfBoxShadows(ViewModel.ActiveObj!.IsBoxShadowActive);
+            }
+
+            ViewModel.RefreshDraw();
+
+        }
+
+        private void SetEnableStatusOfBoxShadows(bool val)
+        {
+            box_shadow_hoffset_property.IsEnabled = val;
+            box_shadow_voffset_property.IsEnabled = val;
+            box_shadow_blur_property.IsEnabled = val;
+            box_shadow_spread_property.IsEnabled = val;
+            boxshadow_inset_property.IsEnabled = val;
+            box_shadow_color_property.IsEnabled = val;
+        }
+
+        private void BoxShadowInsetComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BoxShadow.Inset = (bool)comboBox.SelectedValue;
+                ViewModel.RefreshDraw();
+            }
+        }
+
 
         private void SetStyles()
         {
@@ -702,9 +834,29 @@ namespace vayfrem.views.sections
                 bg_opacity_property.Value = (int)ViewModel.ActiveObj.Opacity;
                 border_radius_property.Value = (int)ViewModel.ActiveObj.BorderRadius;
                 border_thickness_property.Value = (int)ViewModel.ActiveObj.BorderThickness;
+
+                
+                boxshadow_active_property.SelectedIndex = ListStorage.TrueOrFalse.IndexOf(ViewModel.ActiveObj.IsBoxShadowActive);
+                boxshadow_inset_property.SelectedIndex = ListStorage.TrueOrFalse.IndexOf(ViewModel.ActiveObj.BoxShadow.Inset);
+
+                box_shadow_blur_property.Value = (int)ViewModel.ActiveObj.BoxShadow.Blur;
+                box_shadow_spread_property.Value = (int)ViewModel.ActiveObj.BoxShadow.Spread;
+                box_shadow_hoffset_property.Value = (int)ViewModel.ActiveObj.BoxShadow.HOffset;
+                box_shadow_voffset_property.Value = (int)ViewModel.ActiveObj.BoxShadow.VOffset;
+
+                box_shadow_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BoxShadowColor.ToColor());
+                box_shadow_color_property.Hex = ViewModel.ActiveObj.BoxShadowColor.ToHex();
+                box_shadow_color_property.SetColorPickerDTO(
+                    new ColorPickerDTO
+                    {
+                        Color = ViewModel.ActiveObj.BoxShadowColor,
+                    }
+                );
+
+                SetEnableStatusOfBoxShadows(ViewModel.ActiveObj.IsBoxShadowActive);
             }
 
-            if(ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Text)
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Text)
             {
                 TextObj textObj = (TextObj)ViewModel.ActiveObj;
 
@@ -838,6 +990,13 @@ namespace vayfrem.views.sections
                     new Property(ValueType.BorderColor, border_color_property),
                     new Property(ValueType.BorderRadius, border_radius_property),
                     new Property(ValueType.BorderThickness, border_thickness_property),
+                    new Property(ValueType.BoxShadowActive, boxshadow_active_property),
+                    new Property(ValueType.BoxShadowColor, box_shadow_color_property),
+                    new Property(ValueType.BoxShadowBlur, box_shadow_blur_property),
+                    new Property(ValueType.BoxShadowSpread, box_shadow_spread_property),
+                    new Property(ValueType.BoxShadowHOffset, box_shadow_hoffset_property),
+                    new Property(ValueType.BoxShadowVOffset, box_shadow_voffset_property),
+                    new Property(ValueType.BoxShadowInset, boxshadow_inset_property),
                 };
                 grid.SetProperties(ViewModel.Properties.ToList());
             }
@@ -975,5 +1134,12 @@ namespace vayfrem.views.sections
         EndPointX,
         EndPointY,
         ImageUrl,
+        BoxShadowActive,
+        BoxShadowInset,
+        BoxShadowColor,
+        BoxShadowSpread,
+        BoxShadowBlur,
+        BoxShadowHOffset,
+        BoxShadowVOffset,
     }
 }
