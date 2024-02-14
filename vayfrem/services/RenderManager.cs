@@ -117,17 +117,18 @@ namespace vayfrem.services
                     Spread = obj.BoxShadow.Spread,
                     Color = Color.Parse("#"+obj.BoxShadowColor.ToHex())
                 });
+                boxShadow.Background = Brushes.Transparent;
                 boxShadow.CornerRadius = new CornerRadius(obj.BorderRadius);
+                boxShadow.BorderThickness = new Thickness(0);
             }
 
             RelativePanel panel = new RelativePanel();
-
+            
             Canvas.SetLeft(panel, obj.X);
             Canvas.SetTop(panel, obj.Y);
             panel.Width = obj.Width;
             panel.Height = obj.Height;
 
-            boxShadow.BorderThickness = new Thickness(0);
             boxShadow.Child = panel;
             Canvas.SetLeft(boxShadow, obj.X);
             Canvas.SetTop(boxShadow, obj.Y);
