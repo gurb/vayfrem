@@ -20,9 +20,12 @@ namespace vayfrem.models.lists
     {
 
         public static List<FontFamily> FontFamilies =
-            ((RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) ?
+#if Windows
             new InstalledFontCollection().Families.Select(x => new FontFamily(x.Name))
-                .OrderBy(x => x.Name).ToList() : GetLinuxFontFamilies().Select(x => new FontFamily(x))).ToList();
+                .OrderBy(x => x.Name).ToList();
+#else
+        GetLinuxFontFamilies().Select(x => new FontFamily(x))).ToList();
+#endif
 
         public static List<int> FontSizes = new List<int>
         {
