@@ -23,8 +23,8 @@ namespace vayfrem.models.lists
 #if Windows
             new InstalledFontCollection().Families.Select(x => new FontFamily(x.Name))
                 .OrderBy(x => x.Name).ToList();
-#else
-        GetLinuxFontFamilies().Select(x => new FontFamily(x))).ToList();
+#elif Linux
+        GetLinuxFontFamilies().Select(x => new FontFamily(x)).ToList();
 #endif
 
         public static List<int> FontSizes = new List<int>
