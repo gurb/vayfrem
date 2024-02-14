@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using System;
@@ -13,7 +14,6 @@ namespace vayfrem
         {
 
             versionControlManager = App.GetService<VersionControlManager>();
-
             InitializeComponent();
 
             Title = "Vayfrem " + versionControlManager.Version;
@@ -25,5 +25,6 @@ namespace vayfrem
         {
             GC.Collect();
         }
+
     }
 }
