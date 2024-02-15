@@ -64,9 +64,10 @@ namespace vayfrem
                     services.AddSingleton<UndoRedoManager>();
                     services.AddSingleton<PdfManager>();
                     services.AddSingleton<ExportManager>();
+
+                    services.AddSingleton<MultipleUserService>();
                 })
                 .Build();
-
         }
 
         public override void Initialize()

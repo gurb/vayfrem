@@ -58,9 +58,9 @@
 				<TabItem Margin="0" Padding="5,0,5,0" Header="SVG">
 					<views:SvgView/>
 				</TabItem>
-				<!--<TabItem Margin="0" Padding="5,0,5,0" Header="Test">
+				<TabItem Margin="0" Padding="5,0,5,0" Header="Test">
 					<views:TestView></views:TestView>
-				</TabItem>-->
+				</TabItem>
 			</TabControl>
 
 
