@@ -102,6 +102,7 @@ namespace vayfrem.services
                 try
                 {
                     ListenHost();
+                    Send("Connected");
                 }
                 catch (Exception ex) 
                 {
@@ -112,6 +113,20 @@ namespace vayfrem.services
                     if (client != null) client.Close();
                 }
             });
+        }
+
+        public void Send(string message)
+        {
+            if (client == null || !client.Connected)
+            {
+                Debug.WriteLine("No connection");
+                return;
+            }
+
+            NetworkStream stream = client.GetStream();
+            byte[] data = Encoding.ASCII.GetBytes(message);
+            stream.Write(data, 0, data.Length);
+            Debug.WriteLine("Sent Message: " + message);
         }
 
         private void ListenHost()
@@ -125,7 +140,6 @@ namespace vayfrem.services
                 {
                     int bytes = stream.Read(data, 0, data.Length);
                     string responseData = Encoding.ASCII.GetString(data, 0, bytes);
-                    stream.Write(data, 0, data.Length);
                     Debug.WriteLine("Response from server:" + responseData);
                 }
             }
