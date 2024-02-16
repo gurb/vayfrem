@@ -125,6 +125,7 @@ namespace vayfrem.services
                 {
                     int bytes = stream.Read(data, 0, data.Length);
                     string responseData = Encoding.ASCII.GetString(data, 0, bytes);
+                    stream.Write(data, 0, data.Length);
                     Debug.WriteLine("Response from server:" + responseData);
                 }
             }
