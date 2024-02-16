@@ -102,7 +102,7 @@ namespace vayfrem.services
                 try
                 {
                     ListenHost();
-                    Send("Connected");
+                    
                 }
                 catch (Exception ex) 
                 {
@@ -135,6 +135,8 @@ namespace vayfrem.services
             {
                 NetworkStream stream = client.GetStream();
                 byte[] data = new byte[256];
+
+                Send("Connected");
 
                 while (true)
                 {
