@@ -32,7 +32,7 @@ namespace vayfrem.services
 
             int port = 9090;
 
-            IPAddress localIpAddress = IPAddress.Parse("127.0.0.1");
+            IPAddress localIpAddress = IPAddress.Parse("192.168.56.1");
             listener = new TcpListener(localIpAddress, port);
             listener.Start();
 
