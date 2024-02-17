@@ -24,12 +24,15 @@ namespace vayfrem.services
         private readonly RenderManager renderManager;
         private readonly DrawingViewModel drawingViewModel;
         private readonly PdfManager pdfManager;
+        private readonly HTMLManager bootstrapManager;
+
         public ExportManager()
         { 
             projectManager = App.GetService<ProjectManager>();
             renderManager = App.GetService<RenderManager>();
             drawingViewModel = App.GetService<DrawingViewModel>();
             pdfManager = App.GetService<PdfManager>();
+            bootstrapManager = App.GetService<HTMLManager>();
         }
 
         public bool ProjectValid()
@@ -137,6 +140,16 @@ namespace vayfrem.services
             }
 
             document.Save(path);
+        }
+
+        public void GenerateCurrentHTML(string path)
+        {
+            bootstrapManager.Generate(drawingViewModel.CurrentFile!, path);
+        }
+
+        public void GenerateAllHTML(string path)
+        {
+            bootstrapManager.GenerateProject(projectManager.CurrentProject!.Nodes, path);
         }
     }
 }

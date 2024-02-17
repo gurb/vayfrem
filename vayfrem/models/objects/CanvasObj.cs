@@ -6,12 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using vayfrem.models.enums;
 
 namespace vayfrem.models.objects
 {
     public class CanvasObj : GObject
     {
         public List<GObject> Children { get; set; } = new List<GObject>();
+
+        public CanvasRole Role { get; set; }
 
         public CanvasObj() 
         {
@@ -31,6 +34,7 @@ namespace vayfrem.models.objects
         public override void InitializeObject()
         {
             this.ObjectType = enums.ObjectType.Canvas;
+            this.Role = CanvasRole.None;
 
             base.InitializeObject();
             //Properties = new List<Property> 

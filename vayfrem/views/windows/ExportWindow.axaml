@@ -23,6 +23,7 @@
 				<ComboBox FontSize="12" x:Name="fileTypeCb"  Grid.Column="2" HorizontalAlignment="Stretch" SelectedIndex="0">
 					<ComboBoxItem FontSize="12">*.png</ComboBoxItem>
 					<ComboBoxItem FontSize="12">*.pdf</ComboBoxItem>
+					<ComboBoxItem FontSize="12">*.html</ComboBoxItem>
 				</ComboBox>
 			</Grid>
 

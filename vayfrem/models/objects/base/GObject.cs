@@ -36,6 +36,9 @@ namespace vayfrem.models.objects.@base
         public ColorDTO BoxShadowColor { get; set; } = new ColorDTO(255, 100, 100, 100);
         public ObjectType ObjectType { get; set; }
 
+        public List<string>? Classes { get; set; } = new List<string>() { "className" };
+        public string? Tag { get; set; }
+
         [JsonIgnore]
         public bool IsDrew { get; set; }
 

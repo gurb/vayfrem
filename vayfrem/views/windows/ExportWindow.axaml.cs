@@ -109,6 +109,10 @@ public partial class ExportWindow : Window
         {
             ExportPDF();
         }
+        else if (getExtension(content!) == "html")
+        {
+            ExportHTML();
+        }
     }
 
     private void ExportPNG()
@@ -147,6 +151,28 @@ public partial class ExportWindow : Window
         else if (exportTypeCb.SelectedIndex == 1) // project
         {
             exportManager.GenerateAllPdf(filePathTxt.Text + "/" + exportNameTxt.Text + ".pdf");
+            //List<RenderTargetBitmap> bitmaps = exportManager.GenerateAllPagesPng();
+
+            //int fileCounter = 1;
+            //foreach (RenderTargetBitmap bitmap in bitmaps)
+            //{
+            //    bitmap.Save(filePathTxt.Text + "/" + exportNameTxt.Text + "-" + fileCounter.ToString() + ".png");
+            //    bitmap.Dispose();
+            //    fileCounter++;
+            //}
+        }
+    }
+    private void ExportHTML()
+    {
+        if (exportTypeCb.SelectedValue == null) return;
+
+        if (exportTypeCb.SelectedIndex == 0) // current file
+        {
+            exportManager.GenerateCurrentHTML(filePathTxt.Text + "/" + exportNameTxt.Text + ".html");
+        }
+        else if (exportTypeCb.SelectedIndex == 1) // project
+        {
+            exportManager.GenerateAllHTML(filePathTxt.Text + "/" + exportNameTxt.Text + ".html");
             //List<RenderTargetBitmap> bitmaps = exportManager.GenerateAllPagesPng();
 
             //int fileCounter = 1;

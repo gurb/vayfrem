@@ -18,7 +18,6 @@ namespace vayfrem
             get;
         }
 
-        
         public static T GetService<T>()
             where T : class
         {
@@ -66,6 +65,8 @@ namespace vayfrem
                     services.AddSingleton<ExportManager>();
 
                     services.AddSingleton<MultipleUserService>();
+
+                    services.AddSingleton<HTMLManager>();
                 })
                 .Build();
         }
