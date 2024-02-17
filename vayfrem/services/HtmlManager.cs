@@ -95,19 +95,19 @@ namespace vayfrem.services
                 {
                     ImageObj textObj = (ImageObj)obj;
 
-                    htmlBuilder.Append("<img src='data:image/png;base64,");
+                    htmlBuilder.Append(new String('\t', counter)).Append("<img src='data:image/png;base64,");
                     htmlBuilder.Append(textObj.Base64);
                     htmlBuilder.AppendLine("'>");
-                    htmlBuilder.AppendLine("</img>");
+                    htmlBuilder.Append(new String('\t', counter)).AppendLine("</img>");
                 }
 
                 if (obj.ObjectType == models.enums.ObjectType.Button)
                 {
                     ButtonObj buttonObj = (ButtonObj)obj;
 
-                    htmlBuilder.AppendLine("<button class='btn' href='#' role='button'>");
+                    htmlBuilder.Append(new String('\t', counter)).AppendLine("<button class='btn' href='#' role='button'>");
                     htmlBuilder.AppendLine(buttonObj.Text);
-                    htmlBuilder.AppendLine("</button>");
+                    htmlBuilder.Append(new String('\t', counter)).AppendLine("</button>");
                 }
             }
         }

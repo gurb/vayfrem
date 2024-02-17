@@ -5,6 +5,7 @@ using vayfrem.services;
 using vayfrem.models.enums;
 using System.Drawing;
 using vayfrem.viewmodels;
+using SFML.Graphics;
 
 namespace vayfrem;
 
@@ -18,9 +19,10 @@ public partial class ToolbarView : UserControl
     public ToolbarView()
     {
         toolManager = App.GetService<ToolManager>();
+        toolManager.drawToolBarDelegate += SetButton;
         pageTreeViewModel = App.GetService<PageTreeViewModel>();
         pageTreeViewModel.setSelect += SetSelectTool;
-        
+
 
         InitializeComponent();
         selectedButton = RectTool;
@@ -67,5 +69,25 @@ public partial class ToolbarView : UserControl
         selectedButton.Classes.Clear();
         selectedButton = button;
         selectedButton.Classes.Add("Selected");
+    }
+
+    public void SetButton(ToolOption option)
+    {
+        if(option == ToolOption.Select)
+        {
+            setButton(SelectTool);
+        }
+        if (option == ToolOption.Rect)
+        {
+            setButton(RectTool);
+        }
+        if (option == ToolOption.Text)
+        {
+            setButton(TextTool);
+        }
+        if (option == ToolOption.QBC)
+        {
+            setButton(QuadraticBCTool);
+        }
     }
 }

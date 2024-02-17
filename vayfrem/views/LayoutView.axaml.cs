@@ -11,6 +11,7 @@ using Avalonia.Svg;
 using vayfrem.models.objects.components;
 using Avalonia.Platform;
 using vayfrem.models.objects;
+using Avalonia.Input;
 
 namespace vayfrem;
 
@@ -18,6 +19,7 @@ public partial class LayoutView : UserControl
 {
     LayoutViewModel ViewModel;
     private readonly ObjectMenuManager objectMenuManager;
+    private readonly ToolManager toolManager;
 
     Border? ghostItem;
     Canvas ghostImage;
@@ -41,6 +43,7 @@ public partial class LayoutView : UserControl
         DataContext = ViewModel;
 
         objectMenuManager = App.GetService<ObjectMenuManager>();
+        toolManager = App.GetService<ToolManager>();
 
         InitializeComponent();
 
@@ -56,6 +59,37 @@ public partial class LayoutView : UserControl
 
         SetGhostItem();
         SetObjectMenu();
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+
+        if (e.KeyModifiers == KeyModifiers.Alt)
+        {
+            switch (e.Key)
+            {
+                case Key.D1:
+                    toolManager.SetToolOption(models.enums.ToolOption.Select);
+                    break;
+                case Key.D2:
+                    toolManager.SetToolOption(models.enums.ToolOption.Rect);
+                    break;
+                case Key.D3:
+                    toolManager.SetToolOption(models.enums.ToolOption.Text);
+                    break;
+                case Key.D4:
+                    toolManager.SetToolOption(models.enums.ToolOption.QBC);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void test()
+    {
+        var test0 = 0;
     }
 
     private void LayoutView_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
@@ -244,7 +278,5 @@ public partial class LayoutView : UserControl
         OverlayLayout.Children.Add(ghostItem);
         OverlayLayout.Children.Add(ghostSvg);
         OverlayLayout.Children.Add(ghostImage);
-
-
     }
 }

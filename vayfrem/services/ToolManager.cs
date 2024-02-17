@@ -15,6 +15,9 @@ namespace vayfrem.services
         public ToolOption SelectedToolOption { get; set; }
         public ObjectType SelectedObjectType { get; set; }
 
+        public delegate void DrawToolBarDelegate(ToolOption option);
+        public DrawToolBarDelegate? drawToolBarDelegate;
+
         public ToolManager() 
         {
             toolOptionsViewModel = App.GetService<ToolOptionsViewModel>();
@@ -28,6 +31,11 @@ namespace vayfrem.services
             SelectedToolOption = option;
 
             toolOptionsViewModel.SetToolOption(option);
+
+            if(drawToolBarDelegate != null)
+            {
+                drawToolBarDelegate(option);
+            }
 
             switch (option)
             {
