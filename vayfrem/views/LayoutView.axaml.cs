@@ -87,11 +87,6 @@ public partial class LayoutView : UserControl
         }
     }
 
-    private void test()
-    {
-        var test0 = 0;
-    }
-
     private void LayoutView_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         if (ViewModel.IsOpenMenu)
