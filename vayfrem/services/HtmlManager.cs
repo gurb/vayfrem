@@ -158,8 +158,6 @@ namespace vayfrem.services
             }
 
             cssBuilder.AppendLine();
-
-            
         }
     }
 }
