@@ -142,9 +142,9 @@ namespace vayfrem.services
             document.Save(path);
         }
 
-        public void GenerateCurrentHTML(string path)
+        public void GenerateCurrentHTML(string dir, string path)
         {
-            bootstrapManager.Generate(drawingViewModel.CurrentFile!, path);
+            bootstrapManager.Generate(drawingViewModel.CurrentFile!, dir, path);
         }
 
         public void GenerateAllHTML(string path)

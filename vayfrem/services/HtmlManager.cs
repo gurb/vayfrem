@@ -18,13 +18,15 @@ namespace vayfrem.services
 
         public HTMLManager() { }
 
-        public void Generate(vayfrem.models.File file, string path)
+        public void Generate(vayfrem.models.File file, string dir, string path)
         {
             StringBuilder htmlBuilder = new StringBuilder();
+            StringBuilder cssBuilder = new StringBuilder();
 
             htmlBuilder.AppendLine("<!DOCTYPE html>");
             htmlBuilder.AppendLine("<html>");
             htmlBuilder.Append(new String('\t', 1)).AppendLine("<head>");
+            htmlBuilder.Append(new String('\t', 2)).AppendLine("<link href='style.css' rel='stylesheet'/>");
             htmlBuilder.Append(new String('\t', 1)).AppendLine("</head>");
             htmlBuilder.Append(new String('\t', 1)).AppendLine("<body>");
             counter = 2;
@@ -32,15 +34,21 @@ namespace vayfrem.services
 
             htmlBuilder.Append(new String('\t', 1)).AppendLine("</body>");
             htmlBuilder.AppendLine("</html>");
-            SaveFile(htmlBuilder, path);
+
+            CSSBuild(file.Objects, cssBuilder);
+
+            SaveFile(htmlBuilder, cssBuilder, dir, path);
         }
 
-        private void SaveFile(StringBuilder htmlBuilder, string path)
+        private void SaveFile(StringBuilder htmlBuilder, StringBuilder cssBuilder, string dir, string path)
         {
             string htmlCode = htmlBuilder.ToString();
+            string cssCode = cssBuilder.ToString();
 
             System.IO.File.WriteAllText(path, htmlCode);
+            System.IO.File.WriteAllText(dir + "/style.css", cssCode);
         }
+
 
         private void HtmlBuild(List<GObject> objects, StringBuilder htmlBuilder, int counter)
         {
@@ -53,7 +61,7 @@ namespace vayfrem.services
 
                     if (canvasObj.Role == models.enums.CanvasRole.None)
                     {
-                        htmlBuilder.Append(new String('\t', counter)).AppendLine($"<div class='{canvasObj.Classes[0]}'>");
+                        htmlBuilder.Append(new String('\t', counter)).AppendLine($"<div id='{canvasObj.Tag}'>");
                     }
                     if (canvasObj.Role == models.enums.CanvasRole.Content)
                     {
@@ -115,6 +123,43 @@ namespace vayfrem.services
         public void GenerateProject(ObservableCollection<Node> nodes, string path)
         {
 
+        }
+
+        private void CSSBuild(List<GObject> objects, StringBuilder cssBuilder)
+        {
+            cssBuilder.AppendLine("body {");
+            cssBuilder.Append(new String('\t', 1)).AppendLine("");
+            cssBuilder.AppendLine("}");
+
+            List<string> classes = new List<string>();
+            List<string> ids = new List<string>();
+
+            foreach (var obj in objects)
+            {
+                cssBuilder.Append($"#{obj.Tag}").AppendLine("{");
+                cssBuilder.Append(new String('\t', 1)).Append("background:").AppendLine($"#{obj.BackgroundColor.ToHex()};");
+                cssBuilder.Append(new String('\t', 1)).Append("opacity:").AppendLine($"{(obj.Opacity/255.0).ToString().Replace(',', '.')};");
+                cssBuilder.Append(new String('\t', 1)).Append("width:").AppendLine($"{obj.Width.ToString()}px;");
+                cssBuilder.Append(new String('\t', 1)).Append("height:").AppendLine($"{obj.Height.ToString()}px;");
+                cssBuilder.Append(new String('\t', 1)).Append("border-color:").AppendLine($"#{obj.BorderColor.ToHex()};");
+                cssBuilder.Append(new String('\t', 1)).Append("border:").AppendLine($"{(int)obj.BorderThickness}px solid #{obj.BorderColor.ToHex()};");
+                cssBuilder.AppendLine("}");
+
+
+                if(obj.ObjectType == models.enums.ObjectType.Canvas)
+                {
+                    CanvasObj canvasObj = (CanvasObj)obj;
+
+                    if (canvasObj.Children.Count() > 0)
+                    {
+                        CSSBuild(canvasObj.Children, cssBuilder);
+                    }
+                }
+            }
+
+            cssBuilder.AppendLine();
+
+            
         }
     }
 }

@@ -37,7 +37,12 @@ namespace vayfrem.models.objects.@base
         public ObjectType ObjectType { get; set; }
 
         public List<string>? Classes { get; set; } = new List<string>() { "className" };
-        public string? Tag { get; set; }
+        public string? Tag { 
+            get 
+            {
+                return "id-" + Guid;
+            }
+        }
 
         [JsonIgnore]
         public bool IsDrew { get; set; }
