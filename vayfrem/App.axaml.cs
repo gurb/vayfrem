@@ -67,6 +67,8 @@ namespace vayfrem
                     services.AddSingleton<MultipleUserService>();
 
                     services.AddSingleton<HTMLManager>();
+
+                    services.AddSingleton<TempStorage>();
                 })
                 .Build();
         }

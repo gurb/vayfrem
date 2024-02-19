@@ -15,6 +15,7 @@ namespace vayfrem;
 public partial class ExportWindow : Window
 {
     private readonly ExportManager exportManager;
+    private readonly TempStorage tempStorage;
 
     int width_window = 400;
     int height_window = 270;
@@ -22,6 +23,7 @@ public partial class ExportWindow : Window
     public ExportWindow()
     {
         exportManager = App.GetService<ExportManager>();
+        tempStorage = App.GetService<TempStorage>();
         InitializeComponent();
         SetWindow();
     }
@@ -38,6 +40,14 @@ public partial class ExportWindow : Window
         this.ExtendClientAreaToDecorationsHint = false;
 
         SetClickEvents();
+        SetTempStorage();
+    }
+
+    private void SetTempStorage()
+    {
+        exportNameTxt.Text = tempStorage.GetTempData("exportName") != null ? tempStorage.GetTempData("exportName")!.ToString() : "";
+        filePathTxt.Text = tempStorage.GetTempData("exportFilePath") != null ? tempStorage.GetTempData("exportFilePath")!.ToString() : "";
+        fileTypeCb.SelectedIndex = tempStorage.GetTempData("selectedFileType") != null ? (int)tempStorage.GetTempData("selectedFileType")! : 0;
     }
 
     private void SetClickEvents()
@@ -61,6 +71,7 @@ public partial class ExportWindow : Window
         if(result.Count >= 1)
         {
             filePathTxt.Text = result[0].Path.AbsolutePath.Replace("%20", " ");
+            tempStorage.AddTempData("exportFilePath", filePathTxt.Text);
         }
     }
 
@@ -100,6 +111,9 @@ public partial class ExportWindow : Window
 
         ComboBoxItem selectedItem = fileTypeCb.SelectedValue as ComboBoxItem;
         string content = selectedItem.Content.ToString();
+
+        tempStorage.AddTempData("selectedFileType", fileTypeCb.SelectedIndex);
+        tempStorage.AddTempData("exportName", exportNameTxt.Text);
 
         if (getExtension(content!) == "png")
         {
@@ -168,7 +182,7 @@ public partial class ExportWindow : Window
 
         if (exportTypeCb.SelectedIndex == 0) // current file
         {
-            exportManager.GenerateCurrentHTML(filePathTxt.Text + "/" + exportNameTxt.Text + ".html");
+            exportManager.GenerateCurrentHTML(filePathTxt.Text!, filePathTxt.Text + "/" + exportNameTxt.Text + ".html");
         }
         else if (exportTypeCb.SelectedIndex == 1) // project
         {
