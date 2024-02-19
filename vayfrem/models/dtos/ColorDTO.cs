@@ -51,6 +51,11 @@ namespace vayfrem.models.dtos
             return XColor.FromArgb(A, R, G, B);
         }
 
+        public string HTMLColor(byte opacity = 255)
+        {
+            return $"rgba({R},{G},{B},{opacity})";
+        }
+
         public XColor ToXColor(int opacity)
         {
             return XColor.FromArgb((byte)(opacity), R, G, B);

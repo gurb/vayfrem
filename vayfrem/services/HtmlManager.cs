@@ -16,6 +16,7 @@ namespace vayfrem.services
     {
         int counter;
 
+
         public HTMLManager() { }
 
         public void Generate(vayfrem.models.File file, string dir, string path)
@@ -35,6 +36,10 @@ namespace vayfrem.services
             htmlBuilder.Append(new String('\t', 1)).AppendLine("</body>");
             htmlBuilder.AppendLine("</html>");
 
+
+            cssBuilder.AppendLine("body {");
+            cssBuilder.Append(new String('\t', 1)).AppendLine("");
+            cssBuilder.AppendLine("}");
             CSSBuild(file.Objects, cssBuilder);
 
             SaveFile(htmlBuilder, cssBuilder, dir, path);
@@ -127,9 +132,7 @@ namespace vayfrem.services
 
         private void CSSBuild(List<GObject> objects, StringBuilder cssBuilder)
         {
-            cssBuilder.AppendLine("body {");
-            cssBuilder.Append(new String('\t', 1)).AppendLine("");
-            cssBuilder.AppendLine("}");
+            
 
             List<string> classes = new List<string>();
             List<string> ids = new List<string>();
@@ -137,14 +140,34 @@ namespace vayfrem.services
             foreach (var obj in objects)
             {
                 cssBuilder.Append($"#{obj.Tag}").AppendLine("{");
-                cssBuilder.Append(new String('\t', 1)).Append("background:").AppendLine($"#{obj.BackgroundColor.ToHex()};");
-                cssBuilder.Append(new String('\t', 1)).Append("opacity:").AppendLine($"{(obj.Opacity/255.0).ToString().Replace(',', '.')};");
-                cssBuilder.Append(new String('\t', 1)).Append("width:").AppendLine($"{obj.Width.ToString()}px;");
-                cssBuilder.Append(new String('\t', 1)).Append("height:").AppendLine($"{obj.Height.ToString()}px;");
+                cssBuilder.Append(new String('\t', 1)).Append("background-color:").AppendLine($"{obj.BackgroundColor.HTMLColor((byte)obj.Opacity)};");
+
+                int percWidth, percHeight, percX, percY;
+                if (obj.Parent != null)
+                {
+                    percWidth = GetPercentage(obj.Width, obj.Parent.Width);
+                    percHeight = GetPercentage(obj.Height, obj.Parent.Height);
+                    percX = GetPercentage(obj.X, obj.Parent.Width);
+                    percY = GetPercentage(obj.Y, obj.Parent.Height);
+                }
+                else
+                {
+                    percWidth = GetPercentage(obj.Width, 1920);
+                    percHeight = GetPercentage(obj.Height, 1080);
+                    percX = GetPercentage(obj.X, 1920);
+                    percY = GetPercentage(obj.Y, 1080);
+                }
+                cssBuilder.Append(new String('\t', 1)).Append("position:").AppendLine($"absolute;");
+                cssBuilder.Append(new String('\t', 1)).Append("left:").AppendLine($"{percX}%;");
+                cssBuilder.Append(new String('\t', 1)).Append("top:").AppendLine($"{percY}%;");
+                cssBuilder.Append(new String('\t', 1)).Append("overflow:").AppendLine($"hidden;");
+
+                cssBuilder.Append(new String('\t', 1)).Append("width:").AppendLine($"{percWidth}%;");
+                cssBuilder.Append(new String('\t', 1)).Append("height:").AppendLine($"{percHeight}%;");
                 cssBuilder.Append(new String('\t', 1)).Append("border-color:").AppendLine($"#{obj.BorderColor.ToHex()};");
                 cssBuilder.Append(new String('\t', 1)).Append("border:").AppendLine($"{(int)obj.BorderThickness}px solid #{obj.BorderColor.ToHex()};");
+                cssBuilder.Append(new String('\t', 1)).Append("border-radius:").AppendLine($"{(int)obj.BorderRadius}px");
                 cssBuilder.AppendLine("}");
-
 
                 if(obj.ObjectType == models.enums.ObjectType.Canvas)
                 {
@@ -158,6 +181,11 @@ namespace vayfrem.services
             }
 
             cssBuilder.AppendLine();
+        }
+
+        private int GetPercentage(double width, double parent)
+        {
+            return (int)((width / (double)parent) * 100);
         }
     }
 }
