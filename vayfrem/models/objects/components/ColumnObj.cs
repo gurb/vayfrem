@@ -29,7 +29,9 @@ namespace vayfrem.models.objects.components
         {
             Width = 100;
             BorderColor = new dtos.ColorDTO(255, 0, 0, 0);
-            BorderThickness = 3;
+            BackgroundColor = new dtos.ColorDTO(255, 170, 170, 170);
+            Opacity = 255;
+            BorderThickness = 0;
             BorderRadius = 5;
         }
     }

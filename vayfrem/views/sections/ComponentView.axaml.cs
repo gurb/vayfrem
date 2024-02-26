@@ -55,28 +55,7 @@ public partial class ComponentView : UserControl
 
     private void SetComponents()
     {
-        button = new Border();
-        button.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-        button.BorderThickness = new Thickness(2);
-        button.BorderBrush = Brushes.Black;
-        button.Background = Brushes.White;
-        button.CornerRadius = new CornerRadius(5);
-        button.Padding = new Thickness(10, 10, 10, 10);
-        button.Margin = new Thickness(5, 5, 5, 5);
-        button.PointerPressed += Drag_PointerPressed;
-        button.Name = "button";
-
-        TextBlock text = new TextBlock();
-        text.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-        text.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-        text.Height = 18;
-        text.Text = "Button";
-        text.Background = Brushes.White;
-
-        button.Child = text;
-
-        ComponentMenu.Children.Add(button);
-
+        ComponentMenu.Children.Add(GetComponent("Button", "button"));
         ComponentMenu.Children.Add(GetComponent("Image", "image"));
         ComponentMenu.Children.Add(GetComponent("Container", "container"));
         ComponentMenu.Children.Add(GetComponent("Container Fluid", "containerfluid"));
@@ -88,9 +67,9 @@ public partial class ComponentView : UserControl
     {
         Border border = new Border();
         border.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-        border.BorderThickness = new Thickness(2);
+        border.BorderThickness = new Thickness(0);
         border.BorderBrush = Brushes.Black;
-        border.Background = Brushes.White;
+        border.Background = new SolidColorBrush(Avalonia.Media.Color.FromArgb(255, 230, 230, 230));
         border.CornerRadius = new CornerRadius(5);
         border.Padding = new Thickness(10, 10, 10, 10);
         border.Margin = new Thickness(5, 5, 5, 5);
@@ -102,7 +81,7 @@ public partial class ComponentView : UserControl
         text.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
         text.Height = 18;
         text.Text = Text;
-        text.Background = Brushes.White;
+        text.Background = Brushes.Transparent;
 
         border.Child = text;
 
