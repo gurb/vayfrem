@@ -77,32 +77,35 @@ public partial class ComponentView : UserControl
 
         ComponentMenu.Children.Add(button);
 
-        SetImageComponent();
+        ComponentMenu.Children.Add(GetComponent("Image", "image"));
+        ComponentMenu.Children.Add(GetComponent("Row", "row"));
+        ComponentMenu.Children.Add(GetComponent("Column", "column"));
+
     }
 
-    private void SetImageComponent()
+    private Border GetComponent(string Text, string name)
     {
-        image = new Border();
-        image.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-        image.BorderThickness = new Thickness(2);
-        image.BorderBrush = Brushes.Black;
-        image.Background = Brushes.White;
-        image.CornerRadius = new CornerRadius(5);
-        image.Padding = new Thickness(10, 10, 10, 10);
-        image.Margin = new Thickness(5, 5, 5, 5);
-        image.PointerPressed += Drag_PointerPressed;
-        image.Name = "image";
+        Border border = new Border();
+        border.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+        border.BorderThickness = new Thickness(2);
+        border.BorderBrush = Brushes.Black;
+        border.Background = Brushes.White;
+        border.CornerRadius = new CornerRadius(5);
+        border.Padding = new Thickness(10, 10, 10, 10);
+        border.Margin = new Thickness(5, 5, 5, 5);
+        border.PointerPressed += Drag_PointerPressed;
+        border.Name = name;
 
         TextBlock text = new TextBlock();
         text.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         text.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
         text.Height = 18;
-        text.Text = "Image";
+        text.Text = Text;
         text.Background = Brushes.White;
 
-        image.Child = text;
+        border.Child = text;
 
-        ComponentMenu.Children.Add(image);
+        return border;
     }
 
     private async void Drag_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
@@ -110,8 +113,6 @@ public partial class ComponentView : UserControl
         // drag started
         Border dragButton = sender as Border;
     
-
-
         isPressed = true;
         LayoutViewModel.IsDrag = true;
         if(dragButton.Name == "button") 
@@ -121,6 +122,14 @@ public partial class ComponentView : UserControl
         else if(dragButton.Name == "image") 
         {
             LayoutViewModel.DragObject = new ImageObj();
+        }
+        else if (dragButton.Name == "column")
+        {
+            LayoutViewModel.DragObject = new ColumnObj();
+        }
+        else if (dragButton.Name == "row")
+        {
+            LayoutViewModel.DragObject = new RowObj();
         }
 
         LayoutViewModel.IsDragCompleted = false;

@@ -25,6 +25,8 @@ public partial class LayoutView : UserControl
     Canvas ghostImage;
     Avalonia.Svg.Svg ghostSvg;
 
+    TextBlock ghostItemText;
+
     private Point _ghostPosition = new(0, 0);
     private readonly Point _mouseOffset = new(-5, -5);
 
@@ -143,8 +145,26 @@ public partial class LayoutView : UserControl
 
     public void DrawDrag()
     {
-        if(ViewModel.DragObject.ObjectType == models.enums.ObjectType.Button)
+        if(ViewModel.DragObject.ObjectType == models.enums.ObjectType.Canvas)
         {
+            CanvasObj obj = (CanvasObj)ViewModel.DragObject;
+            if(obj.Role == models.enums.CanvasRole.Row)
+            {
+                ghostItemText.Text = "Row";
+            }
+            else if (obj.Role == models.enums.CanvasRole.Column)
+            {
+                ghostItemText.Text = "Column";
+            }
+            ghostItem.IsVisible = true;
+
+            Canvas.SetLeft(ghostItem, _ghostPosition.X - (ghostItem.Bounds.Width / 2));
+            Canvas.SetTop(ghostItem, _ghostPosition.Y - (ghostItem.Bounds.Height / 2));
+        }
+
+        if (ViewModel.DragObject.ObjectType == models.enums.ObjectType.Button)
+        {
+            ghostItemText.Text = "Button";
             ghostItem.IsVisible = true;
 
             Canvas.SetLeft(ghostItem, _ghostPosition.X - (ghostItem.Bounds.Width / 2));
@@ -231,15 +251,15 @@ public partial class LayoutView : UserControl
         ghostItem.Padding = new Thickness(0, 5, 0, 5);
         ghostItem.IsVisible = false;
 
-        TextBlock text = new TextBlock();
-        text.Height = 20;
-        text.Width = 200;
+        ghostItemText = new TextBlock();
+        ghostItemText.Height = 20;
+        ghostItemText.Width = 200;
 
-        text.Text = "Button";
-        text.TextAlignment = TextAlignment.Center;
-        text.Background = Brushes.White;
+        ghostItemText.Text = "Button";
+        ghostItemText.TextAlignment = TextAlignment.Center;
+        ghostItemText.Background = Brushes.White;
 
-        ghostItem.Child = text;
+        ghostItem.Child = ghostItemText;
 
         Canvas.SetLeft(ghostItem, _ghostPosition.X);
         Canvas.SetTop(ghostItem, _ghostPosition.Y);
