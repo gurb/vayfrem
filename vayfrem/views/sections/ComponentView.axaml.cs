@@ -78,9 +78,10 @@ public partial class ComponentView : UserControl
         ComponentMenu.Children.Add(button);
 
         ComponentMenu.Children.Add(GetComponent("Image", "image"));
+        ComponentMenu.Children.Add(GetComponent("Container", "container"));
+        ComponentMenu.Children.Add(GetComponent("Container Fluid", "containerfluid"));
         ComponentMenu.Children.Add(GetComponent("Row", "row"));
         ComponentMenu.Children.Add(GetComponent("Column", "column"));
-
     }
 
     private Border GetComponent(string Text, string name)
@@ -130,6 +131,14 @@ public partial class ComponentView : UserControl
         else if (dragButton.Name == "row")
         {
             LayoutViewModel.DragObject = new RowObj();
+        }
+        else if (dragButton.Name == "container")
+        {
+            LayoutViewModel.DragObject = new ContainerObj();
+        }
+        else if (dragButton.Name == "containerfluid")
+        {
+            LayoutViewModel.DragObject = new ContainerFluidObj();
         }
 
         LayoutViewModel.IsDragCompleted = false;

@@ -8,6 +8,8 @@ namespace vayfrem.models.objects.components
 {
     public class RowObj : CanvasObj
     {
+        public List<string> Columns = new List<string>();
+
         public RowObj()
         {
             InitializeObject();
@@ -23,7 +25,11 @@ namespace vayfrem.models.objects.components
 
         public override void SetStyle()
         {
+            Height = 50;
 
+            BorderColor = new dtos.ColorDTO(255, 0, 0, 0);
+            BorderThickness = 3;
+            BorderRadius = 5;
         }
     }
 }

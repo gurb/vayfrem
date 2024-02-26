@@ -68,11 +68,11 @@ namespace vayfrem.services
                     {
                         htmlBuilder.Append(new String('\t', counter)).AppendLine($"<div id='{canvasObj.Tag}'>");
                     }
-                    if (canvasObj.Role == models.enums.CanvasRole.Content)
+                    if (canvasObj.Role == models.enums.CanvasRole.Container)
                     {
 
                     }
-                    if (canvasObj.Role == models.enums.CanvasRole.ContentFluid)
+                    if (canvasObj.Role == models.enums.CanvasRole.ContainerFluid)
                     {
 
                     }

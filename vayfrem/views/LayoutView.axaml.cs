@@ -156,6 +156,15 @@ public partial class LayoutView : UserControl
             {
                 ghostItemText.Text = "Column";
             }
+            else if (obj.Role == models.enums.CanvasRole.Container)
+            {
+                ghostItemText.Text = "Container";
+            }
+            else if (obj.Role == models.enums.CanvasRole.ContainerFluid)
+            {
+                ghostItemText.Text = "Container Fluid";
+            }
+
             ghostItem.IsVisible = true;
 
             Canvas.SetLeft(ghostItem, _ghostPosition.X - (ghostItem.Bounds.Width / 2));
@@ -270,7 +279,6 @@ public partial class LayoutView : UserControl
         ghostSvg.Width = 64;
         ghostSvg.Height = 64;
         ghostSvg.IsVisible = false;
-
 
         ghostImage = new Canvas();
         ghostImage.Width = 200;

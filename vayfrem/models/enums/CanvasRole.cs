@@ -9,8 +9,8 @@ namespace vayfrem.models.enums
     public enum CanvasRole
     {
         None,
-        Content,
-        ContentFluid,
+        Container,
+        ContainerFluid,
         Row,
         Column
     }

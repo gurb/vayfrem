@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia;
+using vayfrem.models.objects.components;
 
 namespace vayfrem.viewmodels
 {
@@ -123,7 +124,9 @@ namespace vayfrem.viewmodels
         {
             if(gobject != null)
             {
-                if(parentObj != null)
+                gobject.Guid = Guid.NewGuid().ToString();
+
+                if (parentObj != null)
                 {
                     CanvasObj parentCanvas = (CanvasObj)parentObj;
 
@@ -132,12 +135,16 @@ namespace vayfrem.viewmodels
                     gobject.X = gobject.X - parentCanvas.WorldX;
                     gobject.Y = gobject.Y - parentCanvas.WorldY;
 
+
                     parentCanvas.Add(gobject);
                 }
                 else
                 {
                     Objects.Add(gobject);
                 }
+
+                Reconf(gobject, parentObj);
+
                 if (drawDelegate != null)
                 {
                     drawDelegate.Invoke();
@@ -150,6 +157,215 @@ namespace vayfrem.viewmodels
                 }
             }
         }
+
+        private void Reconf(GObject gobject, GObject? parentObj)
+        {
+            if (gobject.ObjectType == ObjectType.Canvas)
+            {
+                ReconfCanvas(gobject, parentObj);
+            }
+        }
+
+        public void Reconf()
+        {
+            if(SelectedObject != null && SelectedObject.ObjectType == ObjectType.Canvas)
+            {
+                CanvasObj canvasObj = (CanvasObj)SelectedObject;
+
+                if (canvasObj.Role == CanvasRole.Container)
+                {
+                    ReconfCanvasContainer(canvasObj);
+                }
+
+                if (canvasObj.Role == CanvasRole.Row)
+                {
+                    RowObj rowObj = (RowObj)canvasObj;
+                    
+                    if(rowObj.Parent != null)
+                    {
+                        CanvasObj parentObj = (CanvasObj)rowObj.Parent!;
+
+                        if(parentObj.Role == CanvasRole.Container)
+                        {
+                            ReconfCanvasContainer(parentObj);
+                        }
+                    }
+                }
+
+                if (canvasObj.Role == CanvasRole.Column)
+                {
+                    ColumnObj columnObj = (ColumnObj)canvasObj;
+
+                    if (columnObj.Parent != null)
+                    {
+                        CanvasObj parentObj = (CanvasObj)columnObj.Parent!;
+
+                        if (parentObj.Role == CanvasRole.Row)
+                        {
+                            ReconfCanvasRowColumns(parentObj);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ReconfCanvasContainer(CanvasObj canvasObj) 
+        {
+            ContainerObj containerObj = (ContainerObj)canvasObj;
+            containerObj.Rows.Clear();
+
+            foreach (var row in canvasObj.Children)
+            {
+                CanvasObj rowCanvas = (CanvasObj)row;
+
+                ReconfCanvasRow(rowCanvas, canvasObj);
+            }
+        }
+
+        private void ReconfCanvasRowColumns(CanvasObj canvasObj)
+        {
+            RowObj rowObj = (RowObj)canvasObj;
+            rowObj.Columns.Clear();
+
+            foreach (var column in canvasObj.Children)
+            {
+                CanvasObj columnCanvas = (CanvasObj)column;
+
+                ReconfCanvasColumn(columnCanvas, canvasObj);
+            }
+        }
+
+
+        private void ReconfCanvas(GObject gobject, GObject? parentObj)
+        {
+            CanvasObj canvasObj = (CanvasObj)gobject;
+
+            if(canvasObj.Role == CanvasRole.Row)
+            {
+                ReconfCanvasRow(canvasObj, parentObj);
+            }
+            if (canvasObj.Role == CanvasRole.Column)
+            {
+                ReconfCanvasColumn(canvasObj, parentObj);
+            }
+        }
+
+        private void ReconfCanvasRow(CanvasObj canvasObj, GObject? parentObj)
+        {
+            RowObj rowObj = (RowObj)canvasObj;
+
+            if(parentObj != null)
+            {
+                if(parentObj.ObjectType == ObjectType.Canvas && ((CanvasObj)parentObj).Role == CanvasRole.Container)
+                {
+                    ContainerObj containerObj = (ContainerObj)parentObj;
+                    containerObj.Rows.Add(rowObj.Guid!);
+                    
+                    rowObj.Width = parentObj.Width - 30;
+                    rowObj.X = 15;
+                    rowObj.Y = FindRowY(rowObj, containerObj) + (15 * containerObj.Rows.Count());
+                    ReconfCanvasRowColumns(rowObj);
+                }
+                if (parentObj.ObjectType == ObjectType.Canvas && ((CanvasObj)parentObj).Role == CanvasRole.ContainerFluid)
+                {
+                    ContainerFluidObj containerFluidObj = (ContainerFluidObj)parentObj;
+                    containerFluidObj.Rows.Add(rowObj.Guid!);
+
+                    rowObj.Width = parentObj.Width - 30;
+                    rowObj.X = 15;
+                    rowObj.Y = FindRowY(rowObj, containerFluidObj) + (15 * containerFluidObj.Rows.Count());
+                    ReconfCanvasRowColumns(rowObj);
+                }
+            }
+        }
+
+        private int FindRowY(RowObj row, ContainerObj container)
+        {
+            int index = container.Rows.IndexOf(row.Guid!);
+
+            int length = 0;
+
+            if(container.Children.Count > 0)
+            {
+                for(int i = 0; i < container.Children.Count(); i++)
+                {
+                    if(i == index)
+                    {
+                        return length;
+                    }
+
+                    length += (int)container.Children[i].Height;
+                }
+            }
+
+            return length;
+        }
+
+        private int FindRowY(RowObj row, ContainerFluidObj container)
+        {
+            int index = container.Rows.IndexOf(row.Guid!);
+
+            int length = 0;
+
+            if (container.Children.Count > 0)
+            {
+                for (int i = 0; i < container.Children.Count(); i++)
+                {
+                    if (i == index)
+                    {
+                        return length;
+                    }
+
+                    length += (int)container.Children[i].Height;
+                }
+            }
+
+            return length;
+        }
+
+
+        private void ReconfCanvasColumn(CanvasObj canvasObj, GObject? parentObj)
+        {
+            ColumnObj columnObj = (ColumnObj)canvasObj;
+
+            if (parentObj != null)
+            {
+                if (parentObj.ObjectType == ObjectType.Canvas && ((CanvasObj)parentObj).Role == CanvasRole.Row)
+                {
+                    RowObj rowObj = (RowObj)parentObj;
+                    rowObj.Columns.Add(columnObj.Guid!);
+
+                    columnObj.Height = parentObj.Height - 30;
+                    columnObj.X = FindColumnX(columnObj, rowObj) + (15 * rowObj.Columns.Count());
+                    columnObj.Y = 15;
+                }
+            }
+        }
+
+
+        private int FindColumnX(ColumnObj column, RowObj row)
+        {
+            int index = row.Columns.IndexOf(column.Guid!);
+
+            int length = 0;
+
+            if (row.Children.Count > 0)
+            {
+                for (int i = 0; i < row.Children.Count(); i++)
+                {
+                    if (i == index)
+                    {
+                        return length;
+                    }
+
+                    length += (int)row.Children[i].Width;
+                }
+            }
+
+            return length;
+        }
+
+
 
         private void AddQuadraticBC(PassData passData)
         {

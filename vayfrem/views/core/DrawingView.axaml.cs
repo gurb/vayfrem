@@ -260,6 +260,7 @@ public partial class DrawingView : UserControl
         {
             ViewModel.IsScale = false;
             ViewModel.RefreshState();
+            ViewModel.Reconf();
             draw();
         }
     }
