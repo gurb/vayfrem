@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using vayfrem.models;
@@ -27,12 +28,16 @@ namespace vayfrem.services
             htmlBuilder.AppendLine("<!DOCTYPE html>");
             htmlBuilder.AppendLine("<html>");
             htmlBuilder.Append(new String('\t', 1)).AppendLine("<head>");
+            htmlBuilder.Append(new String('\t', 2)).AppendLine("<meta charset = \"utf-8\">");
+            htmlBuilder.Append(new String('\t', 2)).AppendLine("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             htmlBuilder.Append(new String('\t', 2)).AppendLine("<link href='style.css' rel='stylesheet'/>");
+            htmlBuilder.Append(new String('\t', 2)).AppendLine("<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC\" crossorigin=\"anonymous\">");
             htmlBuilder.Append(new String('\t', 1)).AppendLine("</head>");
             htmlBuilder.Append(new String('\t', 1)).AppendLine("<body>");
             counter = 2;
             HtmlBuild(file.Objects, htmlBuilder, counter);
 
+            htmlBuilder.Append('\t', 2).AppendLine("<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM\" crossorigin=\"anonymous\"></script>");
             htmlBuilder.Append(new String('\t', 1)).AppendLine("</body>");
             htmlBuilder.AppendLine("</html>");
 
@@ -70,19 +75,19 @@ namespace vayfrem.services
                     }
                     if (canvasObj.Role == models.enums.CanvasRole.Container)
                     {
-
+                        htmlBuilder.Append(new String('\t', counter)).AppendLine($"<div class='container' id='{canvasObj.Tag}'>");
                     }
                     if (canvasObj.Role == models.enums.CanvasRole.ContainerFluid)
                     {
-
+                        htmlBuilder.Append(new String('\t', counter)).AppendLine($"<div class='container-fluid' id='{canvasObj.Tag}'>");
                     }
                     if (canvasObj.Role == models.enums.CanvasRole.Row)
                     {
-
+                        htmlBuilder.Append(new String('\t', counter)).AppendLine($"<div class='row' id='{canvasObj.Tag}'>");
                     }
                     if (canvasObj.Role == models.enums.CanvasRole.Column)
                     {
-
+                        htmlBuilder.Append(new String('\t', counter)).AppendLine($"<div class='col' id='{canvasObj.Tag}'>");
                     }
 
                     counter = counter + 1;
@@ -137,8 +142,30 @@ namespace vayfrem.services
             List<string> classes = new List<string>();
             List<string> ids = new List<string>();
 
+            
+
             foreach (var obj in objects)
             {
+                bool ignore = false;
+                bool isCol = false;
+
+                if (obj.ObjectType == models.enums.ObjectType.Canvas)
+                {
+                    CanvasObj canvasObj = (CanvasObj)obj;
+
+                    if (canvasObj.Role == models.enums.CanvasRole.ContainerFluid || 
+                        canvasObj.Role == models.enums.CanvasRole.Container ||
+                        canvasObj.Role == models.enums.CanvasRole.Row ||
+                        canvasObj.Role == models.enums.CanvasRole.Column)
+                    {
+                        ignore = true;
+                    }
+                    if(canvasObj.Role == models.enums.CanvasRole.Column)
+                    {
+                        isCol = true;
+                    }
+                }
+
                 cssBuilder.Append($"#{obj.Tag}").AppendLine("{");
                 cssBuilder.Append(new String('\t', 1)).Append("background-color:").AppendLine($"{obj.BackgroundColor.HTMLColor((byte)obj.Opacity)};");
 
@@ -157,13 +184,22 @@ namespace vayfrem.services
                     percX = GetPercentage(obj.X, 1920);
                     percY = GetPercentage(obj.Y, 1080);
                 }
-                cssBuilder.Append(new String('\t', 1)).Append("position:").AppendLine($"absolute;");
-                cssBuilder.Append(new String('\t', 1)).Append("left:").AppendLine($"{percX}%;");
-                cssBuilder.Append(new String('\t', 1)).Append("top:").AppendLine($"{percY}%;");
-                cssBuilder.Append(new String('\t', 1)).Append("overflow:").AppendLine($"hidden;");
+
+                if (!ignore)
+                {
+                    cssBuilder.Append(new String('\t', 1)).Append("position:").AppendLine($"absolute;");
+                    cssBuilder.Append(new String('\t', 1)).Append("left:").AppendLine($"{percX}%;");
+                    cssBuilder.Append(new String('\t', 1)).Append("top:").AppendLine($"{percY}%;");
+                    cssBuilder.Append(new String('\t', 1)).Append("overflow:").AppendLine($"hidden;");
+                    cssBuilder.Append(new String('\t', 1)).Append("height:").AppendLine($"{percHeight}%;");
+                }
+                if(isCol && obj.Parent != null)
+                {
+                    cssBuilder.Append(new String('\t', 1)).Append("flex:").AppendLine($"{(obj.Width/obj.Parent!.Width).ToString().Replace(',', '.')} 0 0%;");
+                }
 
                 cssBuilder.Append(new String('\t', 1)).Append("width:").AppendLine($"{percWidth}%;");
-                cssBuilder.Append(new String('\t', 1)).Append("height:").AppendLine($"{percHeight}%;");
+                
                 cssBuilder.Append(new String('\t', 1)).Append("border-color:").AppendLine($"#{obj.BorderColor.ToHex()};");
                 cssBuilder.Append(new String('\t', 1)).Append("border:").AppendLine($"{(int)obj.BorderThickness}px solid #{obj.BorderColor.ToHex()};");
                 cssBuilder.Append(new String('\t', 1)).Append("border-radius:").AppendLine($"{(int)obj.BorderRadius}px");
