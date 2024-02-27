@@ -95,7 +95,7 @@ public partial class ComponentView : UserControl
     
         isPressed = true;
         LayoutViewModel.IsDrag = true;
-        if(dragButton.Name == "button") 
+        if(dragButton!.Name == "button") 
         {
             LayoutViewModel.DragObject = new ButtonObj();
         }

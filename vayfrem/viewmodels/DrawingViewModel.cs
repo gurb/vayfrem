@@ -177,6 +177,11 @@ namespace vayfrem.viewmodels
                     ReconfCanvasContainer(canvasObj);
                 }
 
+                if (canvasObj.Role == CanvasRole.ContainerFluid)
+                {
+                    ReconfCanvasContainerFluid(canvasObj);
+                }
+
                 if (canvasObj.Role == CanvasRole.Row)
                 {
                     RowObj rowObj = (RowObj)canvasObj;
@@ -222,6 +227,19 @@ namespace vayfrem.viewmodels
             }
         }
 
+        private void ReconfCanvasContainerFluid(CanvasObj canvasObj)
+        {
+            ContainerFluidObj containerObj = (ContainerFluidObj)canvasObj;
+            containerObj.Rows.Clear();
+
+            foreach (var row in canvasObj.Children)
+            {
+                CanvasObj rowCanvas = (CanvasObj)row;
+
+                ReconfCanvasRow(rowCanvas, canvasObj);
+            }
+        }
+
         private void ReconfCanvasRowColumns(CanvasObj canvasObj)
         {
             RowObj rowObj = (RowObj)canvasObj;
@@ -240,7 +258,7 @@ namespace vayfrem.viewmodels
         {
             CanvasObj canvasObj = (CanvasObj)gobject;
 
-            if(canvasObj.Role == CanvasRole.Row)
+            if (canvasObj.Role == CanvasRole.Row)
             {
                 ReconfCanvasRow(canvasObj, parentObj);
             }
@@ -248,6 +266,32 @@ namespace vayfrem.viewmodels
             {
                 ReconfCanvasColumn(canvasObj, parentObj);
             }
+            if (canvasObj.Role == CanvasRole.ContainerFluid)
+            {
+                ReconfCanvasContainerFluid(canvasObj, parentObj);
+            }
+        }
+
+        private void ReconfCanvasContainerFluid(CanvasObj canvasObj, GObject? parentObj)
+        {
+            ContainerFluidObj containerFluidObject = (ContainerFluidObj)canvasObj;
+
+            if(parentObj != null)
+            {
+                containerFluidObject.X = 0;
+                containerFluidObject.Y = 0;
+                containerFluidObject.Width = parentObj.Width;
+                containerFluidObject.Height = parentObj.Height;
+            }
+            else
+            {
+                containerFluidObject.X = 0;
+                containerFluidObject.Y = 0;
+                containerFluidObject.Width = CurrentFile.PageWidth;
+                containerFluidObject.Height = CurrentFile.PageHeight;
+            }
+
+            ReconfCanvasContainerFluid(canvasObj);
         }
 
         private void ReconfCanvasRow(CanvasObj canvasObj, GObject? parentObj)
@@ -338,6 +382,25 @@ namespace vayfrem.viewmodels
                     columnObj.Height = parentObj.Height - 30;
                     columnObj.X = FindColumnX(columnObj, rowObj) + (15 * rowObj.Columns.Count());
                     columnObj.Y = 15;
+
+                    ReconfCanvasColumnChild(columnObj);
+                }
+            }
+        }
+
+        // this function is for container-fluid
+        private void ReconfCanvasColumnChild(ColumnObj columnObj)
+        {
+            if(columnObj.Children.Count > 0)
+            {
+                foreach (var child in columnObj.Children)
+                {
+                    if(child.ObjectType == ObjectType.Canvas)
+                    {
+                        ReconfCanvas(child, columnObj);
+
+                       
+                    }
                 }
             }
         }
