@@ -550,7 +550,6 @@ namespace vayfrem.viewmodels
             return CurrentFile.Selection!.SelectedObject;
         }
 
-
         private void SetSaveStateCurrentFile ()
         {
             if(CurrentFile != null)
@@ -559,7 +558,6 @@ namespace vayfrem.viewmodels
                 shortsViewModel.ChangeSaveState(false);
             }
         }
-
 
         public void ActiveEditText(GObject? obj)
         {
@@ -577,7 +575,6 @@ namespace vayfrem.viewmodels
                 ActiveTextObject = textObj;
             }
         }
-
 
         private void AddText(PassData passData)
         {
@@ -612,7 +609,6 @@ namespace vayfrem.viewmodels
             }
             Objects.Add(textObj);
         }
-
 
         public void CollisionDetectPoint(Vector2 mousePosition, CanvasObj? canvas = null)
         {

@@ -69,6 +69,8 @@ namespace vayfrem
                     services.AddSingleton<HTMLManager>();
 
                     services.AddSingleton<TempStorage>();
+
+                    services.AddSingleton<RecommendLineService>();
                 })
                 .Build();
         }
