@@ -194,6 +194,10 @@ namespace vayfrem.viewmodels
                         {
                             ReconfCanvasContainer(parentObj);
                         }
+                        if (parentObj.Role == CanvasRole.ContainerFluid)
+                        {
+                            ReconfCanvasContainerFluid(parentObj);
+                        }
                     }
                 }
 
