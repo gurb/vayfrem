@@ -467,10 +467,12 @@ namespace vayfrem.viewmodels
                     quadraticBCObj.Point2 = passData.Point2! - new Vector2(selectedCanvas.WorldX, selectedCanvas.WorldY);
 
                     selectedCanvas.Add(quadraticBCObj);
+                    CurrentFile!.AllObjects.Add(quadraticBCObj);
                     return;
                 }
             }
             Objects.Add(quadraticBCObj);
+            CurrentFile!.AllObjects.Add(quadraticBCObj);
         }
 
 
@@ -501,6 +503,7 @@ namespace vayfrem.viewmodels
                     canvasObj.Y = canvasObj.Y - selectedCanvas.WorldY;
 
                     selectedCanvas.Add(canvasObj);
+                    CurrentFile!.AllObjects.Add(canvasObj);
                     undoRedoManager.AddCommand(CurrentFile!.Guid!, new AddCommand(canvasObj));
                     shortsViewModel.ChangeUndoState(true);
                     shortsViewModel.ChangeRedoState(false);
@@ -509,6 +512,7 @@ namespace vayfrem.viewmodels
             } 
 
             Objects.Add(canvasObj);
+            CurrentFile!.AllObjects.Add(canvasObj);
             undoRedoManager.AddCommand(CurrentFile!.Guid!, new AddCommand(canvasObj));
             shortsViewModel.ChangeUndoState(true);
             shortsViewModel.ChangeRedoState(false);
@@ -604,10 +608,12 @@ namespace vayfrem.viewmodels
                     textObj.Y = textObj.Y - selectedCanvas.WorldY;
 
                     selectedCanvas.Add(textObj);
+                    CurrentFile!.AllObjects.Add(textObj);
                     return;
                 }
             }
             Objects.Add(textObj);
+            CurrentFile!.AllObjects.Add(textObj);
         }
 
         public void CollisionDetectPoint(Vector2 mousePosition, CanvasObj? canvas = null)

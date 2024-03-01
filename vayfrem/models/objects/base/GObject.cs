@@ -39,7 +39,7 @@ namespace vayfrem.models.objects.@base
         public Vector2 TopLeft { 
             get 
             {
-                return new Vector2(X, Y);    
+                return new Vector2(WorldX, WorldY);    
             } 
         }
 
@@ -47,7 +47,7 @@ namespace vayfrem.models.objects.@base
         {
             get
             {
-                return new Vector2(X, Y + Height);
+                return new Vector2(WorldX, WorldY + Height);
             }
         }
 
@@ -55,7 +55,7 @@ namespace vayfrem.models.objects.@base
         {
             get
             {
-                return new Vector2(X + Width, Y);
+                return new Vector2(WorldX + Width, WorldY);
             }
         }
 
@@ -63,7 +63,7 @@ namespace vayfrem.models.objects.@base
         {
             get
             {
-                return new Vector2(X + Width, Y + Height);
+                return new Vector2(WorldX + Width, WorldY + Height);
             }
         }
 

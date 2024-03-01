@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using vayfrem.models.objects.@base;
 using vayfrem.models.structs;
 using vayfrem.viewmodels;
 
@@ -23,6 +24,8 @@ namespace vayfrem.services
             YAxis = new List<int>();
         }
 
+       
+
         public void Check(DrawingViewModel drawingViewModel, Avalonia.Point first, Avalonia.Point current, Vector2 moveOffset)
         {
             YAxis.Clear();
@@ -32,9 +35,8 @@ namespace vayfrem.services
 
             var selected = drawingViewModel.SelectedObject;
 
-            if(selected != null)
+            if(selected != null && drawingViewModel.CurrentFile != null)
             {
-
                 if (selected.Parent != null)
                 {
                     childMoveOffset.X = (int)selected.Parent.WorldX;
@@ -52,7 +54,7 @@ namespace vayfrem.services
                 Vector2 BottomRight = new Vector2(x + width, y + height);
 
 
-                foreach (var obj in drawingViewModel.Objects)
+                foreach (var obj in drawingViewModel.CurrentFile.AllObjects)
                 {
                     if(obj != drawingViewModel.SelectedObject)
                     {
@@ -63,7 +65,6 @@ namespace vayfrem.services
                            (int)obj.BottomLeft.X == (int)BottomRight.X
                            )
                         {
-                            Debug.WriteLine("Collided");
                             XAxis.Add((int)TopRight.X);
                         }
                         // right edge of selected
@@ -73,7 +74,6 @@ namespace vayfrem.services
                            (int)obj.BottomRight.X == (int)BottomRight.X
                            )
                         {
-                            Debug.WriteLine("Collided");
                             XAxis.Add((int)TopRight.X);
                         }
 
@@ -84,7 +84,6 @@ namespace vayfrem.services
                            (int)obj.BottomLeft.X == (int)BottomLeft.X
                            )
                         {
-                            Debug.WriteLine("Collided");
                             XAxis.Add((int)TopLeft.X);
                         }
                         if ((int)obj.TopRight.X == (int)TopLeft.X &&
@@ -93,7 +92,6 @@ namespace vayfrem.services
                            (int)obj.BottomRight.X == (int)BottomLeft.X
                            )
                         {
-                            Debug.WriteLine("Collided");
                             XAxis.Add((int)TopLeft.X);
                         }
 
@@ -105,7 +103,6 @@ namespace vayfrem.services
                           (int)obj.TopRight.Y == (int)TopRight.Y
                           )
                         {
-                            Debug.WriteLine("Collided");
                             YAxis.Add((int)TopLeft.Y);
                         }
                         if ((int)obj.BottomLeft.Y == (int)TopLeft.Y &&
@@ -114,7 +111,6 @@ namespace vayfrem.services
                            (int)obj.BottomRight.Y == (int)TopRight.Y
                            )
                         {
-                            Debug.WriteLine("Collided");
                             YAxis.Add((int)TopLeft.Y);
                         }
 

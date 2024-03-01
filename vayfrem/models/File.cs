@@ -17,6 +17,8 @@ namespace vayfrem.models
         public string? TabGuid { get; set; }
         public List<GObject> Objects { get; set; } = new List<GObject>();
 
+        public List<GObject> AllObjects { get; set; } = new List<GObject>();
+
         public int PageWidth { get; set; } = 1920;
         public int PageHeight { get; set; } = 1080;
 
