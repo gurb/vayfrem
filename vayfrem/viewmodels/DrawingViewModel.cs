@@ -135,11 +135,12 @@ namespace vayfrem.viewmodels
                     gobject.X = gobject.X - parentCanvas.WorldX;
                     gobject.Y = gobject.Y - parentCanvas.WorldY;
 
-
+                    CurrentFile.AllObjects.Add(gobject);
                     parentCanvas.Add(gobject);
                 }
                 else
                 {
+                    CurrentFile.AllObjects.Add(gobject);
                     Objects.Add(gobject);
                 }
 
