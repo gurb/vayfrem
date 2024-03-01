@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Platform;
 using System.Net.Mime;
+using Avalonia.Collections;
 
 namespace vayfrem.services
 {   
@@ -664,8 +665,9 @@ namespace vayfrem.services
                     {
                         StartPoint = new Point(x, 0),
                         EndPoint = new Point(x, drawingViewModel.CurrentFile.PageHeight),
-                        Stroke = Brushes.Black,
-                        StrokeThickness = 1
+                        Stroke = Brushes.Green,
+                        StrokeThickness = 1,
+                        StrokeDashArray = new AvaloniaList<double> { 4, 2 }
                     };
 
                     Overlay.Children.Add(line);
@@ -676,8 +678,9 @@ namespace vayfrem.services
                     {
                         StartPoint = new Point(0, y),
                         EndPoint = new Point(drawingViewModel.CurrentFile.PageWidth, y),
-                        Stroke = Brushes.Black,
-                        StrokeThickness = 1
+                        Stroke = Brushes.Green,
+                        StrokeThickness = 1,
+                        StrokeDashArray = new AvaloniaList<double> { 4, 2 }
                     };
 
                     Overlay.Children.Add(line);

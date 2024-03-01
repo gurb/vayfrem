@@ -98,6 +98,7 @@ namespace vayfrem.viewmodels
                     foreach (var item in DeletedObjects)
                     {
                         parentObj.Children.Remove(item);
+                        CurrentFile.AllObjects.Remove(item);
                     }
                 }
                 else
@@ -107,6 +108,7 @@ namespace vayfrem.viewmodels
                     foreach (var item in DeletedObjects)
                     {
                         CurrentFile.Objects.Remove(item);
+                        CurrentFile.AllObjects.Remove(item);
                     }
                 }
             }
@@ -116,10 +118,12 @@ namespace vayfrem.viewmodels
                 {
                     CanvasObj parentObj = (CanvasObj)SelectedObject.Parent!;
                     parentObj.Children.Remove(SelectedObject);
+                    CurrentFile.AllObjects.Remove(SelectedObject);
                 }
                 else
                 {
                     CurrentFile.Objects.Remove(SelectedObject);
+                    CurrentFile.AllObjects.Remove(SelectedObject);
                 }
             }
 
