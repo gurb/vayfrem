@@ -148,6 +148,9 @@ namespace vayfrem.services
             {
                 bool ignore = false;
                 bool isCol = false;
+                bool isRow = false;
+                bool isContainer = false;
+                bool isContainerFluid = false;
 
                 if (obj.ObjectType == models.enums.ObjectType.Canvas)
                 {
@@ -163,6 +166,18 @@ namespace vayfrem.services
                     if(canvasObj.Role == models.enums.CanvasRole.Column)
                     {
                         isCol = true;
+                    }
+                    if (canvasObj.Role == models.enums.CanvasRole.Row)
+                    {
+                        isRow = true;
+                    }
+                    if (canvasObj.Role == models.enums.CanvasRole.Container)
+                    {
+                        isContainer = true;
+                    }
+                    if (canvasObj.Role == models.enums.CanvasRole.ContainerFluid)
+                    {
+                        isContainerFluid = true;
                     }
                 }
 
@@ -192,13 +207,30 @@ namespace vayfrem.services
                     cssBuilder.Append(new String('\t', 1)).Append("top:").AppendLine($"{percY}%;");
                     cssBuilder.Append(new String('\t', 1)).Append("overflow:").AppendLine($"hidden;");
                     cssBuilder.Append(new String('\t', 1)).Append("height:").AppendLine($"{percHeight}%;");
+                    cssBuilder.Append(new String('\t', 1)).Append("width:").AppendLine($"{percWidth}%;");
                 }
                 if(isCol && obj.Parent != null)
                 {
                     cssBuilder.Append(new String('\t', 1)).Append("flex:").AppendLine($"{(obj.Width/obj.Parent!.Width).ToString().Replace(',', '.')} 0 0%;");
+                    cssBuilder.Append(new String('\t', 1)).Append("min-height:").AppendLine($"{obj.Height}px;");
+                    cssBuilder.Append(new String('\t', 1)).Append("margin-right:").AppendLine($"{15}px;");
                 }
 
-                cssBuilder.Append(new String('\t', 1)).Append("width:").AppendLine($"{percWidth}%;");
+                if (isRow && obj.Parent != null)
+                {
+                    cssBuilder.Append(new String('\t', 1)).Append("padding:").AppendLine($"{15}px;");
+                    cssBuilder.Append(new String('\t', 1)).Append("margin-bottom:").AppendLine($"{15}px;");
+                }
+
+                if (isContainer)
+                {
+                    cssBuilder.Append(new String('\t', 1)).Append("padding:").AppendLine($"{15}px;");
+                }
+
+                if (isContainerFluid)
+                {
+                    cssBuilder.Append(new String('\t', 1)).Append("padding:").AppendLine($"{15}px;");
+                }
                 
                 cssBuilder.Append(new String('\t', 1)).Append("border-color:").AppendLine($"#{obj.BorderColor.ToHex()};");
                 cssBuilder.Append(new String('\t', 1)).Append("border:").AppendLine($"{(int)obj.BorderThickness}px solid #{obj.BorderColor.ToHex()};");
