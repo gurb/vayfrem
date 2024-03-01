@@ -36,6 +36,37 @@ namespace vayfrem.models.objects.@base
         public ColorDTO BoxShadowColor { get; set; } = new ColorDTO(255, 100, 100, 100);
         public ObjectType ObjectType { get; set; }
 
+        public Vector2 TopLeft { 
+            get 
+            {
+                return new Vector2(X, Y);    
+            } 
+        }
+
+        public Vector2 BottomLeft
+        {
+            get
+            {
+                return new Vector2(X, Y + Height);
+            }
+        }
+
+        public Vector2 TopRight
+        {
+            get
+            {
+                return new Vector2(X + Width, Y);
+            }
+        }
+
+        public Vector2 BottomRight
+        {
+            get
+            {
+                return new Vector2(X + Width, Y + Height);
+            }
+        }
+
         public List<string>? Classes { get; set; } = new List<string>() { "className" };
         public string? Tag { 
             get 

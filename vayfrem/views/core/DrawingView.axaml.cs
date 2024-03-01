@@ -34,6 +34,7 @@ public partial class DrawingView : UserControl
     private readonly RenderManager renderManager;
     private readonly ToolManager toolManager;
     private readonly ObjectMenuManager objectMenuManager;
+    private readonly RecommendLineService recommendLineService;
 
     // status of draw operation
     private bool isDraw;
@@ -85,6 +86,7 @@ public partial class DrawingView : UserControl
         renderManager = App.GetService<RenderManager>();
         toolManager = App.GetService<ToolManager>();
         objectMenuManager = App.GetService<ObjectMenuManager>();
+        recommendLineService = App.GetService<RecommendLineService>();
 
         InitializeComponent();
 
@@ -210,6 +212,11 @@ public partial class DrawingView : UserControl
         if(ViewModel.IsScale)
         {
             handleScale();
+        }
+
+        if(isMove)
+        {
+            recommendLineService.Check(ViewModel, firstPosition, currentPosition, moveOffset);
         }
 
         renderManager.RenderOverlay(Overlay, firstPosition, currentPosition, isDraw, isMove, ViewModel.SelectedObject, moveOffset);

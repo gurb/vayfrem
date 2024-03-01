@@ -22,6 +22,7 @@ namespace vayfrem.services
         private Vector2 childMoveOffset = new Vector2(0,0);
         private readonly DrawingViewModel drawingViewModel;
         private readonly ToolManager toolManager;
+        private readonly RecommendLineService recommendLineService;
 
         public Canvas? MainDisplay { get; set; }
         public double Zoom { get; set; } = 1;
@@ -41,6 +42,7 @@ namespace vayfrem.services
         {
             drawingViewModel = App.GetService<DrawingViewModel>();
             toolManager = App.GetService<ToolManager>();
+            recommendLineService = App.GetService<RecommendLineService>();
 
             imageLayer = new Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://vayfrem/assets/image-layer.png")));
             
@@ -651,6 +653,34 @@ namespace vayfrem.services
                     overlayActive.StrokeThickness = 1;
 
                     Overlay.Children.Add(overlayActive);
+                }
+            }
+
+            if(moveActive && drawingViewModel.CurrentFile != null)
+            {
+                foreach (var x in recommendLineService.XAxis)
+                {
+                    Line line = new Line
+                    {
+                        StartPoint = new Point(x, 0),
+                        EndPoint = new Point(x, drawingViewModel.CurrentFile.PageHeight),
+                        Stroke = Brushes.Black,
+                        StrokeThickness = 1
+                    };
+
+                    Overlay.Children.Add(line);
+                }
+                foreach (var y in recommendLineService.YAxis)
+                {
+                    Line line = new Line
+                    {
+                        StartPoint = new Point(0, y),
+                        EndPoint = new Point(drawingViewModel.CurrentFile.PageWidth, y),
+                        Stroke = Brushes.Black,
+                        StrokeThickness = 1
+                    };
+
+                    Overlay.Children.Add(line);
                 }
             }
 
