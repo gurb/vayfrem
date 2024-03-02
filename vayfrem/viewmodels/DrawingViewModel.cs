@@ -178,6 +178,11 @@ namespace vayfrem.viewmodels
                     ReconfCanvasContainer(canvasObj);
                 }
 
+                if (canvasObj.Role == CanvasRole.RelativeContainer)
+                {
+                    ReconfCanvasRelativeContainer(canvasObj);
+                }
+
                 if (canvasObj.Role == CanvasRole.ContainerFluid)
                 {
                     ReconfCanvasContainerFluid(canvasObj);
@@ -194,6 +199,10 @@ namespace vayfrem.viewmodels
                         if(parentObj.Role == CanvasRole.Container)
                         {
                             ReconfCanvasContainer(parentObj);
+                        }
+                        if (parentObj.Role == CanvasRole.RelativeContainer)
+                        {
+                            ReconfCanvasRelativeContainer(parentObj);
                         }
                         if (parentObj.Role == CanvasRole.ContainerFluid)
                         {
@@ -216,12 +225,54 @@ namespace vayfrem.viewmodels
                         }
                     }
                 }
+
+                if(canvasObj.Role == CanvasRole.None)
+                {
+                    foreach (var item in canvasObj.Children)
+                    {
+                        Reconf(item, canvasObj);
+                    }
+                }
             }
         }
 
         private void ReconfCanvasContainer(CanvasObj canvasObj) 
         {
+
+            ContainerObj containerObject = (ContainerObj)canvasObj;
+            var parentObj = containerObject.Parent;
+
+            if (parentObj != null)
+            {
+                containerObject.Width = (int) (parentObj.Width * 0.66);
+                containerObject.Height = parentObj.Height;
+
+                containerObject.X = (int) ((parentObj.Width - containerObject.Width) / 2);
+                containerObject.Y = 0;
+            }
+            else
+            {
+                containerObject.Width = (int) (CurrentFile.PageWidth * 0.66);
+                containerObject.Height = CurrentFile.PageHeight;
+
+                containerObject.X = (int) ((CurrentFile.PageWidth - containerObject.Width) / 2);
+                containerObject.Y = 0;
+            }
+
             ContainerObj containerObj = (ContainerObj)canvasObj;
+            containerObj.Rows.Clear();
+
+            foreach (var row in canvasObj.Children)
+            {
+                CanvasObj rowCanvas = (CanvasObj)row;
+
+                ReconfCanvasRow(rowCanvas, canvasObj);
+            }
+        }
+
+        private void ReconfCanvasRelativeContainer(CanvasObj canvasObj)
+        {
+            RelativeContainerObj containerObj = (RelativeContainerObj)canvasObj;
             containerObj.Rows.Clear();
 
             foreach (var row in canvasObj.Children)
@@ -275,7 +326,13 @@ namespace vayfrem.viewmodels
             {
                 ReconfCanvasContainerFluid(canvasObj, parentObj);
             }
+            if (canvasObj.Role == CanvasRole.Container)
+            {
+                ReconfCanvasContainer(canvasObj);
+            }
         }
+
+        
 
         private void ReconfCanvasContainerFluid(CanvasObj canvasObj, GObject? parentObj)
         {
@@ -315,6 +372,16 @@ namespace vayfrem.viewmodels
                     rowObj.Y = FindRowY(rowObj, containerObj) + (15 * containerObj.Rows.Count());
                     ReconfCanvasRowColumns(rowObj);
                 }
+                if (parentObj.ObjectType == ObjectType.Canvas && ((CanvasObj)parentObj).Role == CanvasRole.RelativeContainer)
+                {
+                    RelativeContainerObj containerObj = (RelativeContainerObj)parentObj;
+                    containerObj.Rows.Add(rowObj.Guid!);
+
+                    rowObj.Width = parentObj.Width - 30;
+                    rowObj.X = 15;
+                    rowObj.Y = FindRowY(rowObj, containerObj) + (15 * containerObj.Rows.Count());
+                    ReconfCanvasRowColumns(rowObj);
+                }
                 if (parentObj.ObjectType == ObjectType.Canvas && ((CanvasObj)parentObj).Role == CanvasRole.ContainerFluid)
                 {
                     ContainerFluidObj containerFluidObj = (ContainerFluidObj)parentObj;
@@ -339,6 +406,28 @@ namespace vayfrem.viewmodels
                 for(int i = 0; i < container.Children.Count(); i++)
                 {
                     if(i == index)
+                    {
+                        return length;
+                    }
+
+                    length += (int)container.Children[i].Height;
+                }
+            }
+
+            return length;
+        }
+
+        private int FindRowY(RowObj row, RelativeContainerObj container)
+        {
+            int index = container.Rows.IndexOf(row.Guid!);
+
+            int length = 0;
+
+            if (container.Children.Count > 0)
+            {
+                for (int i = 0; i < container.Children.Count(); i++)
+                {
+                    if (i == index)
                     {
                         return length;
                     }
@@ -678,65 +767,33 @@ namespace vayfrem.viewmodels
             }
         }
 
-        //public bool IsPointOnEdgeWithThickness(Vector2 p, Vector2 p0, Vector2 p1, Vector2 p2, double thickness)
-        //{
-        //    // Üçgenin kenarlarının birim vektörlerini hesaplayın
-        //    Vector2 edge0 = p1 - p0;
-        //    Vector2 edge1 = p2 - p1;
-        //    Vector2 edge2 = p0 - p2;
-
-        //    // Kenar birim vektörlerinin normalize edilmiş versiyonlarını alın
-        //    Vector2 edge0Normal = Vector2.Normalize(new Vector2(-edge0.Y, edge0.X));
-        //    Vector2 edge1Normal = Vector2.Normalize(new Vector2(-edge1.Y, edge1.X));
-        //    Vector2 edge2Normal = Vector2.Normalize(new Vector2(-edge2.Y, edge2.X));
-
-        //    // Noktanın her bir kenara dik mesafesini hesaplayın
-        //    double dist0 = Vector2.Dot(p - p0, edge0Normal);
-        //    double dist1 = Vector2.Dot(p - p1, edge1Normal);
-        //    double dist2 = Vector2.Dot(p - p2, edge2Normal);
-
-        //    // Kenarların kalınlığına göre bir alan oluşturun
-        //    double halfThickness = thickness / 2f;
-
-        //    // Noktanın bu alanın içinde olup olmadığını kontrol edin
-        //    if (Math.Abs(dist0) <= halfThickness || Math.Abs(dist1) <= halfThickness || Math.Abs(dist2) <= halfThickness)
-        //        return true;
-
-        //    return false;
-        //}
-
         bool IsPointOnEdgeWithThickness(Vector2 p, Vector2 v1, Vector2 v2, Vector2 v3, double thickness)
         {
-            // Noktanın her bir kenar ile olan mesafelerini kontrol etme
             double distanceToEdge1 = DistancePointToLine(p, v1, v2);
             double distanceToEdge2 = DistancePointToLine(p, v2, v3);
             double distanceToEdge3 = DistancePointToLine(p, v3, v1);
 
-            // Eğer nokta, herhangi bir kenara olan mesafesi kalınlıktan küçük veya eşitse, o nokta kenar üzerindedir
+            
             if (distanceToEdge1 <= thickness || distanceToEdge2 <= thickness || distanceToEdge3 <= thickness)
                 return true;
 
-            // Üçgenin alanı
+            
             double triangleArea = CalculateTriangleArea(v1, v2, v3);
 
-            // Noktanın oluşturduğu alt üçgenlerin alanları
             double subTriangleArea1 = CalculateTriangleArea(p, v1, v2);
             double subTriangleArea2 = CalculateTriangleArea(p, v2, v3);
             double subTriangleArea3 = CalculateTriangleArea(p, v3, v1);
 
-            // Üçgenin içinde ise, alt üçgenlerin alanlarının toplamı üçgenin alanına eşit olmalıdır
-            return Math.Abs(subTriangleArea1 + subTriangleArea2 + subTriangleArea3 - triangleArea) < 0.000001; // Kesinlik kontrolü için bir eşik değeri kullanıyoruz
+            return Math.Abs(subTriangleArea1 + subTriangleArea2 + subTriangleArea3 - triangleArea) < 0.000001;
         }
 
         double CalculateTriangleArea(Vector2 p1, Vector2 p2, Vector2 p3)
         {
-            // Üçgenin alanını hesaplama
             return Math.Abs((p1.X * (p2.Y - p3.Y) + p2.X * (p3.Y - p1.Y) + p3.X * (p1.Y - p2.Y)) / 2);
         }
 
         double DistancePointToLine(Vector2 p, Vector2 start, Vector2 end)
         {
-            // Çizgi denkleminin kullanımıyla noktanın çizgiye olan uzaklığını hesapla
             double numerator = Math.Abs((end.Y - start.Y) * p.X - (end.X - start.X) * p.Y + end.X * start.Y - end.Y * start.X);
             double denominator = Math.Sqrt(Math.Pow(end.Y - start.Y, 2) + Math.Pow(end.X - start.X, 2));
             return numerator / denominator;

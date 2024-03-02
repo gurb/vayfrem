@@ -11,6 +11,7 @@ namespace vayfrem.models.enums
         None,
         Container,
         ContainerFluid,
+        RelativeContainer,
         Row,
         Column
     }

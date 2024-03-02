@@ -21,7 +21,8 @@
 		</Border>
 		<!--<Canvas Width="1920" Height="1080" x:Name="Overlay" Background="Transparent" ZIndex="2">
 			<Canvas.RenderTransform>
-				<ScaleTransform ScaleX="1" ScaleY="1"/>
+				<
+				Transform ScaleX="1" ScaleY="1"/>
 			</Canvas.RenderTransform>
 		</Canvas>-->
 		

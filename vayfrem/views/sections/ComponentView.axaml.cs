@@ -59,6 +59,7 @@ public partial class ComponentView : UserControl
         ComponentMenu.Children.Add(GetComponent("Image", "image"));
         ComponentMenu.Children.Add(GetComponent("Container", "container"));
         ComponentMenu.Children.Add(GetComponent("Container Fluid", "containerfluid"));
+        ComponentMenu.Children.Add(GetComponent("Relative Container", "relativecontainer"));
         ComponentMenu.Children.Add(GetComponent("Row", "row"));
         ComponentMenu.Children.Add(GetComponent("Column", "column"));
     }
@@ -118,6 +119,10 @@ public partial class ComponentView : UserControl
         else if (dragButton.Name == "containerfluid")
         {
             LayoutViewModel.DragObject = new ContainerFluidObj();
+        }
+        else if (dragButton.Name == "relativecontainer")
+        {
+            LayoutViewModel.DragObject = new RelativeContainerObj();
         }
 
         LayoutViewModel.IsDragCompleted = false;

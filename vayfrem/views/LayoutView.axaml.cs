@@ -164,6 +164,10 @@ public partial class LayoutView : UserControl
             {
                 ghostItemText.Text = "Container Fluid";
             }
+            else if (obj.Role == models.enums.CanvasRole.RelativeContainer)
+            {
+                ghostItemText.Text = "Relative Container";
+            }
 
             ghostItem.IsVisible = true;
 
