@@ -11,8 +11,6 @@ using vayfrem.services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Avalonia.Controls;
-using Avalonia;
 using vayfrem.models.objects.components;
 
 namespace vayfrem.viewmodels
@@ -678,6 +676,8 @@ namespace vayfrem.viewmodels
             textObj.FontColor = toolOptionsViewModel.TextToolDTO.FontColor;
             textObj.FontSize = toolOptionsViewModel.TextToolDTO.FontSize;
             textObj.FontFamily = toolOptionsViewModel.TextToolDTO.FontFamily;
+            textObj.FontWeight = toolOptionsViewModel.TextToolDTO.FontWeight;
+
 
             textObj.Guid = Guid.NewGuid().ToString();
             textObj.X = passData.X;

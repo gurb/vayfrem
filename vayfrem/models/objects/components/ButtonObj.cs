@@ -14,6 +14,7 @@ namespace vayfrem.models.objects.components
         public ColorDTO FontColor { get; set; } = new ColorDTO(255, 0, 0, 0);
         public int FontSize { get; set; } = 14;
 
+        public enums.FontWeight FontWeight { get; set; } = enums.FontWeight.Regular;
         public enums.TextAlignment TextAlignment { get; set; } = enums.TextAlignment.MiddleCenter;
 
         public ButtonObj()
@@ -49,6 +50,9 @@ namespace vayfrem.models.objects.components
                 Text = textBox.Text;
             }
         }
+
+
+
 
     }
 }

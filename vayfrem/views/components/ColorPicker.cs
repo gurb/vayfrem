@@ -109,7 +109,7 @@ namespace vayfrem.views.components
             new Vertex(new Vector2f(0, 255), SFML.Graphics.Color.Red)
         };
 
-        public ColorDTO SelectedColor { get; set; } = new ColorDTO(255, 255, 0, 0);
+        public ColorDTO SelectedColor { get; set; } = new ColorDTO(255, 0, 0, 0);
         public ColorDTO SelectedBarColor { get; set; }
 
         

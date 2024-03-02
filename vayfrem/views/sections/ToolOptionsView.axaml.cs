@@ -343,7 +343,7 @@ public partial class ToolOptionsView : UserControl
             40,
 
             40,
-            26,
+            40,
             50,
             50,
         };
@@ -359,7 +359,7 @@ public partial class ToolOptionsView : UserControl
         fontColorPicker.Hex = ViewModel.TextToolDTO.FontColor.ToHex();
         fontColorPicker.ValueChanged += TextFontColor_ValueChanged;
         fontColorPicker.Margin = new Thickness(10, 5, 10, 5);
-        var row_font_color = RowOption("Color", fontColorPicker, null, text_heights[1]);
+        var row_font_color = RowOption("Font Color", fontColorPicker, null, text_heights[1]);
         var row_font_color_canvas = GetCanvas(text_heights[1], row_font_color, Brushes.Gray);
         Options["Text"].Add(row_font_color_canvas);
 
@@ -378,9 +378,18 @@ public partial class ToolOptionsView : UserControl
         fontSizeComboBox.SelectionChanged += FontSizeComboBox_SelectionChanged;
         fontSizeComboBox.SelectedIndex = ViewModel.TextToolDTO != null ? ViewModel.TextToolDTO.SelectedFontSizeIndex : 8;
         fontSizeComboBox.Margin = new Thickness(10, 5, 10, 5);
-        var row_font_size = RowOption("Size", fontSizeComboBox, null, text_heights[3]);
+        var row_font_size = RowOption("Font Size", fontSizeComboBox, null, text_heights[3]);
         var row_font_size_canvas = GetCanvas(text_heights[1], row_font_size, Brushes.Gray);
         Options["Text"].Add(row_font_size_canvas);
+
+        var fontWeightComboBox = new ComboBox();
+        fontWeightComboBox.ItemsSource = ListStorage.FontWeights;
+        fontWeightComboBox.SelectionChanged += FontWeightComboBox_SelectionChanged;
+        fontWeightComboBox.SelectedIndex = ViewModel.TextToolDTO != null ? ViewModel.TextToolDTO.SelectedFontWeightIndex : 8;
+        fontWeightComboBox.Margin = new Thickness(10, 5, 10, 5);
+        var row_font_weight = RowOption("Font Weight", fontWeightComboBox, null, text_heights[5]);
+        var row_font_weight_canvas = GetCanvas(text_heights[1], row_font_weight, Brushes.Gray);
+        Options["Text"].Add(row_font_weight_canvas);
     }
 
     private void FontFamilyComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -397,6 +406,14 @@ public partial class ToolOptionsView : UserControl
 
         ViewModel.TextToolDTO.FontSize = (int)fontSizeComboBox.SelectedValue;
         ViewModel.TextToolDTO.SelectedFontSizeIndex = fontSizeComboBox.SelectedIndex;
+    }
+
+    private void FontWeightComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        var fontWeightComboBox = sender as ComboBox;
+
+        ViewModel.TextToolDTO.FontWeight = (vayfrem.models.enums.FontWeight)fontWeightComboBox.SelectedValue;
+        ViewModel.TextToolDTO.SelectedFontWeightIndex = fontWeightComboBox.SelectedIndex;
     }
 
     private void TextFontColor_ValueChanged()
@@ -457,7 +474,7 @@ public partial class ToolOptionsView : UserControl
 
         foreach (var item in Options["Text"])
         {
-            var height = rect_heights.GetRange(0, counter).Sum();
+            var height = text_heights.GetRange(0, counter).Sum();
 
             Canvas.SetLeft(item, 0);
             Canvas.SetTop(item, height);

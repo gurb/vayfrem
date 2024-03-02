@@ -313,6 +313,7 @@ namespace vayfrem.services
                 textBox.Height = obj.Height;
                 textBox.FontFamily = new FontFamily(obj.FontFamily!);
                 textBox.FontSize = obj.FontSize;
+                textBox.FontWeight = (FontWeight)obj.FontWeight;
                 textBox.Foreground = new SolidColorBrush(obj.FontColor.ToColor());
                 textBox.TextWrapping = TextWrapping.Wrap;
                 textBox.Background = Brushes.Gray;
@@ -366,6 +367,7 @@ namespace vayfrem.services
                 textBlock.Height = obj.Height;
                 textBlock.Text = obj.Text;
                 textBlock.FontSize = obj.FontSize;
+                textBlock.FontWeight = (FontWeight)obj.FontWeight;
                 textBlock.FontFamily = new FontFamily(obj.FontFamily);
                 textBlock.Foreground = new SolidColorBrush(obj.FontColor.ToColor());
                 textBlock.TextWrapping = TextWrapping.Wrap;
@@ -403,6 +405,7 @@ namespace vayfrem.services
                 textBox.Height = obj.Height;
                 textBox.FontFamily = new FontFamily(obj.FontFamily!);
                 textBox.FontSize = obj.FontSize;
+                textBox.FontWeight = (FontWeight)obj.FontWeight;
                 textBox.Foreground = new SolidColorBrush(obj.FontColor.ToColor());
                 textBox.TextWrapping = TextWrapping.Wrap;
                 textBox.Background = Brushes.Gray;
@@ -501,6 +504,7 @@ namespace vayfrem.services
                 textBlock.FontSize = obj.FontSize;
                 textBlock.FontFamily = new FontFamily(obj.FontFamily);
                 textBlock.Foreground = new SolidColorBrush(obj.FontColor.ToColor());
+                textBlock.FontWeight = (FontWeight)obj.FontWeight;
                 //textBlock.Background = Brushes.Aqua;
                 textBlock.TextWrapping = TextWrapping.Wrap;
                 //textBlock.TextAlignment = obj.TextAlignmentConverter(obj.TextAlignment);

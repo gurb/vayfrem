@@ -50,6 +50,8 @@ namespace vayfrem.models.lists
             72
         };
 
+        public static List<enums.FontWeight> FontWeights = Enum.GetValues(typeof(enums.FontWeight)).Cast<enums.FontWeight>().ToList();
+    
         public static List<bool> TrueOrFalse = new List<bool>
         {
             false,

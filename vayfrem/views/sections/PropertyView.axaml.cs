@@ -62,6 +62,7 @@ namespace vayfrem.views.sections
 
         ComboBox font_family_property;
         ComboBox font_size_property;
+        ComboBox font_weight_property;
         ComboBox text_alignment_property;
         ComboBox content_alignment_property;
         ComboBox boxshadow_active_property;
@@ -257,6 +258,12 @@ namespace vayfrem.views.sections
             font_size_property.SelectionChanged += FontSizeComboBox_SelectionChanged;
             font_size_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             font_size_property.BorderThickness = new Thickness(0);
+
+            font_weight_property = new ComboBox();
+            font_weight_property.ItemsSource = ListStorage.FontWeights;
+            font_weight_property.SelectionChanged += FontWeightComboBox_SelectionChanged;
+            font_weight_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            font_weight_property.BorderThickness = new Thickness(0);
 
             text_alignment_property = new ComboBox();
             text_alignment_property.ItemsSource = ListStorage.TextAlignments;
@@ -719,6 +726,24 @@ namespace vayfrem.views.sections
             ViewModel.RefreshDraw();
         }
 
+        private void FontWeightComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            var fontWeightComboBox = sender as ComboBox;
+
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Text)
+            {
+                TextObj textObj = (TextObj)ViewModel.ActiveObj;
+                textObj.FontWeight = (vayfrem.models.enums.FontWeight)fontWeightComboBox.SelectedValue;
+            }
+            if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Button)
+            {
+                ButtonObj buttonObj = (ButtonObj)ViewModel.ActiveObj;
+                buttonObj.FontWeight = (vayfrem.models.enums.FontWeight)fontWeightComboBox.SelectedValue;
+            }
+            ViewModel.RefreshDraw();
+        }
+
+
         private void TextAlignmentComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
             var textAlignmentComboBox = sender as ComboBox;
@@ -878,6 +903,12 @@ namespace vayfrem.views.sections
                 {
                     font_size_property.SelectedIndex = ListStorage.FontSizes.IndexOf(fontSize.Value);
                 }
+
+                vayfrem.models.enums.FontWeight? fontWeight = ListStorage.FontWeights.FirstOrDefault(x => x == textObj.FontWeight);
+                if (fontSize != null)
+                {
+                    font_weight_property.SelectedIndex = ListStorage.FontWeights.IndexOf(fontWeight.Value);
+                }
             }
 
             if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.Button)
@@ -901,6 +932,12 @@ namespace vayfrem.views.sections
                 if (fontSize != null)
                 {
                     font_size_property.SelectedIndex = ListStorage.FontSizes.IndexOf(fontSize.Value);
+                }
+
+                vayfrem.models.enums.FontWeight? fontWeight = ListStorage.FontWeights.FirstOrDefault(x => x == buttonObj.FontWeight);
+                if (fontSize != null)
+                {
+                    font_weight_property.SelectedIndex = ListStorage.FontWeights.IndexOf(fontWeight.Value);
                 }
 
                 bg_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BackgroundColor.ToColor());
@@ -1016,6 +1053,7 @@ namespace vayfrem.views.sections
                     new Property(ValueType.FontColor, font_color_property),
                     new Property(ValueType.FontFamily, font_family_property),
                     new Property(ValueType.FontSize, font_size_property),
+                    new Property(ValueType.FontWeight, font_weight_property),
                 };
                 grid.SetProperties(ViewModel.Properties.ToList());
             }
@@ -1035,6 +1073,7 @@ namespace vayfrem.views.sections
                     new Property(ValueType.FontColor, font_color_property),
                     new Property(ValueType.FontFamily, font_family_property),
                     new Property(ValueType.FontSize, font_size_property),
+                    new Property(ValueType.FontWeight, font_weight_property),
                     new Property(ValueType.Background, bg_color_property),
                     new Property(ValueType.Opacity, bg_opacity_property),
                     new Property(ValueType.BorderColor, border_color_property),
@@ -1127,6 +1166,7 @@ namespace vayfrem.views.sections
         FontColor,
         FontFamily,
         FontSize,
+        FontWeight,
         StartPointX,
         StartPointY,
         MiddlePointX,
