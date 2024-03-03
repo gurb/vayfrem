@@ -51,6 +51,12 @@ namespace vayfrem.views.sections
         components.Slider img_bg_opacity_property;
         components.Slider border_radius_property;
         components.Slider border_thickness_property;
+        
+        components.Slider border_left_thickness_property;
+        components.Slider border_top_thickness_property;
+        components.Slider border_right_thickness_property;
+        components.Slider border_bottom_thickness_property;
+
         components.Slider qbc_border_thickness_property;
         components.Slider box_shadow_hoffset_property;
         components.Slider box_shadow_voffset_property;
@@ -67,6 +73,7 @@ namespace vayfrem.views.sections
         ComboBox content_alignment_property;
         ComboBox boxshadow_active_property;
         ComboBox boxshadow_inset_property;
+        ComboBox border_relative_property;
 
         TextBlock image_property;
 
@@ -215,6 +222,27 @@ namespace vayfrem.views.sections
             border_thickness_property.Maximum = 100;
             border_thickness_property.Minimum = 0;
 
+            border_left_thickness_property = new components.Slider();
+            border_left_thickness_property.ValueChanged += BorderLeftThicknessChanged_ValueChanged;
+            border_left_thickness_property.Maximum = 100;
+            border_left_thickness_property.Minimum = 0;
+
+            border_top_thickness_property = new components.Slider();
+            border_top_thickness_property.ValueChanged += BorderTopThicknessChanged_ValueChanged;
+            border_top_thickness_property.Maximum = 100;
+            border_top_thickness_property.Minimum = 0;
+
+            border_right_thickness_property = new components.Slider();
+            border_right_thickness_property.ValueChanged += BorderRightThicknessChanged_ValueChanged;
+            border_right_thickness_property.Maximum = 100;
+            border_right_thickness_property.Minimum = 0;
+
+            border_bottom_thickness_property = new components.Slider();
+            border_bottom_thickness_property.ValueChanged += BorderBottomThicknessChanged_ValueChanged;
+            border_bottom_thickness_property.Maximum = 100;
+            border_bottom_thickness_property.Minimum = 0;
+
+
             qbc_border_thickness_property = new components.Slider();
             qbc_border_thickness_property.ValueChanged += QBCBorderThicknessChanged_ValueChanged;
             qbc_border_thickness_property.Maximum = 100;
@@ -288,6 +316,12 @@ namespace vayfrem.views.sections
             boxshadow_inset_property.SelectionChanged += BoxShadowInsetComboBox_SelectionChanged;
             boxshadow_inset_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             boxshadow_inset_property.BorderThickness = new Thickness(0);
+
+            border_relative_property = new ComboBox();
+            border_relative_property.ItemsSource = ListStorage.TrueOrFalse;
+            border_relative_property.SelectionChanged += BorderRelativeComboBox_SelectionChanged;
+            border_relative_property.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            border_relative_property.BorderThickness = new Thickness(0);
 
             image_property = new TextBlock();
             image_property.PointerPressed += image_property_PointerPressedAsync;
@@ -602,7 +636,43 @@ namespace vayfrem.views.sections
         {
             if (ViewModel.ActiveObj != null)
             {
-                ViewModel.ActiveObj!.BorderThickness = border_thickness_property.Value;
+                ViewModel.ActiveObj!.BorderDTO.Thickness = border_thickness_property.Value;
+                ViewModel.RefreshDraw();
+            }
+        }
+
+        private void BorderLeftThicknessChanged_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BorderDTO.LeftThickness = border_left_thickness_property.Value;
+                ViewModel.RefreshDraw();
+            }
+        }
+
+        private void BorderTopThicknessChanged_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BorderDTO.TopThickness = border_top_thickness_property.Value;
+                ViewModel.RefreshDraw();
+            }
+        }
+
+        private void BorderRightThicknessChanged_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BorderDTO.RightThickness = border_right_thickness_property.Value;
+                ViewModel.RefreshDraw();
+            }
+        }
+
+        private void BorderBottomThicknessChanged_ValueChanged()
+        {
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BorderDTO.BottomThickness = border_bottom_thickness_property.Value;
                 ViewModel.RefreshDraw();
             }
         }
@@ -611,7 +681,7 @@ namespace vayfrem.views.sections
         {
             if (ViewModel.ActiveObj != null)
             {
-                ViewModel.ActiveObj!.BorderThickness = qbc_border_thickness_property.Value;
+                ViewModel.ActiveObj!.BorderDTO.Thickness = qbc_border_thickness_property.Value;
                 ViewModel.RefreshDraw();
             }
         }
@@ -783,7 +853,6 @@ namespace vayfrem.views.sections
             ViewModel.RefreshDraw();
 
         }
-
         private void SetEnableStatusOfBoxShadows(bool val)
         {
             box_shadow_hoffset_property.IsEnabled = val;
@@ -792,6 +861,29 @@ namespace vayfrem.views.sections
             box_shadow_spread_property.IsEnabled = val;
             boxshadow_inset_property.IsEnabled = val;
             box_shadow_color_property.IsEnabled = val;
+        }
+
+
+        private void BorderRelativeComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+
+            if (ViewModel.ActiveObj != null)
+            {
+                ViewModel.ActiveObj!.BorderDTO.Relative = (bool)comboBox.SelectedValue;
+
+                SetEnableStatusOfBorderRelative(ViewModel.ActiveObj!.BorderDTO.Relative);
+            }
+
+            ViewModel.RefreshDraw();
+        }
+
+        private void SetEnableStatusOfBorderRelative(bool val)
+        {
+            border_left_thickness_property.IsEnabled = val;
+            border_top_thickness_property.IsEnabled = val;
+            border_right_thickness_property.IsEnabled = val;
+            border_bottom_thickness_property.IsEnabled = val;
         }
 
         private void BoxShadowInsetComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -858,9 +950,15 @@ namespace vayfrem.views.sections
 
                 bg_opacity_property.Value = (int)ViewModel.ActiveObj.Opacity;
                 border_radius_property.Value = (int)ViewModel.ActiveObj.BorderRadius;
-                border_thickness_property.Value = (int)ViewModel.ActiveObj.BorderThickness;
+                border_thickness_property.Value = (int)ViewModel.ActiveObj.BorderDTO.Thickness;
 
-                
+                border_left_thickness_property.Value = (int)ViewModel.ActiveObj.BorderDTO.LeftThickness;
+                border_top_thickness_property.Value = (int)ViewModel.ActiveObj.BorderDTO.TopThickness;
+                border_right_thickness_property.Value = (int)ViewModel.ActiveObj.BorderDTO.RightThickness;
+                border_bottom_thickness_property.Value = (int)ViewModel.ActiveObj.BorderDTO.BottomThickness;
+
+                border_relative_property.SelectedIndex = ListStorage.TrueOrFalse.IndexOf(ViewModel.ActiveObj.BorderDTO.Relative);
+
                 boxshadow_active_property.SelectedIndex = ListStorage.TrueOrFalse.IndexOf(ViewModel.ActiveObj.IsBoxShadowActive);
                 boxshadow_inset_property.SelectedIndex = ListStorage.TrueOrFalse.IndexOf(ViewModel.ActiveObj.BoxShadow.Inset);
 
@@ -953,7 +1051,14 @@ namespace vayfrem.views.sections
 
                 bg_opacity_property.Value = (int)ViewModel.ActiveObj.Opacity;
                 border_radius_property.Value = (int)ViewModel.ActiveObj.BorderRadius;
-                border_thickness_property.Value = (int)ViewModel.ActiveObj.BorderThickness;
+                border_thickness_property.Value = (int)ViewModel.ActiveObj.BorderDTO.Thickness;
+
+                border_left_thickness_property.Value = (int)ViewModel.ActiveObj.BorderDTO.LeftThickness;
+                border_top_thickness_property.Value = (int)ViewModel.ActiveObj.BorderDTO.TopThickness;
+                border_right_thickness_property.Value = (int)ViewModel.ActiveObj.BorderDTO.RightThickness;
+                border_bottom_thickness_property.Value = (int)ViewModel.ActiveObj.BorderDTO.BottomThickness;
+
+                border_relative_property.SelectedIndex = ListStorage.TrueOrFalse.IndexOf(ViewModel.ActiveObj.BorderDTO.Relative);
             }
 
             if (ViewModel.ActiveObj!.ObjectType == models.enums.ObjectType.QuadraticBC)
@@ -968,7 +1073,7 @@ namespace vayfrem.views.sections
                 );
                 
                 qbc_bg_opacity_property.Value = (int)ViewModel.ActiveObj.Opacity;
-                qbc_border_thickness_property.Value = (int)ViewModel.ActiveObj.BorderThickness;
+                qbc_border_thickness_property.Value = (int)ViewModel.ActiveObj.BorderDTO.Thickness;
                 
                 qbc_border_color_property.Background = new SolidColorBrush(ViewModel.ActiveObj.BorderColor.ToColor());
 
@@ -1027,6 +1132,11 @@ namespace vayfrem.views.sections
                     new Property(ValueType.BorderColor, border_color_property),
                     new Property(ValueType.BorderRadius, border_radius_property),
                     new Property(ValueType.BorderThickness, border_thickness_property),
+                    new Property(ValueType.BorderRelative, border_relative_property),
+                    new Property(ValueType.BorderLeftThickness, border_left_thickness_property),
+                    new Property(ValueType.BorderTopThickness, border_top_thickness_property),
+                    new Property(ValueType.BorderRightThickness, border_right_thickness_property),
+                    new Property(ValueType.BorderBottomThickness, border_bottom_thickness_property),
                     new Property(ValueType.BoxShadowActive, boxshadow_active_property),
                     new Property(ValueType.BoxShadowColor, box_shadow_color_property),
                     new Property(ValueType.BoxShadowBlur, box_shadow_blur_property),
@@ -1079,6 +1189,11 @@ namespace vayfrem.views.sections
                     new Property(ValueType.BorderColor, border_color_property),
                     new Property(ValueType.BorderRadius, border_radius_property),
                     new Property(ValueType.BorderThickness, border_thickness_property),
+                    new Property(ValueType.BorderRelative, border_relative_property),
+                    new Property(ValueType.BorderLeftThickness, border_left_thickness_property),
+                    new Property(ValueType.BorderTopThickness, border_top_thickness_property),
+                    new Property(ValueType.BorderRightThickness, border_right_thickness_property),
+                    new Property(ValueType.BorderBottomThickness, border_bottom_thickness_property),
                 };
                 grid.SetProperties(ViewModel.Properties.ToList());
             }
@@ -1163,6 +1278,11 @@ namespace vayfrem.views.sections
         BorderColor,
         BorderRadius,
         BorderThickness,
+        BorderRelative,
+        BorderLeftThickness,
+        BorderTopThickness,
+        BorderRightThickness,
+        BorderBottomThickness,
         FontColor,
         FontFamily,
         FontSize,

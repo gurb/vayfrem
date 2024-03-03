@@ -20,6 +20,7 @@ namespace vayfrem.models.dtos
 
         public double Opacity { get; set; }
         public double BorderThickness { get; set; } = 1;
+        public BorderDTO BorderDTO { get; set; } = new BorderDTO();
         public ColorPickerDTO BorderColorPicker { get; set; } = new ColorPickerDTO
         {
             Color = new ColorDTO(255, 0, 0, 0),

@@ -18,6 +18,8 @@ namespace vayfrem.models.objects
         ColorDTO BorderColor { get; set; }
         double BorderThickness { get; set; }
 
+        BorderDTO BorderDTO { get; set; }
+
         [JsonIgnore]
         IObject? Parent { get; set; }
         ObjectType ObjectType { get; set; }

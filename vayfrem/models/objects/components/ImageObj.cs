@@ -42,7 +42,7 @@ namespace vayfrem.models.objects.components
             Height = 250;
 
             BorderColor = new dtos.ColorDTO(0, 0, 0, 0);
-            BorderThickness = 0;
+            BorderDTO.Thickness = 0;
             BorderRadius = 0;
         }
     }

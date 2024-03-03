@@ -243,7 +243,7 @@ namespace vayfrem.services
                 }
 
                 cssBuilder.Append(new String('\t', 1)).Append("border-color:").AppendLine($"#{obj.BorderColor.ToHex()};");
-                cssBuilder.Append(new String('\t', 1)).Append("border:").AppendLine($"{(int)obj.BorderThickness}px solid #{obj.BorderColor.ToHex()};");
+                cssBuilder.Append(new String('\t', 1)).Append("border:").AppendLine($"{(int)obj.BorderDTO.Thickness}px solid #{obj.BorderColor.ToHex()};");
                 cssBuilder.Append(new String('\t', 1)).Append("border-radius:").AppendLine($"{(int)obj.BorderRadius}px");
                 cssBuilder.AppendLine("}");
 

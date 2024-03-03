@@ -60,7 +60,7 @@ namespace vayfrem.models.objects
             obj.BackgroundColor = this.BackgroundColor;
             obj.BorderColor = this.BorderColor;
             obj.BorderRadius = this.BorderRadius;
-            obj.BorderThickness = this.BorderThickness;
+            obj.BorderDTO = this.BorderDTO;
             obj.Opacity = this.Opacity;
             obj.ObjectType = this.ObjectType;
             obj.ZIndex = this.ZIndex;

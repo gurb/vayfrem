@@ -87,7 +87,7 @@ namespace vayfrem.services
                     XRect rect = new XRect(x, y, width, height);
                     XBrush bg = new XSolidBrush(obj.BackgroundColor.ToXColor(0));
                     
-                    XPen border = new XPen(obj.BorderColor.ToXColor(), obj.BorderThickness);
+                    XPen border = new XPen(obj.BorderColor.ToXColor(), obj.BorderDTO.Thickness);
 
                     gfx.DrawRectangle(bg, rect);
 

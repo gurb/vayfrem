@@ -157,7 +157,14 @@ namespace vayfrem.services
             
             border.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
             border.BorderBrush = new SolidColorBrush(obj.BorderColor.ToColor());
-            border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderThickness.ToString());
+            if (obj.BorderDTO.Relative)
+            {
+                border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderDTO.GetRelative());
+            }
+            else
+            {
+                border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderDTO.Thickness.ToString());
+            }
             border.CornerRadius = new CornerRadius(obj.BorderRadius);
 
             border.Padding = Avalonia.Thickness.Parse("0");
@@ -240,7 +247,7 @@ namespace vayfrem.services
 
                 Border border = new Border();
                 border.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
-                border.BorderThickness = new Thickness(4);
+                border.BorderThickness = Avalonia.Thickness.Parse("2"); ;
                 border.BorderBrush = Brushes.Black;
 
                 border.Padding = Avalonia.Thickness.Parse("0");
@@ -260,7 +267,7 @@ namespace vayfrem.services
             Path path = new Path();
 
             path.Stroke = new SolidColorBrush(obj.BorderColor.ToColor());
-            path.StrokeThickness = obj.BorderThickness;
+            path.StrokeThickness = obj.BorderDTO.Thickness;
             path.Fill = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
             path.Data = new PathGeometry
             {
@@ -419,7 +426,16 @@ namespace vayfrem.services
                 Border border = new Border();
                 border.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
                 border.BorderBrush = new SolidColorBrush(obj.BorderColor.ToColor());
-                border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderThickness.ToString());
+
+                if(obj.BorderDTO.Relative)
+                {
+                    border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderDTO.GetRelative());
+                } 
+                else
+                {
+                    border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderDTO.Thickness.ToString());
+                }
+                
                 border.CornerRadius = new CornerRadius(obj.BorderRadius);
 
                 border.Padding = Avalonia.Thickness.Parse("0");
@@ -514,7 +530,14 @@ namespace vayfrem.services
                 Border border = new Border();
                 border.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
                 border.BorderBrush = new SolidColorBrush(obj.BorderColor.ToColor());
-                border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderThickness.ToString());
+                if (obj.BorderDTO.Relative)
+                {
+                    border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderDTO.GetRelative());
+                }
+                else
+                {
+                    border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderDTO.Thickness.ToString());
+                }
                 border.CornerRadius = new CornerRadius(obj.BorderRadius);
 
                 border.Padding = Avalonia.Thickness.Parse("0");

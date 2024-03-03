@@ -527,7 +527,7 @@ namespace vayfrem.viewmodels
             QuadraticBCObj quadraticBCObj = new QuadraticBCObj();
             quadraticBCObj.Guid = Guid.NewGuid().ToString();
 
-            quadraticBCObj.BorderThickness = toolOptionsViewModel.QuadraticBCToolDTO.BorderThickness;
+            quadraticBCObj.BorderDTO.Thickness = toolOptionsViewModel.QuadraticBCToolDTO.BorderDTO.Thickness;
             quadraticBCObj.BackgroundColor = toolOptionsViewModel.QuadraticBCToolDTO.BackgroundColorPicker.Color.toCopy();
             quadraticBCObj.BorderColor = toolOptionsViewModel.QuadraticBCToolDTO.BorderColorPicker.Color;
             quadraticBCObj.Opacity = toolOptionsViewModel.QuadraticBCToolDTO.Opacity;
@@ -570,7 +570,7 @@ namespace vayfrem.viewmodels
             canvasObj.Guid = Guid.NewGuid().ToString();
 
             canvasObj.BorderRadius = toolOptionsViewModel.RectToolDTO.BorderRadius;
-            canvasObj.BorderThickness = toolOptionsViewModel.RectToolDTO.BorderThickness;
+            canvasObj.BorderDTO.Thickness = toolOptionsViewModel.RectToolDTO.BorderThickness;
             canvasObj.BackgroundColor = toolOptionsViewModel.RectToolDTO.BackgroundColorPicker.Color.toCopy();
             canvasObj.BorderColor = toolOptionsViewModel.RectToolDTO.BorderColorPicker.Color;
             canvasObj.Opacity = toolOptionsViewModel.RectToolDTO.Opacity;
@@ -721,7 +721,7 @@ namespace vayfrem.viewmodels
                     QuadraticBCObj qbcObj = (QuadraticBCObj)obj;
                     if(!isCollide)
                     {
-                        isCollide = IsPointOnEdgeWithThickness(mousePosition, qbcObj.StartPoint, qbcObj.Point1, qbcObj.Point2, qbcObj.BorderThickness);
+                        isCollide = IsPointOnEdgeWithThickness(mousePosition, qbcObj.StartPoint, qbcObj.Point1, qbcObj.Point2, qbcObj.BorderDTO.Thickness);
 
                         SelectedObject = isCollide ? qbcObj : null;
                     }
