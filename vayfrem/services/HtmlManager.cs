@@ -30,6 +30,7 @@ namespace vayfrem.services
             htmlBuilder.Append(new String('\t', 1)).AppendLine("<head>");
             htmlBuilder.Append(new String('\t', 2)).AppendLine("<meta charset = \"utf-8\">");
             htmlBuilder.Append(new String('\t', 2)).AppendLine("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            htmlBuilder.Append(new String('\t', 2)).AppendLine("<title>Test</title>");
             htmlBuilder.Append(new String('\t', 2)).AppendLine("<link href='style.css' rel='stylesheet'/>");
             htmlBuilder.Append(new String('\t', 2)).AppendLine("<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC\" crossorigin=\"anonymous\">");
             htmlBuilder.Append(new String('\t', 1)).AppendLine("</head>");
@@ -104,7 +105,7 @@ namespace vayfrem.services
                 {
                     TextObj textObj = (TextObj)obj; 
 
-                    htmlBuilder.Append(new String('\t', counter)).AppendLine("<p>");
+                    htmlBuilder.Append(new String('\t', counter)).AppendLine($"<p id='{textObj.Tag}'>");
                     htmlBuilder.Append(textObj.Text);
                     htmlBuilder.AppendLine("</p>");
                 }
@@ -200,7 +201,7 @@ namespace vayfrem.services
                     percY = GetPercentage(obj.Y, 1080);
                 }
 
-                if (!ignore)
+                if (!ignore && obj.ObjectType == models.enums.ObjectType.Canvas)
                 {
                     cssBuilder.Append(new String('\t', 1)).Append("position:").AppendLine($"absolute;");
                     cssBuilder.Append(new String('\t', 1)).Append("left:").AppendLine($"{percX}%;");
@@ -231,7 +232,16 @@ namespace vayfrem.services
                 {
                     cssBuilder.Append(new String('\t', 1)).Append("padding:").AppendLine($"{15}px;");
                 }
-                
+
+                if(obj.ObjectType == models.enums.ObjectType.Text)
+                {
+                    TextObj textObj = (TextObj)obj;
+
+                    cssBuilder.Append(new String('\t', 1)).Append("font-size:").AppendLine($"{textObj.FontSize}px;");
+                    cssBuilder.Append(new String('\t', 1)).Append("color:").AppendLine($"#{textObj.FontColor.ToHex()};");
+                    cssBuilder.Append(new String('\t', 1)).Append("font-weight:").AppendLine($"{(int)textObj.FontWeight};");
+                }
+
                 cssBuilder.Append(new String('\t', 1)).Append("border-color:").AppendLine($"#{obj.BorderColor.ToHex()};");
                 cssBuilder.Append(new String('\t', 1)).Append("border:").AppendLine($"{(int)obj.BorderThickness}px solid #{obj.BorderColor.ToHex()};");
                 cssBuilder.Append(new String('\t', 1)).Append("border-radius:").AppendLine($"{(int)obj.BorderRadius}px");
