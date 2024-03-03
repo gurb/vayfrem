@@ -10,7 +10,6 @@ namespace vayfrem.models.dtos
 {
     public class RectToolDTO
     {
-
         public ColorPickerDTO BackgroundColorPicker { get; set; } = new ColorPickerDTO
         {
             Color = new ColorDTO(255, 0, 0, 0),
@@ -28,7 +27,5 @@ namespace vayfrem.models.dtos
             BarPosition = new structs.Vector2(0, 0)
         };
         public int BorderRadius { get; set; } = 0;
-        
-
     }
 }

@@ -243,7 +243,19 @@ namespace vayfrem.services
                 }
 
                 cssBuilder.Append(new String('\t', 1)).Append("border-color:").AppendLine($"#{obj.BorderColor.ToHex()};");
-                cssBuilder.Append(new String('\t', 1)).Append("border:").AppendLine($"{(int)obj.BorderDTO.Thickness}px solid #{obj.BorderColor.ToHex()};");
+
+                if(obj.BorderDTO.Relative)
+                {
+                    cssBuilder.Append(new String('\t', 1)).Append("border-left:").AppendLine($"{(int)obj.BorderDTO.LeftThickness}px solid #{obj.BorderColor.ToHex()};");
+                    cssBuilder.Append(new String('\t', 1)).Append("border-top:").AppendLine($"{(int)obj.BorderDTO.TopThickness}px solid #{obj.BorderColor.ToHex()};");
+                    cssBuilder.Append(new String('\t', 1)).Append("border-right:").AppendLine($"{(int)obj.BorderDTO.RightThickness}px solid #{obj.BorderColor.ToHex()};");
+                    cssBuilder.Append(new String('\t', 1)).Append("border-bottom:").AppendLine($"{(int)obj.BorderDTO.BottomThickness}px solid #{obj.BorderColor.ToHex()};");
+                }
+                else
+                {
+                    cssBuilder.Append(new String('\t', 1)).Append("border:").AppendLine($"{(int)obj.BorderDTO.Thickness}px solid #{obj.BorderColor.ToHex()};");
+                }
+
                 cssBuilder.Append(new String('\t', 1)).Append("border-radius:").AppendLine($"{(int)obj.BorderRadius}px");
                 cssBuilder.AppendLine("}");
 
