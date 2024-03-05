@@ -37,6 +37,37 @@ namespace vayfrem.models.objects.@base
         public ColorDTO BoxShadowColor { get; set; } = new ColorDTO(255, 100, 100, 100);
         public ObjectType ObjectType { get; set; }
 
+        public double CalcX
+        {
+            get
+            {
+                if(Parent != null)
+                {
+                    return X + Parent.BorderDTO.LeftThickness;
+                }
+                else
+                {
+                    return X; 
+                }
+            }
+        }
+
+        public double CalcY
+        {
+            get
+            {
+                if (Parent != null)
+                {
+                    return Y + Parent.BorderDTO.TopThickness;
+                }
+                else
+                {
+                    return Y;
+                }
+            }
+        }
+
+
         public Vector2 TopLeft { 
             get 
             {
@@ -125,6 +156,8 @@ namespace vayfrem.models.objects.@base
                     return Y + Parent.WorldY;
             }
         }
+
+
 
         public virtual GObject Copy()
         {

@@ -24,20 +24,17 @@ namespace vayfrem.services
         private readonly DrawingViewModel drawingViewModel;
         private readonly ToolManager toolManager;
         private readonly RecommendLineService recommendLineService;
-
         public Canvas? MainDisplay { get; set; }
         public double Zoom { get; set; } = 1;
 
         SelectionObject selectionObject = new SelectionObject();
 
-        
         Avalonia.Media.Imaging.Bitmap imageLayer;
 
         Canvas ImageLayer;
         Border borderImage;
         Line line1;
         Line line2;
-
 
         public RenderManager() 
         {
@@ -108,8 +105,11 @@ namespace vayfrem.services
         private Panel DrawCanvas (Panel Display, CanvasObj obj)
         {
             Border boxShadow = new Border();
-            
-            if(obj.IsBoxShadowActive)
+            boxShadow.Padding = new Thickness(0);
+            Canvas.SetLeft(boxShadow, obj.X);
+            Canvas.SetTop(boxShadow, obj.Y);
+
+            if (obj.IsBoxShadowActive)
             {
                 boxShadow.BoxShadow = new BoxShadows(new BoxShadow
                 {
@@ -125,61 +125,60 @@ namespace vayfrem.services
                 boxShadow.BorderThickness = new Thickness(0);
             }
 
-            RelativePanel panel = new RelativePanel();
+            Canvas panel = new Canvas();
+
             
-            Canvas.SetLeft(panel, obj.X);
-            Canvas.SetTop(panel, obj.Y);
+            Canvas.SetLeft(panel, 0);
+            Canvas.SetTop(panel, 0);
+            panel.Margin = new Thickness(0);
             panel.Width = obj.Width;
             panel.Height = obj.Height;
 
-            boxShadow.Child = panel;
-            Canvas.SetLeft(boxShadow, obj.X);
-            Canvas.SetTop(boxShadow, obj.Y);
-
-            Canvas canvas = new Canvas();
-            Canvas.SetLeft(canvas, obj.X);
-            Canvas.SetTop(canvas, obj.Y);
-            canvas.Width = obj.Width; 
-            canvas.Height = obj.Height;
-            Rectangle canvasBackground = new Rectangle();
-            Canvas.SetLeft(canvasBackground, 0);
-            Canvas.SetTop(canvasBackground, 0);
-            canvasBackground.Width = canvas.Width;
-            canvasBackground.Height = canvas.Height;
-            canvasBackground.Fill = Brushes.Transparent;
-            //canvasBackground.Stroke = Brushes.Black;
-            //canvasBackground.StrokeThickness = 1;
-
-            canvas.Children.Add(canvasBackground);
-            //panel.Children.Add(canvas);
 
             Border border = new Border();
-            
-            border.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
-            border.BorderBrush = new SolidColorBrush(obj.BorderColor.ToColor());
-            if (obj.BorderDTO.Relative)
+            if(obj.BorderDTO.Relative)
             {
                 border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderDTO.GetRelative());
             }
             else
             {
-                border.BorderThickness = Avalonia.Thickness.Parse(obj.BorderDTO.Thickness.ToString());
+                border.BorderThickness = new Thickness(obj.BorderDTO.Thickness);
             }
-            border.CornerRadius = new CornerRadius(obj.BorderRadius);
-
-            border.Padding = Avalonia.Thickness.Parse("0");
-            border.Margin = Avalonia.Thickness.Parse("0");
-            Canvas.SetLeft(border, obj.X); 
-            Canvas.SetTop(border, obj.Y);
-            border.Child = canvas;
+            border.BorderBrush = Brushes.Black;
+            border.Width = panel.Width;
+            border.Height = panel.Height;
+            border.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
+            Canvas.SetLeft(border, 0);
+            Canvas.SetTop(border, 0);
             panel.Children.Add(border);
 
 
+            Canvas drawing = new Canvas();
+            drawing.Background = Brushes.Transparent;
+            drawing.ClipToBounds = true;
+
+            if (obj.BorderDTO.Relative)
+            {
+                drawing.Width = panel.Width - obj.BorderDTO.LeftThickness + obj.BorderDTO.RightThickness;
+                drawing.Height = panel.Height - obj.BorderDTO.TopThickness + obj.BorderDTO.BottomThickness;
+                Canvas.SetLeft(drawing, obj.BorderDTO.LeftThickness);
+                Canvas.SetTop(drawing, obj.BorderDTO.TopThickness);
+            }
+            else
+            {
+                drawing.Width = panel.Width - obj.BorderDTO.Thickness * 2;
+                drawing.Height = panel.Height - obj.BorderDTO.Thickness * 2;
+                Canvas.SetLeft(drawing, obj.BorderDTO.Thickness);
+                Canvas.SetTop(drawing, obj.BorderDTO.Thickness);
+            }
+
+            panel.Children.Add(drawing);
+
+
+            boxShadow.Child = panel;
             Display.Children.Add(boxShadow);
 
-
-
-            return canvas;
+            return drawing;
         }
 
         public void DrawSvg(Panel Display, SvgObj obj)
