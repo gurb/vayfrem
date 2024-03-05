@@ -471,7 +471,7 @@ public partial class DrawingView : UserControl
 
             if(obj.Parent != null)
             {
-                currentPos = new Avalonia.Point(currentPos.X - obj.Parent.WorldX, currentPos.Y - obj.Parent.WorldY);
+                currentPos = new Avalonia.Point(currentPos.X - obj.Parent.WorldX - obj.Parent.BorderOffsetX, currentPos.Y - obj.Parent.WorldY - obj.Parent.BorderOffsetY);
             }
 
             if(currentPos.X < obj.X && (scalePointType ==  "TopRight" || scalePointType == "MiddleRight" || scalePointType == "BottomRight"))

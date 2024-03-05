@@ -146,6 +146,7 @@ namespace vayfrem.models.objects.@base
                     return X + Parent.WorldX;
             }
         }
+
         public double WorldY
         {
             get
@@ -157,6 +158,69 @@ namespace vayfrem.models.objects.@base
             }
         }
 
+
+
+        public double BorderOffsetX
+        {
+            get
+            {
+                if (Parent == null)
+                {
+                    if (BorderDTO.Relative)
+                    {
+                        return BorderDTO.LeftThickness;
+                    }
+                    else
+                    {
+                        return  BorderDTO.Thickness;
+
+                    }
+                }
+                else
+                {
+                    if(BorderDTO.Relative)
+                    {
+                        return BorderDTO.LeftThickness + Parent.BorderOffsetX;
+                    }
+                    else
+                    {
+                        return BorderDTO.Thickness + Parent.BorderOffsetX;
+
+                    }
+                }
+            }
+        }
+
+        public double BorderOffsetY
+        {
+            get
+            {
+                if (Parent == null)
+                {
+                    if (BorderDTO.Relative)
+                    {
+                        return BorderDTO.TopThickness;
+                    }
+                    else
+                    {
+                        return BorderDTO.Thickness;
+
+                    }
+                }
+                else
+                {
+                    if (BorderDTO.Relative)
+                    {
+                        return BorderDTO.TopThickness + Parent.BorderOffsetY;
+                    }
+                    else
+                    {
+                        return BorderDTO.Thickness + Parent.BorderOffsetY;
+
+                    }
+                }
+            }
+        }
 
 
         public virtual GObject Copy()

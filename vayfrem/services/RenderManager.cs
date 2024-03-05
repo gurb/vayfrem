@@ -621,8 +621,8 @@ namespace vayfrem.services
 
                     if (moveObject.Parent != null)
                     {
-                        childMoveOffset.X = (int)moveObject.Parent.WorldX;
-                        childMoveOffset.Y = (int)moveObject.Parent.WorldY;
+                        childMoveOffset.X = (int)moveObject.Parent.WorldX + (int)moveObject.Parent.BorderOffsetX;
+                        childMoveOffset.Y = (int)moveObject.Parent.WorldY + (int)moveObject.Parent.BorderOffsetY;
                     }
 
                     moveOffset = new Vector2(first.X - quadraticBCObj.StartPoint.X, first.Y - quadraticBCObj.StartPoint.Y);
@@ -666,8 +666,8 @@ namespace vayfrem.services
 
                     if (moveObject.Parent != null)
                     {
-                        childMoveOffset.X = (int)moveObject.Parent.WorldX;
-                        childMoveOffset.Y = (int)moveObject.Parent.WorldY;
+                        childMoveOffset.X = (int)moveObject.Parent.WorldX + (int)moveObject.Parent.BorderOffsetX;
+                        childMoveOffset.Y = (int)moveObject.Parent.WorldY + (int)moveObject.Parent.BorderOffsetY;
                     }
 
                     Canvas.SetLeft(overlayActive, (childMoveOffset.X + last.X) - (moveOffset.X));

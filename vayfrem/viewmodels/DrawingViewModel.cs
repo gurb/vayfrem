@@ -587,8 +587,8 @@ namespace vayfrem.viewmodels
                     CanvasObj selectedCanvas = (CanvasObj)SelectedObject;
                     canvasObj.Parent = selectedCanvas;
                     canvasObj.ParentGuid = selectedCanvas.Guid;
-                    canvasObj.X = canvasObj.X - selectedCanvas.WorldX;
-                    canvasObj.Y = canvasObj.Y - selectedCanvas.WorldY;
+                    canvasObj.X = canvasObj.X - selectedCanvas.WorldX - selectedCanvas.BorderOffsetX;
+                    canvasObj.Y = canvasObj.Y - selectedCanvas.WorldY - selectedCanvas.BorderOffsetY;
 
                     selectedCanvas.Add(canvasObj);
                     CurrentFile!.AllObjects.Add(canvasObj);

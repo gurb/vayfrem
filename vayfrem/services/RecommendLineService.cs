@@ -39,8 +39,8 @@ namespace vayfrem.services
             {
                 if (selected.Parent != null)
                 {
-                    childMoveOffset.X = (int)selected.Parent.WorldX;
-                    childMoveOffset.Y = (int)selected.Parent.WorldY;
+                    childMoveOffset.X = (int)selected.Parent.WorldX + (int)selected.Parent.BorderOffsetX;
+                    childMoveOffset.Y = (int)selected.Parent.WorldY + (int)selected.Parent.BorderOffsetY;
                 }
 
                 int x = (int)((childMoveOffset.X + current.X) - (moveOffset.X));

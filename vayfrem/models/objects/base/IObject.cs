@@ -17,7 +17,6 @@ namespace vayfrem.models.objects
         ColorDTO BackgroundColor { get; set; }
         ColorDTO BorderColor { get; set; }
         double BorderThickness { get; set; }
-
         BorderDTO BorderDTO { get; set; }
 
         [JsonIgnore]
@@ -25,5 +24,8 @@ namespace vayfrem.models.objects
         ObjectType ObjectType { get; set; }
         double WorldX { get; }
         double WorldY { get; }
+
+        double BorderOffsetX { get; }
+        double BorderOffsetY { get; }
     }
 }
