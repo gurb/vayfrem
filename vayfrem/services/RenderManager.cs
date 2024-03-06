@@ -106,8 +106,10 @@ namespace vayfrem.services
         {
             Border boxShadow = new Border();
             boxShadow.Padding = new Thickness(0);
+            boxShadow.ClipToBounds = true;
             Canvas.SetLeft(boxShadow, obj.X);
             Canvas.SetTop(boxShadow, obj.Y);
+            boxShadow.CornerRadius = new CornerRadius(obj.BorderRadius);
 
             if (obj.IsBoxShadowActive)
             {
@@ -133,6 +135,7 @@ namespace vayfrem.services
             panel.Margin = new Thickness(0);
             panel.Width = obj.Width;
             panel.Height = obj.Height;
+            panel.ClipToBounds = true;
 
 
             Border border = new Border();
@@ -145,17 +148,17 @@ namespace vayfrem.services
                 border.BorderThickness = new Thickness(obj.BorderDTO.Thickness);
             }
             border.BorderBrush = Brushes.Black;
+            border.CornerRadius = new CornerRadius(obj.BorderRadius);
             border.Width = panel.Width;
             border.Height = panel.Height;
-            border.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
+            border.Background = Brushes.Transparent;
             Canvas.SetLeft(border, 0);
             Canvas.SetTop(border, 0);
-            panel.Children.Add(border);
-
 
             Canvas drawing = new Canvas();
-            drawing.Background = Brushes.Transparent;
+            drawing.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
             drawing.ClipToBounds = true;
+
 
             if (obj.BorderDTO.Relative)
             {
@@ -173,6 +176,7 @@ namespace vayfrem.services
             }
 
             panel.Children.Add(drawing);
+            panel.Children.Add(border);
 
 
             boxShadow.Child = panel;

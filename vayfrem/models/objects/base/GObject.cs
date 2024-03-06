@@ -43,7 +43,7 @@ namespace vayfrem.models.objects.@base
             {
                 if(Parent != null)
                 {
-                    return X + Parent.BorderOffsetX;
+                    return X + Parent.BorderDTO.Thickness;
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace vayfrem.models.objects.@base
             {
                 if (Parent != null)
                 {
-                    return Y + Parent.BorderOffsetY;
+                    return Y + Parent.BorderDTO.Thickness;
                 }
                 else
                 {
