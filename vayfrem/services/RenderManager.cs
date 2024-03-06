@@ -722,10 +722,10 @@ namespace vayfrem.services
                 selectionObject.IsVisible = true;
                 selectionObject.Width = selected.Width;
                 selectionObject.Height = selected.Height;
-                Canvas.SetLeft(selectionObject, selected.WorldX);
-                Canvas.SetTop(selectionObject, selected.WorldY);
+                Canvas.SetLeft(selectionObject, selected.WorldX + selected.ParentBorderOffsetX);
+                Canvas.SetTop(selectionObject, selected.WorldY + selected.ParentBorderOffsetY);
 
-                selectionObject.OverlayPosition = new Point(selected.WorldX, selected.WorldY);
+                selectionObject.OverlayPosition = new Point(selected.WorldX + selected.ParentBorderOffsetX, selected.WorldY + selected.ParentBorderOffsetY);
 
                 selectionObject.Update(last, Zoom);
 

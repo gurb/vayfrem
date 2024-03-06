@@ -726,17 +726,17 @@ namespace vayfrem.viewmodels
                         SelectedObject = isCollide ? qbcObj : null;
                     }
                 }
-                else if (mousePosition.X >= obj.X &&
-                    mousePosition.X <= obj.X + obj.Width &&
-                    mousePosition.Y >= obj.Y &&
-                    mousePosition.Y <= obj.Y + obj.Height)
+                else if (mousePosition.X >= obj.CalcX &&
+                    mousePosition.X <= obj.CalcX + obj.Width &&
+                    mousePosition.Y >= obj.CalcY &&
+                    mousePosition.Y <= obj.CalcY + obj.Height)
                 {
                     if(obj.ObjectType == models.enums.ObjectType.Canvas)
                     {
                         CanvasObj canvasObj = (CanvasObj)obj; 
                         if(canvasObj.Children.Count > 0)
                         {
-                            var mouseOffset = new Vector2(mousePosition.X - canvasObj.X, mousePosition.Y - canvasObj.Y);
+                            var mouseOffset = new Vector2(mousePosition.X - canvasObj.CalcX, mousePosition.Y - canvasObj.CalcY);
 
                             CollisionDetectPoint(mouseOffset, canvasObj);
                         } 
@@ -810,10 +810,10 @@ namespace vayfrem.viewmodels
 
             foreach (var obj in tempObjects)
             {
-                if (mousePosition.X >= obj.X &&
-                    mousePosition.X <= obj.X + obj.Width &&
-                    mousePosition.Y >= obj.Y &&
-                    mousePosition.Y <= obj.Y + obj.Height)
+                if (mousePosition.X >= obj.CalcX &&
+                    mousePosition.X <= obj.CalcX + obj.Width &&
+                    mousePosition.Y >= obj.CalcY &&
+                    mousePosition.Y <= obj.CalcY + obj.Height)
                 {
                     isCollide = true;
                     if (obj.ObjectType == models.enums.ObjectType.Canvas)
@@ -821,7 +821,7 @@ namespace vayfrem.viewmodels
                         CanvasObj canvasObj = (CanvasObj)obj;
                         if (canvasObj.Children.Count > 0)
                         {
-                            var mouseOffset = new Vector2(mousePosition.X - canvasObj.X, mousePosition.Y - canvasObj.Y);
+                            var mouseOffset = new Vector2(mousePosition.X - canvasObj.CalcX, mousePosition.Y - canvasObj.CalcY);
 
                             return CollisionPointWithObject(mouseOffset, canvasObj);
                         }
