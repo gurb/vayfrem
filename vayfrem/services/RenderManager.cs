@@ -155,27 +155,31 @@ namespace vayfrem.services
             Canvas.SetLeft(border, 0);
             Canvas.SetTop(border, 0);
 
+            Border borderDrawing = new Border();
+            borderDrawing.CornerRadius = new CornerRadius(obj.BorderRadius / 2);
+            borderDrawing.ClipToBounds = true;
             Canvas drawing = new Canvas();
             drawing.Background = new SolidColorBrush(obj.BackgroundColor.ToColor(), obj.Opacity / 255.0);
             drawing.ClipToBounds = true;
 
 
+            borderDrawing.Child = drawing;
             if (obj.BorderDTO.Relative)
             {
-                drawing.Width = panel.Width - obj.BorderDTO.LeftThickness + obj.BorderDTO.RightThickness;
-                drawing.Height = panel.Height - obj.BorderDTO.TopThickness + obj.BorderDTO.BottomThickness;
-                Canvas.SetLeft(drawing, obj.BorderDTO.LeftThickness);
-                Canvas.SetTop(drawing, obj.BorderDTO.TopThickness);
+                borderDrawing.Width = panel.Width - obj.BorderDTO.LeftThickness + obj.BorderDTO.RightThickness;
+                borderDrawing.Height = panel.Height - obj.BorderDTO.TopThickness + obj.BorderDTO.BottomThickness;
+                Canvas.SetLeft(borderDrawing, obj.BorderDTO.LeftThickness);
+                Canvas.SetTop(borderDrawing, obj.BorderDTO.TopThickness);
             }
             else
             {
-                drawing.Width = panel.Width - obj.BorderDTO.Thickness * 2;
-                drawing.Height = panel.Height - obj.BorderDTO.Thickness * 2;
-                Canvas.SetLeft(drawing, obj.BorderDTO.Thickness);
-                Canvas.SetTop(drawing, obj.BorderDTO.Thickness);
+                borderDrawing.Width = panel.Width - obj.BorderDTO.Thickness * 2;
+                borderDrawing.Height = panel.Height - obj.BorderDTO.Thickness * 2;
+                Canvas.SetLeft(borderDrawing, obj.BorderDTO.Thickness);
+                Canvas.SetTop(borderDrawing, obj.BorderDTO.Thickness);
             }
 
-            panel.Children.Add(drawing);
+            panel.Children.Add(borderDrawing);
             panel.Children.Add(border);
 
 

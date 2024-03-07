@@ -27,5 +27,6 @@ namespace vayfrem.models.objects
 
         double BorderOffsetX { get; }
         double BorderOffsetY { get; }
+        double BorderOffsetWidth { get; }
     }
 }

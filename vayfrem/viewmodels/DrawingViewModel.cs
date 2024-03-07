@@ -365,7 +365,7 @@ namespace vayfrem.viewmodels
                     ContainerObj containerObj = (ContainerObj)parentObj;
                     containerObj.Rows.Add(rowObj.Guid!);
                     
-                    rowObj.Width = parentObj.Width - 30;
+                    rowObj.Width = parentObj.Width - parentObj.BorderOffsetWidth - 30;
                     rowObj.X = 15;
                     rowObj.Y = FindRowY(rowObj, containerObj) + (15 * containerObj.Rows.Count());
                     ReconfCanvasRowColumns(rowObj);
@@ -375,7 +375,7 @@ namespace vayfrem.viewmodels
                     RelativeContainerObj containerObj = (RelativeContainerObj)parentObj;
                     containerObj.Rows.Add(rowObj.Guid!);
 
-                    rowObj.Width = parentObj.Width - 30;
+                    rowObj.Width = parentObj.Width - parentObj.BorderOffsetWidth - 30;
                     rowObj.X = 15;
                     rowObj.Y = FindRowY(rowObj, containerObj) + (15 * containerObj.Rows.Count());
                     ReconfCanvasRowColumns(rowObj);
@@ -385,7 +385,7 @@ namespace vayfrem.viewmodels
                     ContainerFluidObj containerFluidObj = (ContainerFluidObj)parentObj;
                     containerFluidObj.Rows.Add(rowObj.Guid!);
 
-                    rowObj.Width = parentObj.Width - 30;
+                    rowObj.Width = parentObj.Width - parentObj.BorderOffsetWidth - 30;
                     rowObj.X = 15;
                     rowObj.Y = FindRowY(rowObj, containerFluidObj) + (15 * containerFluidObj.Rows.Count());
                     ReconfCanvasRowColumns(rowObj);

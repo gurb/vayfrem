@@ -43,6 +43,10 @@ namespace vayfrem.models.objects.@base
             {
                 if(Parent != null)
                 {
+                    if (Parent.BorderDTO.Relative)
+                    {
+                        return Y + Parent.BorderDTO.LeftThickness;
+                    }
                     return X + Parent.BorderDTO.Thickness;
                 }
                 else
@@ -58,6 +62,10 @@ namespace vayfrem.models.objects.@base
             {
                 if (Parent != null)
                 {
+                    if(Parent.BorderDTO.Relative)
+                    {
+                        return Y + Parent.BorderDTO.TopThickness;
+                    }
                     return Y + Parent.BorderDTO.Thickness;
                 }
                 else
@@ -187,6 +195,21 @@ namespace vayfrem.models.objects.@base
                         return BorderDTO.Thickness + Parent.BorderOffsetX;
 
                     }
+                }
+            }
+        }
+
+        public double BorderOffsetWidth
+        {
+            get
+            {
+                if (BorderDTO.Relative)
+                {
+                    return BorderDTO.LeftThickness + BorderDTO.RightThickness;
+                }
+                else
+                {
+                    return BorderDTO.Thickness*2;
                 }
             }
         }
