@@ -881,6 +881,7 @@ namespace vayfrem.viewmodels
             if (drawDelegate != null)
             {
                 drawDelegate.Invoke();
+                Reconf();
             }
         }
 
